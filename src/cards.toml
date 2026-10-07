@@ -28,7 +28,7 @@
 #   wealth_note what the wealth looks like ("Silbermünzen aus Arnor")
 #   tags        free keywords, not printed
 
-hint = "Zum Ausschneiden, im Pokerkartenformat (63 × 88 mm)"
+hint = "Zum Ausschneiden, im Pokerkartenformat (63,5 × 88,9 mm)"
 footer = ""
 
 # Rules terms that are set in italics on the cards. Type labels and quality names from

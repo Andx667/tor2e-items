@@ -1,6 +1,6 @@
 % tor2e.sty - layout for a The One Ring 2e item database (print edition)
 % LuaLaTeX (CI) or XeLaTeX (local fallback). Overview pages with a 26 mm left margin for hole
-% punching, then pages of nine cards (63 × 88 mm) to cut out; footer with version and date on
+% punching, then pages of nine cards (63.5 × 88.9 mm, poker size) to cut out; footer with version and date on
 % every page. All collection-specific text comes from build/meta.tex.
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{tor2e}[2026/10/07 TOR 2e item database layout]
@@ -108,9 +108,15 @@
   \setlength\LTleft{0pt}\setlength\LTright{\fill}%
   \setlength\LTpre{0pt}\setlength\LTpost{2mm}}{\par}
 
-% ---------------------------------------------------------------- Gegenstandskarten (63 × 88 mm)
+% ---------------------------------------------------------------- Gegenstandskarten (63,5 × 88,9 mm)
+% Zelle = Schnittgröße (Poker, 2,5 × 3,5 in); das Pergament füllt sie bis zur Schnittlinie,
+% der Rahmen sitzt 1,6 mm weiter innen.
+\newlength\fw@cw \setlength\fw@cw{63.5mm}
+\newlength\fw@ch \setlength\fw@ch{88.9mm}
+\newlength\fw@bw \setlength\fw@bw{\dimexpr\fw@cw-3.2mm\relax}
+\newlength\fw@bh \setlength\fw@bh{\dimexpr\fw@ch-3.2mm\relax}
 \tcbset{
-  fw card/.style={enhanced, width=59.8mm, height=84.8mm, colback=fwparch, colframe=fwgold,
+  fw card/.style={enhanced, width=\fw@bw, height=\fw@bh, colback=fwparch, colframe=fwgold,
     boxrule=0.9pt, arc=2mm, left=2.8mm, right=2.8mm, top=2.6mm, bottom=1.8mm, boxsep=0pt,
     space to upper, middle=1.2mm, lower separated=true,
     segmentation style={draw=fwcardline, line width=0.5pt, solid},
@@ -130,7 +136,8 @@
 \newcommand\fwstathead[1]{{\fontsize{6.2}{7.3}\selectfont\color{fwgrey}#1}}
 % \fwcardstats{Spalten}{Köpfe}{Werte}{Anmerkung} – Köpfe und Werte mit & getrennt
 \newcommand\fwcardstats[4]{%
-  \begin{tcolorbox}[fw stats]
+  % top is negative: the table's first row has about 2.7 mm of built-in space above the header
+  \begin{tcolorbox}[fw stats, top=-1.9mm]
     \setlength\tabcolsep{0pt}%
     \begin{tabular}{@{}*{#1}{>{\centering\arraybackslash}p{\dimexpr\linewidth/#1\relax}}@{}}
       #2 \\
@@ -152,9 +159,10 @@
   \sbox\fw@cardbox{\begin{tcolorbox}[fw card]#1\ifblank{#2}{}{\tcblower #2}\end{tcolorbox}}%
   \ifnum\fw@cardn=0 \noindent\fi%
   \begin{tikzpicture}
-    \useasboundingbox (0,0) rectangle (63mm,88mm);
-    \draw[fwline, line width=0.6pt, dash pattern=on 1.4pt off 1.4pt] (0,0) rectangle (63mm,88mm);
-    \node[inner sep=0pt] at (31.5mm,44mm) {\usebox\fw@cardbox};
+    \useasboundingbox (0,0) rectangle (\fw@cw,\fw@ch);
+    \fill[fwparch] (0,0) rectangle (\fw@cw,\fw@ch);
+    \draw[fwline, line width=0.6pt, dash pattern=on 1.4pt off 1.4pt] (0,0) rectangle (\fw@cw,\fw@ch);
+    \node[inner sep=0pt] at (0.5*\fw@cw,0.5*\fw@ch) {\usebox\fw@cardbox};
   \end{tikzpicture}%
   \global\advance\fw@cardn 1
   \ifnum\fw@cardn<\fw@cardcols\relax\else\global\fw@cardn=0 \par\nointerlineskip\fi%
@@ -166,11 +174,11 @@
 % ohne Karten bleibt die Seite bis auf die Kopfzeile leer
 \NewDocumentCommand\fwcardspage{O{}mmm}{%
   \clearpage
-  \newgeometry{top=9mm,bottom=14mm,left=10.5mm,right=10.4mm,nohead,nofoot}%
-  \gdef\fw@footl{10.5}\gdef\fw@footr{199.5}%
+  \newgeometry{top=9mm,bottom=14mm,left=9.7mm,right=9.7mm,nohead,nofoot}%
+  \gdef\fw@footl{9.7}\gdef\fw@footr{200.3}%
   \ifblank{#1}{}{\phantomsection\pdfbookmark[0]{#1}{bm-cards-\thepage}}%
   \global\fw@cardn=0
-  \sbox\fw@cardsbox{\begin{minipage}[b]{\dimexpr63mm*\fw@cardcols+0.1mm\relax}%
+  \sbox\fw@cardsbox{\begin{minipage}[b]{\dimexpr\fw@cw*\fw@cardcols+0.1mm\relax}%
     \setlength\parskip{0pt}#4\par\end{minipage}}%
   \global\fw@cardn=0
   \fw@cardhint{#2}{#3}\vspace{2mm}\nointerlineskip

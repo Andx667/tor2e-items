@@ -2,7 +2,7 @@
 
 A database of items for *The One Ring, 2nd Edition*: famous weapons and armour, artefacts and treasure hoards
 (collections of items plus generic wealth). The database is one TOML file; a build turns it into a printable PDF
-with an overview and cards in poker size (63 × 88 mm, nine per A4 page).
+with an overview and cards in poker size (63.5 × 88.9 mm, nine per A4 page).
 
 The items are in [src/cards.toml](src/cards.toml) (German, rules terms in English). The PDF is built by GitHub
 Actions on every commit; tagged commits (`v*`) are published as a release.
