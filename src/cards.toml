@@ -296,7 +296,7 @@ tags = ["finsterwacht"]
 
 [items.horn-der-finsterwacht]
 name = "Das Horn der Finsterwacht"
-type = "artefact"
+type = "wonder"
 craft = "Arbeit der Dúnedain"
 text = "Ein silberbeschlagenes Horn, von den Dúnedain des Nordens gefertigt, das einst die Besatzung auf die Mauern rief."
 blessings = ["Awe", "Battle"]
@@ -310,16 +310,18 @@ tags = ["finsterwacht"]
 
 [items.lembas]
 name = "Lembas, das Wegbrot der Elben"
-type = "wonder"
+type = "artefact"
 craft = "elbische Arbeit"
 text = "Ein dünner Kuchen der Elben von Lothlórien, in Mallornblätter gewickelt."
+blessings = ["Travel"]
 tags = ["buch"]
 
 [items.phiole-galadriels]
 name = "Die Phiole der Galadriel"
-type = "artefact"
+type = "wonder"
 craft = "elbische Arbeit"
 text = "Ein Fläschchen mit dem Licht eines Sterns, gefangen im Wasser einer Quelle in Lothlórien."
+blessings = ["Awe", "Enhearten"]
 tags = ["buch"]
 
 [items.lorien-mantel]
@@ -327,48 +329,55 @@ name = "Der Elbenmantel von Lothlórien"
 type = "wonder"
 craft = "Arbeit der Galadhrim"
 text = "Ein Mantel der Galadhrim aus feinem grauen Gewebe, an der Kehle von einem silbernen Blatt gehalten."
+blessings = ["Stealth", "Explore"]
 tags = ["buch"]
 
 [items.lorien-seil]
 name = "Das Seil von Lothlórien"
-type = "wonder"
+type = "artefact"
 craft = "Arbeit der Galadhrim"
 text = "Aus Hithlain gedreht, einem grauen Elbenfaden aus Lothlórien, dünn und leicht und doch stark genug für einen Mann."
+blessings = ["Athletics"]
 tags = ["buch"]
 
 [items.miruvor]
 name = "Miruvor, der Trank von Bruchtal"
-type = "wonder"
+type = "artefact"
 craft = "elbische Arbeit"
 text = "Der klare Stärkungstrank der Elben von Bruchtal."
+blessings = ["Enhearten"]
 tags = ["buch"]
 
 [items.athelas]
 name = "Athelas, das Königsblatt"
-type = "wonder"
+type = "artefact"
 craft = "Kraut der Númenórer"
 text = "Ein unscheinbares Kraut, das die Númenórer nach Mittelerde brachten. Sein Name bedeutete „Königsblatt“."
+blessings = ["Healing"]
 tags = ["buch"]
 
 [items.ent-trank]
 name = "Der Ent-Trank"
-type = "wonder"
+type = "artefact"
 craft = "Gabe der Ents"
 text = "Das Wasser aus den Quellen von Fangorn, das die Ents tranken."
+blessings = ["Healing"]
 tags = ["buch"]
 
 [items.elessar]
 name = "Der Elessar, der Elbenstein"
-type = "artefact"
+type = "wonder"
 craft = "Arbeit Enerdhils von Gondolin"
 text = "Ein grüner Stein in einer silbernen Adlerbrosche, in Gondolin gefertigt. Sein Name, Elessar, bedeutete „Elbenstein“."
+blessings = ["Healing", "Insight"]
 tags = ["buch"]
 
 [items.arkenstein]
 name = "Der Arkenstein"
-type = "artefact"
+type = "wonder"
 craft = "Zwergenarbeit"
 text = "Das Herz des Berges, ein Stein von weißem Licht, in der Tiefe des Einsamen Berges gefunden."
+blessings = ["Craft", "Persuade"]
 tags = ["buch"]
 
 [items.horn-gondors]
@@ -376,19 +385,22 @@ name = "Das Horn von Gondor"
 type = "artefact"
 craft = "Arbeit Gondors"
 text = "Ein mit Silber beschlagenes Horn, das der Erstgeborene der Truchsesse von Gondor trug."
+blessings = ["Battle"]
 tags = ["buch"]
 
 [items.palantir]
 name = "Der Palantír von Orthanc"
-type = "artefact"
+type = "wonder"
 craft = "Arbeit der Noldor"
 text = "Ein Sehender Stein aus der Zeit vor dem Untergang Númenors, im Turm von Orthanc bewahrt."
+blessings = ["Lore", "Scan"]
 tags = ["buch"]
 
 [items.gandalfs-stab]
 name = "Gandalfs Stab"
-type = "artefact"
+type = "wonder"
 text = "Der Stab eines der Istari, der Zauberer, die von jenseits des Meeres nach Mittelerde kamen."
+blessings = ["Awe", "Travel"]
 tags = ["buch"]
 
 [items.thrors-schluessel]
@@ -396,6 +408,7 @@ name = "Thrórs Karte und Schlüssel"
 type = "artefact"
 craft = "Zwergenarbeit"
 text = "Die Karte mit den Mondbuchstaben und der kleine Schlüssel zur Geheimtür des Einsamen Berges."
+blessings = ["Explore"]
 tags = ["buch"]
 
 # ================================================================ hoards

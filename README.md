@@ -17,6 +17,7 @@ Actions on every commit; tagged commits (`v*`) are published as a release.
 | `src/rules.toml` | Item types, categories, weapon groups, craftsmanships and the qualities from the rule book |
 | `tools/check.py` | Checks the database against the rules |
 | `tools/build.py` | PDF build |
+| `tools/logo.py` | Draws the logo into `assets/` (needs Pillow) |
 | `latex/` | Layout |
 
 ## Adding an item
@@ -79,6 +80,14 @@ weapons and armour start their kind line with *Famous Weapon* or *Famous Armour*
 or none, are just well made and get no such label. A *Bane* comes with a superior reward and is only allowed on an
 item that has one. It does not count towards the number of rewards.
 
+## Useful items
+
+Special items that are not weapons or armour are either **wondrous items** or **marvellous artefacts**. Wondrous
+items are the very important ones, so powerful that they seem like magic to people; every other special item is
+a marvellous artefact. A wondrous item blesses two skills (`blessings`), a marvellous artefact one. The skills
+are listed in `src/rules.toml`, the count per type is `blessings` there, and the checker enforces both. The
+cards of this category are ordered by the first skill they bless.
+
 ## The checker
 
 `python3 tools/check.py` prints one line per problem and fails if there is any. The build and the CI run it first.
@@ -90,7 +99,8 @@ item that has one. It does not count towards the number of rewards.
    `excludes` and `requires` per quality, and `[limits.<type>]` for the highest number of rewards and blessings
    (a Bane is not counted).
 3. **Custom rules**: whatever the tables cannot express is a Python function with `@rule` at the end of
-   `tools/check.py`: a Bane only with a superior reward, and a base on all gear.
+   `tools/check.py`: a Bane only with a superior reward, a base on all gear, and the number of blessings of a
+   type.
 
 There are no limits on the number of rewards yet.
 

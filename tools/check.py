@@ -41,6 +41,7 @@ def load_rules():
     for key in ("types", "categories", "qualities", "limits"):
         rules.setdefault(key, {})
     rules.setdefault("craftsmanships", [])
+    rules.setdefault("skills", [])
     return rules
 
 
@@ -110,6 +111,8 @@ def check_rules_file(rules):
         for s in t.get("stats", []):
             if s not in STATS:
                 yield f"rules: types.{name}: unknown stat '{s}'"
+        if "blessings" in t and not is_int(t["blessings"]):
+            yield f"rules: types.{name}: 'blessings' must be a whole number"
     for name, c in rules["categories"].items():
         if not isinstance(c.get("label"), str) or not c["label"].strip():
             yield f"rules: categories.{name}: 'label' is missing"
@@ -280,6 +283,9 @@ def check_effects(item, rules):
         for other in q.get("requires", []):
             if other not in qualities:
                 yield f"'{name}' requires '{other}'"
+    for skill in effect_list(item, "blessings"):
+        if skill not in rules["skills"]:
+            yield f"blessings: unknown skill '{skill}' (known: {', '.join(rules['skills'])})"
     limits = rules["limits"].get(kind, {})
     counts = {key: len(effect_list(item, key)) for key in EFFECT_LISTS}
     counts["total"] = counts["qualities"] + counts["blessings"]  # a Bane is free with a superior reward
@@ -315,6 +321,15 @@ def gear_needs_a_base(key, item, db, rules):
     shows it as their type (Sword, Axe, Coat of mail, ...)."""
     if rules["types"].get(item.get("type"), {}).get("stats") and not item.get("base"):
         yield f"a {item['type']} needs a 'base' (Sword, Axe, Bow, ...)"
+
+
+@rule
+def blessings_by_type(key, item, db, rules):
+    """A type with a `blessings` count in src/rules.toml has exactly that many blessed skills."""
+    wanted = rules["types"].get(item.get("type"), {}).get("blessings")
+    have = len(effect_list(item, "blessings"))
+    if wanted is not None and have != wanted:
+        yield f"a {item['type']} blesses {wanted} skill{'s' if wanted != 1 else ''}, this one {have}"
 
 
 @rule

@@ -8,6 +8,13 @@
 # qualities below depend on it.
 craftsmanships = ["Dwarven", "Elven", "Númenórean"]
 
+# The skills an item can bless (item field `blessings`): Strength, Heart and Wits skills.
+skills = [
+  "Awe", "Athletics", "Awareness", "Hunting", "Song", "Craft",
+  "Enhearten", "Travel", "Insight", "Healing", "Courtesy", "Battle",
+  "Persuade", "Stealth", "Scan", "Explore", "Riddle", "Lore",
+]
+
 # Groups of weapons by Combat Proficiency, for the qualities that name one (`weapon_group`).
 [weapon_groups]
 close_combat = ["brawling", "swords", "axes", "spears"]
@@ -18,6 +25,8 @@ ranged = ["bows"]
 # stats  the base stats an item of this type must have (and may not have others):
 #        damage, injury, load, protection, parry
 #        An item with none of them is allowed: a card with only a name and a story
+# blessings  how many skills an item of this type blesses (exactly); a type without it has no
+#        such rule. A marvellous artefact blesses one skill, a wondrous item two
 # plain_label  kind-line start for an item without a superior quality (and without blessings or
 #        free effects): such an item is not famous, so it gets this instead of `label`. A
 #        superior reward makes an item famous. May be empty. Without it the item always gets
@@ -43,13 +52,17 @@ label = "Famous Armour"
 plain_label = ""
 stats = ["parry", "load"]
 
+# Wondrous items are the very important ones, so powerful that they seem like magic to people.
+# Every other special item is a marvellous artefact.
 [types.artefact]
 label = "Marvellous Artefact"
 stats = []
+blessings = 1
 
 [types.wonder]
 label = "Wondrous Item"
 stats = []
+blessings = 2
 
 # ---------------------------------------------------------------- categories
 # The sections of the overview and of the cards, in the order of the PDF. A category without

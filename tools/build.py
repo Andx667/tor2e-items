@@ -218,7 +218,7 @@ def holds(hoard, db):
 
 
 def cards_tex(db, rules, groups, s):
-    terms = set(db["terms"]) | set(rules["qualities"]) | {t["label"] for t in rules["types"].values()}
+    terms = set(db["terms"]) | set(rules["qualities"]) | set(rules["skills"]) | {t["label"] for t in rules["types"].values()}
     terms = sorted(terms, key=len, reverse=True)
     term_re = re.compile(r"(?<![\w])(" + "|".join(re.escape(t) for t in terms) + r")(?![\w])") if terms else None
     labelled = set()
