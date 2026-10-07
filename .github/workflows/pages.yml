@@ -1,0 +1,75 @@
+name: Item wizard (GitHub Pages)
+
+# Publishes the item wizard in site/ on GitHub Pages whenever the site, the rules or the items change on main,
+# and by hand. Before it goes up the items are checked and the wizard is compared with the checker.
+#
+# One-time setup: Settings > Pages > Build and deployment > Source: "GitHub Actions".
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "src/**"
+      - "tools/check.py"
+      - "tools/site.py"
+      - "tools/test_site.py"
+      - "assets/logo-print.png"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; a newer one waits instead of cutting a running one off
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node (runs the verifier of the wizard)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check the items against the rules
+        run: python3 tools/check.py
+
+      - name: The wizard finds the same problems as the checker
+        env:
+          TEST_SITE_REQUIRED: "1"
+        run: python3 tools/test_site.py
+
+      - name: Build the site data
+        run: python3 tools/site.py
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

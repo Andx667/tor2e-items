@@ -18,6 +18,9 @@ Actions on every commit; tagged commits (`v*`) are published as a release.
 | `tools/check.py` | Checks the database against the rules |
 | `tools/build.py` | PDF build |
 | `tools/logo.py` | Draws the logo into `assets/` (needs Pillow) |
+| `tools/site.py` | Writes `site/data.js` for the item wizard |
+| `tools/test_site.py` | Checks that the wizard and the checker agree |
+| `site/` | The item wizard (static website, published on GitHub Pages) |
 | `latex/` | Layout |
 
 ## Adding an item
@@ -88,6 +91,27 @@ a marvellous artefact. A wondrous item blesses two skills (`blessings`), a marve
 are listed in `src/rules.toml`, the count per type is `blessings` there, and the checker enforces both. The
 cards of this category are ordered by the first skill they bless.
 
+## Item wizard
+
+`site/` is a small website that walks through the steps of the rule book (item type, craftsmanship, Banes,
+qualities, name), checks the new item against the rules, and ends with the TOML table to paste into
+`src/cards.toml`. Qualities that do not fit the item are greyed out with the reason, and a live card shows the
+result. The workflow `.github/workflows/pages.yml` publishes it on GitHub Pages (once: Settings > Pages >
+Source: GitHub Actions); it is then at `https://<user>.github.io/<repository>/`.
+
+To run it locally:
+
+```sh
+python3 tools/site.py      # writes site/data.js from src/rules.toml and the existing ids
+# then open site/index.html in a browser
+```
+
+The page needs no server and no libraries. Its rules come from `src/rules.toml`, so a new quality or base shows
+up without touching the page. The checks are `site/verify.js`, a copy of what `tools/check.py` does;
+`python3 tools/test_site.py` runs both on every item and on hundreds of broken variants and fails if they
+disagree, and the TOML the wizard writes must read back as the same item. It needs Node or `pip install
+quickjs`. A new `@rule` in `tools/check.py` has to be added to `site/verify.js` too, which this test notices.
+
 ## The checker
 
 `python3 tools/check.py` prints one line per problem and fails if there is any. The build and the CI run it first.
@@ -99,8 +123,8 @@ cards of this category are ordered by the first skill they bless.
    `excludes` and `requires` per quality, and `[limits.<type>]` for the highest number of rewards and blessings
    (a Bane is not counted).
 3. **Custom rules**: whatever the tables cannot express is a Python function with `@rule` at the end of
-   `tools/check.py`: a Bane only with a superior reward, a base on all gear, and the number of blessings of a
-   type.
+   `tools/check.py`: a Bane only with a superior reward and with the kinds and number of Banes that the
+   craftsmanship allows, stats that follow the base, a base on all gear, and the number of blessings of a type.
 
 There are no limits on the number of rewards yet.
 

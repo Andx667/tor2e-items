@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Item Wizard · Schatzkammer</title>
+  <meta name="description" content="Create an item for The One Ring 2nd Edition step by step, check it against the rules and get the TOML for the Schatzkammer.">
+  <link rel="icon" href="logo.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#wizard">Skip to the wizard</a>
+  <header class="top">
+    <img src="logo.png" alt="" width="44" height="44">
+    <div>
+      <h1>Item Wizard</h1>
+      <p>Schatzkammer · The One Ring, 2nd Edition</p>
+    </div>
+  </header>
+
+  <nav aria-label="Steps"><ol id="steps" class="steps"></ol></nav>
+
+  <div class="layout">
+    <main id="wizard" aria-live="polite"></main>
+    <aside class="preview" aria-label="Card preview">
+      <details id="preview-box" open>
+        <summary>Card preview</summary>
+        <div id="preview"></div>
+      </details>
+    </aside>
+  </div>
+
+  <footer>
+    <p>The rules come from <code>src/rules.toml</code> and the check is the one of <code>tools/check.py</code>.
+       <span id="generated"></span></p>
+  </footer>
+
+  <noscript><p class="noscript">The wizard needs JavaScript.</p></noscript>
+  <script src="data.js"></script>
+  <script src="verify.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
