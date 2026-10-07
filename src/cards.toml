@@ -77,7 +77,7 @@ load = 3
 stats_note = ""
 text = "Eine langstielige Axt nach der Kunst der Dúnedain. Ihr Name stammte von der Bresche in der Mauer, die ihr Träger drei Nächte lang hielt."
 qualities = ["Superior Grievous"]
-banes = ["Trolle"]
+banes = ["Orks", "Trolle"]
 tags = ["finsterwacht"]
 
 [items.klinge-der-wacht]
@@ -92,7 +92,7 @@ injury = 16
 load = 2
 text = "Ein Schwert nach der Kunst der Dúnedain, „zum Verderben Angmars“ geschmiedet, mit Turm und Stern auf dem Knauf – die Schwester der zerbrochenen Klinge aus Fornost."
 qualities = ["Superior Grievous"]
-banes = ["Orks"]
+banes = ["Orks", "Trolle"]
 tags = ["finsterwacht"]
 
 [items.kurzschwert-der-wacht]
@@ -122,7 +122,7 @@ injury = 14
 load = 2
 text = "Ein Eibenbogen von númenórischen Bogenmachern, mit einer Sehne, die nie ausfranste."
 qualities = ["Superior Fell"]
-banes = ["Orks"]
+banes = ["Orks", "Trolle"]
 tags = ["finsterwacht"]
 
 # ---------------------------------------------------------------- weapons from the films
@@ -157,7 +157,6 @@ injury_two_handed = 16
 load = 3
 text = "In der Schlacht der Letzten Allianz zerbrach die Klinge; ihre Stücke wurden in Bruchtal bewahrt."
 qualities = ["Superior Grievous", "Gleam of Terror"]
-banes = ["Orks"]
 tags = ["film"]
 
 [items.stich]
@@ -230,7 +229,7 @@ injury = 16
 load = 1
 text = "Eine Klinge aus den Hügelgräbern, gegen Angmar geschmiedet."
 qualities = ["Superior Fell"]
-banes = ["Untote"]
+banes = ["Untote", "Orks"]
 tags = ["film"]
 
 [items.bogen-der-galadhrim]
@@ -289,7 +288,7 @@ parry = 2
 load = 4
 text = "Der Schild des Torwächters, in númenórischer Kunst geschmiedet und mit Turm und Stern bemalt."
 qualities = ["Superior Reinforced"]
-banes = ["Orks"]
+banes = ["Orks", "Trolle"]
 tags = ["finsterwacht"]
 
 # ================================================================ artefacts

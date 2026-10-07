@@ -42,6 +42,7 @@ def load_rules():
         rules.setdefault(key, {})
     rules.setdefault("craftsmanships", [])
     rules.setdefault("skills", [])
+    rules.setdefault("bases", {})
     return rules
 
 
@@ -113,6 +114,23 @@ def check_rules_file(rules):
                 yield f"rules: types.{name}: unknown stat '{s}'"
         if "blessings" in t and not is_int(t["blessings"]):
             yield f"rules: types.{name}: 'blessings' must be a whole number"
+        banes = t.get("banes", {})
+        if not isinstance(banes, dict):
+            yield f"rules: types.{name}: banes must be tables: [types.{name}.banes.<craftsmanship>]"
+            banes = {}
+        for craft, b in banes.items():
+            if craft not in rules["craftsmanships"]:
+                yield f"rules: types.{name}.banes: unknown craftsmanship '{craft}'"
+            if not is_int(b.get("choose")) or b["choose"] < 1:
+                yield f"rules: types.{name}.banes.{craft}: 'choose' must be a whole number, 1 or more"
+            if not is_strings(b.get("from")) or not b["from"]:
+                yield f"rules: types.{name}.banes.{craft}: 'from' must be a list of texts"
+    for name, b in rules["bases"].items():
+        if b.get("type") not in rules["types"]:
+            yield f"rules: bases.{name}: unknown type '{b.get('type')}'"
+        for s in (*STATS, "injury_two_handed"):
+            if s in b and not is_int(b[s]):
+                yield f"rules: bases.{name}: '{s}' must be a whole number"
     for name, c in rules["categories"].items():
         if not isinstance(c.get("label"), str) or not c["label"].strip():
             yield f"rules: categories.{name}: 'label' is missing"
@@ -321,6 +339,48 @@ def gear_needs_a_base(key, item, db, rules):
     shows it as their type (Sword, Axe, Coat of mail, ...)."""
     if rules["types"].get(item.get("type"), {}).get("stats") and not item.get("base"):
         yield f"a {item['type']} needs a 'base' (Sword, Axe, Bow, ...)"
+
+
+@rule
+def stats_follow_the_base(key, item, db, rules):
+    """An item with a base from src/rules.toml has the type, the proficiency and the base stats of
+    that base (before its qualities change them)."""
+    base = rules["bases"].get(item.get("base"))
+    if base is None:
+        return
+    if base["type"] != item.get("type"):
+        yield f"'{item['base']}' is a {base['type']} base, not a {item.get('type')}"
+        return
+    if "proficiency" in base and item.get("proficiency") != base["proficiency"]:
+        yield f"a {item['base']} has the proficiency '{base['proficiency']}'"
+    if any(s in item for s in (*STATS, "injury_two_handed")):  # name and story only: no stats to compare
+        for s in (*STATS, "injury_two_handed"):
+            if base.get(s) != item.get(s):
+                yield f"a {item['base']} has {s} {base.get(s, 'none')}, this one {item.get(s, 'none')}"
+
+
+@rule
+def banes_follow_the_craftsmanship(key, item, db, rules):
+    """The Banes an item may have come from `banes` in src/rules.toml: a type and craftsmanship that
+    has them (Elven and Númenórean weapons and shields), the number of kinds of creature to choose and
+    the kinds to choose from."""
+    banes = effect_list(item, "banes")
+    if not banes:
+        return
+    allowed = rules["types"].get(item.get("type"), {}).get("banes")
+    if allowed is None:
+        yield f"a {item.get('type')} has no 'banes'"
+        return
+    craft = item.get("craftsmanship")
+    if craft not in allowed:
+        yield f"a {item['type']} may only have a Bane with {' or '.join(allowed)} craftsmanship"
+        return
+    choose = allowed[craft]["choose"]
+    if len(banes) != choose:
+        yield f"a {craft} {item['type']} has {choose} kind{'s' if choose != 1 else ''} of Bane, this one has {len(banes)}"
+    for b in banes:
+        if b not in allowed[craft]["from"]:
+            yield f"Bane '{b}' is not one of: {', '.join(allowed[craft]['from'])}"
 
 
 @rule

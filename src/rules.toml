@@ -25,6 +25,10 @@ ranged = ["bows"]
 # stats  the base stats an item of this type must have (and may not have others):
 #        damage, injury, load, protection, parry
 #        An item with none of them is allowed: a card with only a name and a story
+# banes  the Banes an item of this type may have, per craftsmanship, as [types.<type>.banes.<craftsmanship>]
+#        tables: `choose` is how many kinds of creature the item has a Bane for (exactly), `from` the
+#        kinds to choose from. A type without it, or a craftsmanship not listed, has no Bane. The kinds are
+#        written like on the cards. Banes also need a superior reward (tools/check.py)
 # blessings  how many skills an item of this type blesses (exactly); a type without it has no
 #        such rule. A marvellous artefact blesses one skill, a wondrous item two
 # plain_label  kind-line start for an item without a superior quality (and without blessings or
@@ -36,6 +40,15 @@ ranged = ["bows"]
 label = "Famous Weapon"
 plain_label = ""
 stats = ["damage", "injury", "load"]
+
+# Elven: one of Orcs, Wolves or Spiders. Númenórean: two of Orcs, Trolls, Wolves, Evil Men and Undead.
+[types.weapon.banes.Elven]
+choose = 1
+from = ["Orks", "Wölfe", "Spinnen"]
+
+[types.weapon.banes."Númenórean"]
+choose = 2
+from = ["Orks", "Trolle", "Wölfe", "Böse Menschen", "Untote"]
 
 [types.armour]
 label = "Famous Armour"
@@ -52,6 +65,15 @@ label = "Famous Armour"
 plain_label = ""
 stats = ["parry", "load"]
 
+# A shield with Superior Reinforced has the same Banes as a weapon
+[types.shield.banes.Elven]
+choose = 1
+from = ["Orks", "Wölfe", "Spinnen"]
+
+[types.shield.banes."Númenórean"]
+choose = 2
+from = ["Orks", "Trolle", "Wölfe", "Böse Menschen", "Untote"]
+
 # Wondrous items are the very important ones, so powerful that they seem like magic to people.
 # Every other special item is a marvellous artefact.
 [types.artefact]
@@ -63,6 +85,98 @@ blessings = 1
 label = "Wondrous Item"
 stats = []
 blessings = 2
+
+# ---------------------------------------------------------------- bases
+# The Core Rules items an item is based on (item field `base`) and their base stats. The stats of
+# an item with such a base must equal these, before its qualities change them; tools/check.py
+# checks it, and the item wizard of the website offers them.
+# type          the item type
+# proficiency   weapons only: the Combat Proficiency
+# damage, injury, injury_two_handed, protection, parry, load   the stats ("d" dice for protection)
+
+[bases."Long sword"]
+type = "weapon"
+proficiency = "swords"
+damage = 4
+injury = 14
+injury_two_handed = 16
+load = 3
+
+[bases.Sword]
+type = "weapon"
+proficiency = "swords"
+damage = 4
+injury = 16
+load = 2
+
+[bases."Short sword"]
+type = "weapon"
+proficiency = "swords"
+damage = 3
+injury = 16
+load = 1
+
+[bases.Bow]
+type = "weapon"
+proficiency = "bows"
+damage = 3
+injury = 14
+load = 2
+
+[bases."Great bow"]
+type = "weapon"
+proficiency = "bows"
+damage = 4
+injury = 16
+load = 4
+
+[bases."Long-hafted axe"]
+type = "weapon"
+proficiency = "axes"
+damage = 6
+injury = 18
+injury_two_handed = 20
+load = 3
+
+[bases."Leather shirt"]
+type = "armour"
+protection = 1
+load = 3
+
+[bases."Leather corslet"]
+type = "armour"
+protection = 2
+load = 6
+
+[bases.Mail-shirt]
+type = "armour"
+protection = 3
+load = 9
+
+[bases."Coat of mail"]
+type = "armour"
+protection = 4
+load = 12
+
+[bases.Helm]
+type = "helm"
+protection = 1
+load = 4
+
+[bases.Buckler]
+type = "shield"
+parry = 1
+load = 2
+
+[bases.Shield]
+type = "shield"
+parry = 2
+load = 4
+
+[bases."Great shield"]
+type = "shield"
+parry = 3
+load = 6
 
 # ---------------------------------------------------------------- categories
 # The sections of the overview and of the cards, in the order of the PDF. A category without
