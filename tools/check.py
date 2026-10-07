@@ -7,7 +7,8 @@ Three layers:
 
   1. schema   - fields, types and references of src/cards.toml (built in, see below)
   2. rules    - which extra effects an item may carry, from src/rules.toml:
-                applies_to / excludes / requires per quality, [limits.<type>] per item type
+                applies_to / excludes / requires / craftsmanship per quality,
+                [limits.<type>] per item type
   3. custom   - anything the tables cannot express: a Python function with @rule (at the end)
 
 Prints one line per problem and exits with 1 if there is any. tools/build.py runs the same
@@ -23,8 +24,9 @@ import tomllib
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 STATS = ("damage", "injury", "protection", "parry", "load")
-ITEM_KEYS = {"name", "type", "proficiency", "base", "craft", "text", "stats_note", "qualities", "banes",
-             "blessings", "effects", "tags", "injury_two_handed", *STATS}
+VALOUR_STATS = (*STATS, "piercing_blow")  # what a `valour_bonus` may name
+ITEM_KEYS = {"name", "type", "proficiency", "base", "craft", "craftsmanship", "text", "stats_note", "qualities",
+             "banes", "blessings", "effects", "tags", "injury_two_handed", *STATS}
 HOARD_KEYS = {"name", "text", "items", "wealth", "wealth_note", "tags"}
 EFFECT_LISTS = ("qualities", "banes", "blessings")
 
@@ -38,7 +40,29 @@ def load_rules():
     rules = load_toml("src", "rules.toml")
     for key in ("types", "categories", "qualities", "limits"):
         rules.setdefault(key, {})
+    rules.setdefault("craftsmanships", [])
     return rules
+
+
+def quality_effects(quality, item):
+    """The parts of a quality that count for this item: the `effects` entries whose `crafts` and
+    `bases` name its craftsmanship and base (or name none), or the quality itself if it has no
+    `effects`."""
+    if "effects" not in quality:
+        return [quality]
+    return [e for e in quality["effects"]
+            if ("crafts" not in e or item.get("craftsmanship") in e["crafts"])
+            and ("bases" not in e or item.get("base") in e["bases"])]
+
+
+def proficiencies_of(quality, rules):
+    """The Combat Proficiencies a quality is limited to, or None for any weapon."""
+    allowed = None
+    if "weapon_group" in quality:
+        allowed = set(rules.get("weapon_groups", {}).get(quality["weapon_group"], []))
+    if "proficiency" in quality:
+        allowed = (allowed & set(quality["proficiency"])) if allowed is not None else set(quality["proficiency"])
+    return allowed
 
 
 def load_db():
@@ -81,6 +105,8 @@ def is_strings(v):
 # ------------------------------------------------------------------ 1. schema
 def check_rules_file(rules):
     for name, t in rules["types"].items():
+        if "plain_label" in t and not isinstance(t["plain_label"], str):
+            yield f"rules: types.{name}: 'plain_label' must be text"
         for s in t.get("stats", []):
             if s not in STATS:
                 yield f"rules: types.{name}: unknown stat '{s}'"
@@ -100,15 +126,51 @@ def check_rules_file(rules):
             for other in q.get(key, []):
                 if other not in rules["qualities"]:
                     yield f"rules: qualities.{name}: {key} names the unknown quality '{other}'"
-        modifies = q.get("modifies", {})
-        if not isinstance(modifies, dict):
-            yield f"rules: qualities.{name}: modifies must be a table: {{ <stat> = <change> }}"
+        for c in q.get("craftsmanship", []):
+            if c not in rules["craftsmanships"]:
+                yield f"rules: qualities.{name}: craftsmanship names the unknown craftsmanship '{c}'"
+        if "weapon_group" in q and q["weapon_group"] not in rules.get("weapon_groups", {}):
+            yield f"rules: qualities.{name}: unknown weapon_group '{q['weapon_group']}'"
+        known = {c["proficiency"] for c in rules["categories"].values() if "proficiency" in c}
+        for group, members in rules.get("weapon_groups", {}).items():
+            for p in members:
+                if p not in known:
+                    yield f"rules: weapon_groups.{group}: unknown proficiency '{p}'"
+        for p in q.get("proficiency", []):
+            if p not in known:
+                yield f"rules: qualities.{name}: proficiency names the unknown proficiency '{p}'"
+        if not is_strings(q.get("bases", [])):
+            yield f"rules: qualities.{name}: bases must be a list of texts"
+        effects = q.get("effects", [])
+        if not isinstance(effects, list) or not all(isinstance(e, dict) for e in effects):
+            yield f"rules: qualities.{name}: effects must be a list of [[qualities.<name>.effects]] tables"
             continue
-        for s, change in modifies.items():
-            if s not in STATS:
-                yield f"rules: qualities.{name}: modifies names the unknown stat '{s}'"
-            if not is_int(change):
-                yield f"rules: qualities.{name}: the change of '{s}' must be a whole number"
+        explained = [(f"qualities.{name}.effects #{n}", e) for n, e in enumerate(effects, 1)] or [(f"qualities.{name}", q)]
+        for where, part in explained:
+            if not isinstance(part.get("text"), str) or not part["text"].strip():
+                yield f"rules: {where}: 'text' is missing (the card explains every quality)"
+        for i, part in enumerate([q, *effects]):
+            where = f"qualities.{name}" if i == 0 else f"qualities.{name}.effects #{i}"
+            for c in part.get("crafts", []):
+                if c not in rules["craftsmanships"]:
+                    yield f"rules: {where}: crafts names the unknown craftsmanship '{c}'"
+            for s in part.get("valour_bonus", []):
+                if s not in VALOUR_STATS:
+                    yield f"rules: {where}: valour_bonus names the unknown stat '{s}'"
+            if "piercing_blow" in part and not is_int(part["piercing_blow"]):
+                yield f"rules: {where}: piercing_blow must be a whole number"
+            if i and not is_strings(part.get("bases", [])):
+                yield f"rules: {where}: bases must be a list of texts"
+            for field in ("modifies", "sets"):
+                table = part.get(field, {})
+                if not isinstance(table, dict):
+                    yield f"rules: {where}: {field} must be a table: {{ <stat> = <number> }}"
+                    continue
+                for s, change in table.items():
+                    if s not in STATS:
+                        yield f"rules: {where}: {field} names the unknown stat '{s}'"
+                    if not is_int(change):
+                        yield f"rules: {where}: the value of '{s}' in {field} must be a whole number"
     for name in rules["limits"]:
         if name not in rules["types"]:
             yield f"rules: limits.{name}: unknown type"
@@ -120,9 +182,11 @@ def check_item(item, rules):
     for key in ("name", "type"):
         if not isinstance(item.get(key), str) or not item[key].strip():
             yield f"'{key}' is missing"
-    for key in ("proficiency", "base", "craft", "text", "stats_note"):
+    for key in ("proficiency", "base", "craft", "craftsmanship", "text", "stats_note"):
         if key in item and not isinstance(item[key], str):
             yield f"'{key}' must be text"
+    if isinstance(item.get("craftsmanship"), str) and item["craftsmanship"] not in rules["craftsmanships"]:
+        yield f"unknown craftsmanship '{item['craftsmanship']}' (known: {', '.join(rules['craftsmanships'])})"
     for key in (*EFFECT_LISTS, "tags"):
         if key in item and not is_strings(item[key]):
             yield f"'{key}' must be a list of texts"
@@ -135,9 +199,10 @@ def check_item(item, rules):
         yield f"unknown type '{item['type']}' (known: {', '.join(rules['types'])})"
     if kind is not None:
         wanted = kind.get("stats", [])
-        for s in wanted:
-            if s not in item:
-                yield f"a {item['type']} needs '{s}'"
+        if any(s in item for s in (*STATS, "injury_two_handed")):  # no stats at all: name and story only
+            for s in wanted:
+                if s not in item:
+                    yield f"a {item['type']} needs '{s}'"
         for s in STATS:
             if s in item and s not in wanted:
                 yield f"a {item['type']} has no '{s}'"
@@ -202,6 +267,13 @@ def check_effects(item, rules):
             continue
         if kind in rules["types"] and kind not in q.get("applies_to", rules["types"]):
             yield f"'{name}' is not allowed on a {kind} (only on: {', '.join(q['applies_to'])})"
+        if "craftsmanship" in q and item.get("craftsmanship") not in q["craftsmanship"]:
+            yield f"'{name}' needs a 'craftsmanship' of {', '.join(q['craftsmanship'])}"
+        allowed = proficiencies_of(q, rules)
+        if allowed is not None and item.get("proficiency") not in allowed:
+            yield f"'{name}' is only for weapons of: {', '.join(sorted(allowed))}"
+        if "bases" in q and item.get("base") not in q["bases"]:
+            yield f"'{name}' needs a 'base' of {', '.join(q['bases'])}"
         for other in q.get("excludes", []):
             if other in qualities:
                 yield f"'{name}' and '{other}' exclude each other"
@@ -210,7 +282,7 @@ def check_effects(item, rules):
                 yield f"'{name}' requires '{other}'"
     limits = rules["limits"].get(kind, {})
     counts = {key: len(effect_list(item, key)) for key in EFFECT_LISTS}
-    counts["total"] = sum(counts.values())
+    counts["total"] = counts["qualities"] + counts["blessings"]  # a Bane is free with a superior reward
     for key, highest in limits.items():
         if key in counts and counts[key] > highest:
             what = "extra effects in total" if key == "total" else key
@@ -231,6 +303,26 @@ RULES = []
 def rule(fn):
     RULES.append(fn)
     return fn
+
+
+def superior_qualities(item, rules):
+    return [q for q in effect_list(item, "qualities") if rules["qualities"].get(q, {}).get("superior")]
+
+
+@rule
+def gear_needs_a_base(key, item, db, rules):
+    """Weapons, armour, helms and shields name the Core Rules item they are based on: the card
+    shows it as their type (Sword, Axe, Coat of mail, ...)."""
+    if rules["types"].get(item.get("type"), {}).get("stats") and not item.get("base"):
+        yield f"a {item['type']} needs a 'base' (Sword, Axe, Bow, ...)"
+
+
+@rule
+def bane_needs_a_superior_reward(key, item, db, rules):
+    """A Bane comes with a superior reward, so it is only allowed on an item that has one. The
+    other way round it is optional."""
+    if effect_list(item, "banes") and not superior_qualities(item, rules):
+        yield "a Bane is only allowed on an item with a superior quality (Superior Fell, Superior Grievous, ...)"
 
 
 # ------------------------------------------------------------------ flow

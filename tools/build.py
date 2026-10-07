@@ -156,7 +156,21 @@ def select(db, rules, wanted, s):
 
 
 def kind_line(item, rules):
-    return " · ".join(x for x in (rules["types"][item["type"]]["label"], item.get("base"), item.get("craft")) if x)
+    """The kind line of a card. A superior reward makes an item famous. One without a superior
+    reward (and without blessings or free effects) is not, and gets the type's `plain_label` (if
+    it has one) instead of its `label`."""
+    kind = rules["types"][item["type"]]
+    famous = (any(rules["qualities"][q].get("superior") for q in item.get("qualities", []))
+              or item.get("blessings") or item.get("effects"))
+    label = kind["plain_label"] if not famous and "plain_label" in kind else kind["label"]
+    return " · ".join(x for x in (label, item.get("base"), item.get("craft")) if x)
+
+
+def quality_text(name, item, rules):
+    """What the card says after a quality's name: the texts of the parts that count for the
+    item's craftsmanship."""
+    effects = check.quality_effects(rules["qualities"][name], item)
+    return "; ".join(e["text"] for e in effects if e.get("text"))
 
 
 def stats_entries(item, rules):
@@ -164,10 +178,16 @@ def stats_entries(item, rules):
     the injury of a versatile weapon is "18/20"."""
     item = dict(item)
     for q in item.get("qualities", []):
-        for stat, change in rules["qualities"][q].get("modifies", {}).items():
-            for key in (stat, "injury_two_handed") if stat == "injury" else (stat,):
-                if key in item:
-                    item[key] += change
+        for effect in check.quality_effects(rules["qualities"][q], item):
+            for stat, value in effect.get("sets", {}).items():
+                if stat in item:
+                    item[stat] = value
+            for stat, change in effect.get("modifies", {}).items():
+                for key in (stat, "injury_two_handed") if stat == "injury" else (stat,):
+                    if key in item:
+                        item[key] += change
+    if "load" in item:
+        item["load"] = max(0, item["load"])
     entries = []
     if "damage" in item:
         entries.append(("Damage", str(item["damage"])))
@@ -211,7 +231,7 @@ def cards_tex(db, rules, groups, s):
         c = db[table][key]
         if table == "items":
             kind, stats, note = kind_line(c, rules), stats_entries(c, rules), c.get("stats_note", "")
-            lines = [(q, rules["qualities"][q].get("text", "")) for q in c.get("qualities", [])]
+            lines = [(q, quality_text(q, c, rules)) for q in c.get("qualities", [])]
             if c.get("banes"):
                 lines.append(("Bane", ", ".join(c["banes"])))
             if c.get("blessings"):

@@ -14,7 +14,7 @@ Actions on every commit; tagged commits (`v*`) are published as a release.
 | `collection.toml` | Title, language, credit |
 | `src/cards.toml` | The database: items and hoards |
 | `src/cards/*.toml` | Optional further files, merged into the database |
-| `src/rules.toml` | Item types, categories, qualities and the rules for extra effects |
+| `src/rules.toml` | Item types, categories, weapon groups, craftsmanships and the qualities from the rule book |
 | `tools/check.py` | Checks the database against the rules |
 | `tools/build.py` | PDF build |
 | `latex/` | Layout |
@@ -28,14 +28,15 @@ Add a table to `src/cards.toml`. The fields are listed at the top of that file.
 name = "Narcrist, das Schwert des Hauptmanns"
 type = "weapon"                    # a type from src/rules.toml
 proficiency = "swords"             # weapons only: the category in the PDF
-base = "Long sword"
-craft = "elbische Arbeit"
-damage = 5
-injury = 16
-injury_two_handed = 18
+base = "Long sword"                # the Core Rules item; shown on the card as its type
+craft = "elbische Arbeit"          # printed on the card
+craftsmanship = "Elven"            # Dwarven, Elven or Númenórean: what the qualities below depend on
+damage = 4                         # the base stats of a Long sword
+injury = 14
+injury_two_handed = 16
 load = 3
-text = "Thorondirs eigene Klinge …"
-qualities = ["Keen", "Fell"]       # from src/rules.toml, which also holds their rules text
+text = "In Gondolin geschmiedet …" # name and origin only
+qualities = ["Superior Fell"]      # from src/rules.toml, which also holds their rules text
 banes = ["Orks"]
 effects = [["Besonderheit", "Leuchtet schwach bläulich, wenn Orks nahe sind."]]
 ```
@@ -49,25 +50,49 @@ items = { narcrist = 1, klinge-der-wacht = 2 }
 wealth = 40
 ```
 
-The stats are the base values. A quality with `modifies` in `src/rules.toml` (*Fell*, *Cunning Make* …) changes
-them, and the overview and the cards show the result.
+An item may leave out all its stats and its qualities: the card then shows only the name, the kind line and the
+text. Weapons, armour, helms and shields always need a `base`. Partial stats are an error.
 
 The PDF follows the `[categories]` of `src/rules.toml`: the Combat Proficiencies for weapons, then armour, helms,
 shields and useful items (ordered by the skill they bless). Each category starts a new page of cards; one without
 items yet gets an empty page.
 
+## Stats and qualities
+
+The stats are the base values of the item's `base`. A quality changes them where the rule book says so
+(*Fell* +2 Injury, *Superior Grievous* of Dwarven craftsmanship +2 Damage, *Mithril Armour* sets the Load, …),
+and the overview and the cards show the result. A Load never goes below 0.
+
+`src/rules.toml` holds the qualities as the rule book gives them: the basic rewards (*Keen*, *Fell*, *Grievous*,
+*Close-fitting*, *Cunning Make*, *Reinforced*), the superior and ancient ones, and the weapon qualities
+(*Cleaving*, *Hammering*, *Luminescence*, *Straight Flight*, …). For each quality it says
+
+- which item types, weapon groups (close combat, ranged), Combat Proficiencies or bases may carry it,
+- which craftsmanships may carry it, and what it does for each (`effects`),
+- the German text printed on the card, and the English rule book text for reference.
+
+Bonuses that become the bearer's Valour rating against a Bane creature are printed as text on the card; they do
+not change the stats.
+
+**Famous items.** A superior reward makes an item famous, and so does a blessing or a free effect. Famous
+weapons and armour start their kind line with *Famous Weapon* or *Famous Armour*. Items with only basic rewards,
+or none, are just well made and get no such label. A *Bane* comes with a superior reward and is only allowed on an
+item that has one. It does not count towards the number of rewards.
+
 ## The checker
 
 `python3 tools/check.py` prints one line per problem and fails if there is any. The build and the CI run it first.
 
-1. **Schema** (built in): known fields, required fields, whole numbers, the stats each type needs, hoards that
-   only hold existing items.
-2. **Rules** from `src/rules.toml`: `applies_to`, `excludes` and `requires` per quality, and `[limits.<type>]`
-   for the highest number of qualities, banes, blessings and extra effects in total.
+1. **Schema** (built in): known fields, required fields, whole numbers, the stats each type needs (all or none),
+   a `base` on weapons, armour, helms and shields, known craftsmanships, hoards that only hold existing items.
+   The rules file is checked too, including a German text on every quality.
+2. **Rules** from `src/rules.toml`: `applies_to`, `weapon_group`, `proficiency`, `bases`, `craftsmanship`,
+   `excludes` and `requires` per quality, and `[limits.<type>]` for the highest number of rewards and blessings
+   (a Bane is not counted).
 3. **Custom rules**: whatever the tables cannot express is a Python function with `@rule` at the end of
-   `tools/check.py`.
+   `tools/check.py`: a Bane only with a superior reward, and a base on all gear.
 
-The rules in `src/rules.toml` are provisional: they only say which quality fits which item type.
+There are no limits on the number of rewards yet.
 
 ## Build
 
@@ -88,6 +113,11 @@ The version in the footer comes from the latest git tag `v*`, the date from the 
 git tag v0.1
 git push --tags      # the CI also publishes a release with the PDF
 ```
+
+## Printing
+
+Print at 100 % (actual size), not "fit to page". The dashed line is the cut line: the cell is 63.5 × 88.9 mm
+(2.5 × 3.5 in) and the parchment fills it right up to the line, with the gold frame 1.6 mm inside.
 
 ## Licence
 
