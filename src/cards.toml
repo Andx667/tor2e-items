@@ -249,7 +249,7 @@ banes = ["Orks"]
 tags = ["film"]
 
 # ---------------------------------------------------------------- Thorin Oakenshield
-# From The Hobbit and Appendix A of The Lord of the Rings. Names and stories only.
+# From The Hobbit.
 
 [items.orcrist]
 name = "Orcrist"
@@ -264,13 +264,6 @@ load = 2
 text = "Eine Klinge aus Gondolin, deren Name „Orkspalter“ bedeutete; die Orks nannten es „Beißer“."
 qualities = ["Superior Keen", "Cleaving", "Luminescence"]
 banes = ["Orks"]
-tags = ["hobbit"]
-
-[items.thorins-eichenast]
-name = "Thorins Eichenast"
-type = "shield"
-base = "Shield"
-text = "Der Ast einer Eiche, vor den Toren von Moria als Schild genommen; er gab seinem Träger den Namen Eichenschild."
 tags = ["hobbit"]
 
 # ================================================================ armour and shields
@@ -291,9 +284,12 @@ name = "Der Torhüter"
 type = "shield"
 base = "Shield"
 craft = "númenórische Arbeit"
+craftsmanship = "Númenórean"
 parry = 2
 load = 4
 text = "Der Schild des Torwächters, in númenórischer Kunst geschmiedet und mit Turm und Stern bemalt."
+qualities = ["Superior Reinforced"]
+banes = ["Orks"]
 tags = ["finsterwacht"]
 
 # ================================================================ artefacts
