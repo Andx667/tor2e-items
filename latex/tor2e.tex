@@ -1,0 +1,21 @@
+% The item database. Called by tools/build.py (LuaLaTeX, working directory = project root).
+% Everything in build/ is produced by tools/build.py.
+\documentclass[10pt]{article}
+\input{build/meta.tex}
+\usepackage{tor2e}
+\input{build/version.tex}
+
+\begin{document}
+
+\fwtitle{\advTitle}{\advSubtitle}
+\fwnote{\advStrModifiersNote}
+
+% ---- Overview: one table per category, one for the hoards
+\input{build/index.tex}
+
+% ---- Cards to cut out, nine per page and a new page per category (from src/cards.toml)
+\input{build/cards.tex}
+
+\label{fw-lastnum}
+
+\end{document}

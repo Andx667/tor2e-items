@@ -1,0 +1,134 @@
+# Vocabulary and rules for the item database. tools/check.py checks src/cards.toml against this
+# file; tools/build.py takes the labels and the quality texts for the cards from it.
+#
+# PROVISIONAL: the types and qualities below only cover what the first items need. The rules for
+# extra effects (which, how many, in which combination) are still to be filled in.
+
+# ---------------------------------------------------------------- item types
+# label  first part of the kind line on the card
+# stats  the base stats an item of this type must have (and may not have others):
+#        damage, injury, load, protection, parry
+
+[types.weapon]
+label = "Famous Weapon"
+stats = ["damage", "injury", "load"]
+
+[types.armour]
+label = "Famous Armour"
+stats = ["protection", "load"]
+
+[types.helm]
+label = "Famous Armour"
+stats = ["protection", "load"]
+
+[types.shield]
+label = "Famous Armour"
+stats = ["parry", "load"]
+
+[types.artefact]
+label = "Marvellous Artefact"
+stats = []
+
+[types.wonder]
+label = "Wondrous Item"
+stats = []
+
+# ---------------------------------------------------------------- categories
+# The sections of the overview and of the cards, in the order of the PDF. A category without
+# items still gets its heading and an empty page of cards.
+# label        heading
+# types        item types that belong here
+# proficiency  only the items with this `proficiency`; an item of a type whose categories name
+#              proficiencies must have one of them                    (optional)
+# sort         "blessings": ordered by the first skill the item blesses, then by name; without
+#              it the items are ordered by name                       (optional)
+
+[categories.brawling]
+label = "Brawling (inkl. Dolche)"
+types = ["weapon"]
+proficiency = "brawling"
+
+[categories.swords]
+label = "Swords"
+types = ["weapon"]
+proficiency = "swords"
+
+[categories.axes]
+label = "Axes"
+types = ["weapon"]
+proficiency = "axes"
+
+[categories.spears]
+label = "Spears"
+types = ["weapon"]
+proficiency = "spears"
+
+[categories.bows]
+label = "Bows"
+types = ["weapon"]
+proficiency = "bows"
+
+[categories.armour]
+label = "Armour"
+types = ["armour"]
+
+[categories.helms]
+label = "Helms"
+types = ["helm"]
+
+[categories.shields]
+label = "Shields"
+types = ["shield"]
+
+[categories.useful]
+label = "Useful Items"
+types = ["artefact", "wonder"]
+sort = "blessings"
+
+# ---------------------------------------------------------------- qualities
+# The extra effects an item lists under `qualities`.
+# text        printed on the card after the name; leave out what `modifies` already says, the
+#             stats on the card include it                          (optional)
+# applies_to  item types that may carry the quality
+# excludes    qualities that may not be on the same item        (optional)
+# requires    qualities that must be on the same item as well   (optional)
+# modifies    changes to the base stats: { <stat> = <change> }; the card and the overview show
+#             the stats with these applied                      (optional)
+
+[qualities.Keen]
+text = "Piercing Blow schon bei 9 auf dem Feat die"
+applies_to = ["weapon"]
+
+[qualities.Fell]
+applies_to = ["weapon"]
+modifies = { injury = 2 }
+
+[qualities.Grievous]
+applies_to = ["weapon"]
+modifies = { damage = 1 }
+
+[qualities.Reinforced]
+text = "kann nicht zerschmettert werden"
+applies_to = ["shield"]
+modifies = { parry = 1 }
+
+[qualities.Close-fitting]
+text = "+2 auf Protection-Würfe"
+applies_to = ["armour", "helm"]
+
+[qualities."Cunning Make"]
+applies_to = ["armour", "helm", "shield"]
+modifies = { load = -2 }
+
+# ---------------------------------------------------------------- limits
+# Highest number of extra effects per item type. A missing value means "no limit", 0 forbids.
+#   qualities, banes, blessings   each list on its own
+#   total                         all three together
+#
+# [limits.weapon]
+# qualities = 3
+# banes = 1
+# blessings = 0
+# total = 3
+
+[limits]

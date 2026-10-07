@@ -1,0 +1,166 @@
+# The item database. One table per item ([items.<id>]) and per treasure hoard ([hoards.<id>]).
+# Further files in src/cards/*.toml are merged in, so the database can be split when it grows.
+# An id may exist only once, across items and hoards. `python3 tools/check.py` checks everything.
+#
+# Item fields:
+#   name        required
+#   type        required: a type from src/rules.toml (weapon, armour, helm, shield, artefact, wonder)
+#   proficiency weapons only: the Combat Proficiency, which is also the category in the PDF
+#               (brawling, swords, axes, spears, bows - see [categories] in src/rules.toml)
+#   base        the Core Rules item it is based on ("Long sword")
+#   craft       who made it ("elbische Arbeit")
+#   damage, injury, injury_two_handed, load, protection, parry
+#               base stats as whole numbers, before the qualities are applied; the card shows
+#               them with the `modifies` of the qualities (src/rules.toml) applied
+#   stats_note  small note behind the stats
+#   text        description
+#   qualities   extra effects from src/rules.toml; their rules text is added on the card
+#   banes       creatures the item is a Bane for
+#   blessings   skills the item blesses
+#   effects     free lines: [["Label", "Text"], ...]
+#   tags        free keywords, not printed
+#
+# Hoard fields:
+#   name        required
+#   text        description
+#   items       what it holds: { <item id> = <count>, ... }
+#   wealth      generic wealth in Treasure points
+#   wealth_note what the wealth looks like ("Silbermünzen aus Arnor")
+#   tags        free keywords, not printed
+
+hint = "Zum Ausschneiden, im Pokerkartenformat (63 × 88 mm)"
+footer = ""
+
+# Rules terms that are set in italics on the cards. Type labels and quality names from
+# src/rules.toml are added automatically.
+terms = [
+  "Shadow weakness", "Eye Awareness", "Peril rating", "Success die", "Feat die", "Piercing Blow",
+  "Core Rules", "Long-hafted axe", "Long sword", "Short sword", "Coat of mail", "Undertaking",
+  "Blessings", "Blessing", "Banes", "Bane", "Damage", "Injury", "Load", "Protection", "Parry",
+  "Treasure", "Hope", "Hate", "Shadow", "Awe", "Battle", "Sword", "Bow", "Shield",
+]
+
+# ================================================================ weapons
+
+[items.narcrist]
+name = "Narcrist, das Schwert des Hauptmanns"
+type = "weapon"
+proficiency = "swords"
+base = "Long sword"
+craft = "elbische Arbeit"
+damage = 5
+injury = 16
+injury_two_handed = 18
+load = 3
+stats_note = ""
+text = "Thorondirs eigene Klinge, weit älter als die Festung: in Gondolin geschmiedet und von den Getreuen aus Númenor mitgebracht. Die Runen auf dem Stahl nennen ihren Namen: Narcrist, „Feuerspalter“."
+qualities = ["Keen", "Fell"]
+banes = ["Orks"]
+effects = [
+  ["Besonderheit", "Leuchtet schwach bläulich, wenn Orks nahe sind."],
+]
+tags = ["finsterwacht"]
+
+[items.breschenwacht]
+name = "Die Breschenwacht"
+type = "weapon"
+proficiency = "axes"
+base = "Long-hafted axe"
+craft = "númenórische Arbeit"
+damage = 6
+injury = 18
+injury_two_handed = 20
+load = 3
+stats_note = ""
+text = "Eine langstielige Axt nach der Kunst der Dúnedain. Ihr Träger hielt drei Nächte lang die Bresche neben dem Tor, bis er fiel; seine Gefährten trugen sie hinab in die Kammer."
+qualities = ["Grievous"]
+banes = ["Trolle"]
+tags = ["finsterwacht"]
+
+[items.klinge-der-wacht]
+name = "Klinge der Wacht"
+type = "weapon"
+proficiency = "swords"
+base = "Sword"
+craft = "númenórische Arbeit"
+damage = 4
+injury = 16
+load = 2
+text = "Ein Schwert nach der Kunst der Dúnedain, „zum Verderben Angmars“ geschmiedet, mit Turm und Stern auf dem Knauf – die Schwester der zerbrochenen Klinge aus Fornost."
+qualities = ["Grievous"]
+banes = ["Orks"]
+tags = ["finsterwacht"]
+
+[items.dolch-der-wacht]
+name = "Dolch der Wacht"
+type = "weapon"
+proficiency = "swords"
+base = "Short sword"
+craft = "númenórische Arbeit"
+damage = 3
+injury = 16
+load = 1
+text = "Ein langer Dolch nach der Kunst der Dúnedain, wie ihn die Wächter auf den Mauern im Gürtel trugen. In die Klinge sind Runen gegen die Geister Angmars geätzt."
+qualities = ["Keen"]
+banes = ["Untote"]
+tags = ["finsterwacht"]
+
+[items.bogen-der-wacht]
+name = "Bogen der Wacht"
+type = "weapon"
+proficiency = "bows"
+base = "Bow"
+craft = "númenórische Arbeit"
+damage = 3
+injury = 14
+load = 2
+text = "Ein Eibenbogen von númenórischen Bogenmachern, mit einer Sehne, die nie ausfranst. Mit diesen Bögen wurde einst die Rampe gehalten."
+qualities = ["Keen", "Fell"]
+tags = ["finsterwacht"]
+
+# ================================================================ armour and shields
+
+[items.kettenhemd-der-wacht]
+name = "Kettenhemd der Wacht"
+type = "armour"
+base = "Coat of mail"
+craft = "númenórische Arbeit"
+protection = 4
+load = 12
+text = "Ein langes Hemd aus feinen númenórischen Ringen, leicht wie Leder und noch immer blank."
+qualities = ["Close-fitting", "Cunning Make"]
+tags = ["finsterwacht"]
+
+[items.torhueter]
+name = "Der Torhüter"
+type = "shield"
+base = "Shield"
+craft = "númenórische Arbeit"
+parry = 2
+load = 4
+text = "Der Schild des Torwächters, in númenórischer Kunst geschmiedet und mit Turm und Stern bemalt. Sein Rand ist von hundert Orkklingen zerkerbt, doch er ist nie gesplittert."
+qualities = ["Reinforced", "Cunning Make"]
+tags = ["finsterwacht"]
+
+# ================================================================ artefacts
+
+[items.horn-der-finsterwacht]
+name = "Das Horn der Finsterwacht"
+type = "artefact"
+craft = "Arbeit der Dúnedain"
+text = "Ein silberbeschlagenes Horn, von den Dúnedain des Nordens gefertigt, das einst die Besatzung auf die Mauern rief."
+blessings = ["Awe", "Battle"]
+effects = [
+  ["Ruf der Wacht", "Einmal pro Nacht: Gegner mit Hate 3 oder weniger fliehen aus dem Kampf."],
+]
+tags = ["finsterwacht"]
+
+# ================================================================ hoards
+
+[hoards.kammer-der-wacht]
+name = "Die Kammer der Wacht"
+text = "Die Waffenkammer unter der Finsterwacht, seit dem Fall der Festung verschlossen."
+items = { narcrist = 1, torhueter = 1, horn-der-finsterwacht = 1, breschenwacht = 1, klinge-der-wacht = 2, dolch-der-wacht = 2, bogen-der-wacht = 2, kettenhemd-der-wacht = 2 }
+wealth = 40
+wealth_note = "Silbermünzen aus Arnor"
+tags = ["finsterwacht"]

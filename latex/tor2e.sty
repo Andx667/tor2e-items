@@ -1,0 +1,179 @@
+% tor2e.sty - layout for a The One Ring 2e item database (print edition)
+% LuaLaTeX (CI) or XeLaTeX (local fallback). Overview pages with a 26 mm left margin for hole
+% punching, then pages of nine cards (63 × 88 mm) to cut out; footer with version and date on
+% every page. All collection-specific text comes from build/meta.tex.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tor2e}[2026/10/07 TOR 2e item database layout]
+
+% ---------------------------------------------------------------- Pakete
+\RequirePackage[a4paper,top=16mm,bottom=18mm,left=26mm,right=14mm,nohead,nofoot]{geometry}
+\RequirePackage{fontspec}
+\RequirePackage{iftex}
+\RequirePackage{etoolbox}
+\RequirePackage[table]{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{longtable,array,booktabs}
+\RequirePackage{enumitem}
+\RequirePackage{titlesec}
+\RequirePackage{eso-pic}
+\RequirePackage{ragged2e}
+\RequirePackage{tikz}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage[protrusion=true]{microtype}
+\ifLuaTeX\microtypesetup{expansion=true}\fi
+
+\RequirePackage[\advLang]{babel}
+\RequirePackage[hidelinks,bookmarksopen=true,bookmarksopenlevel=0,
+  pdfpagemode=UseOutlines]{hyperref}
+\AtBeginDocument{\hypersetup{pdftitle={\advTitle},pdfsubject={\advSubtitle},pdfauthor={\advAuthor}}}
+\RequirePackage{bookmark}
+
+% ---------------------------------------------------------------- Farben
+\definecolor{fwink}{HTML}{2B2420}
+\definecolor{fwstrong}{HTML}{1D1714}
+\definecolor{fwred}{HTML}{7A2A1F}
+\definecolor{fwgrey}{HTML}{6F665C}
+\definecolor{fwline}{HTML}{9A9088}
+\definecolor{fwparch}{HTML}{F7F1E6}
+\definecolor{fwparchdark}{HTML}{EFE3C6}
+\definecolor{fwgold}{HTML}{B89C6C}
+\definecolor{fwhline}{HTML}{D6C3BC}
+\definecolor{fwrowline}{HTML}{DDD4CB}
+\definecolor{fwcardline}{HTML}{D8CBB2}
+
+% ---------------------------------------------------------------- Schriften
+\setmainfont{texgyrepagella}[Extension=.otf, UprightFont=*-regular, BoldFont=*-bold,
+  ItalicFont=*-italic, BoldItalicFont=*-bolditalic, Ligatures=TeX]
+\renewcommand\normalsize{\fontsize{10}{14.2}\selectfont}
+\renewcommand\small{\fontsize{8.3}{10.8}\selectfont}
+\normalsize
+\color{fwink}
+\renewcommand\emph[1]{\textit{#1}}
+\let\fw@textbf\textbf
+\renewcommand\textbf[1]{\fw@textbf{\color{fwstrong}#1}}
+
+% ---------------------------------------------------------------- Absätze
+\setlength\parindent{0pt}
+\setlength\parskip{2.2mm plus 0.6mm minus 0.2mm}
+\clubpenalty=10000 \widowpenalty=10000 \displaywidowpenalty=10000
+\setlength\emergencystretch{2.5em}% nie über den Rand hinaus, lieber etwas lockerer
+\raggedbottom
+\newcommand\fw@ragged{\RaggedRight}
+\pagestyle{empty}
+\setlist{leftmargin=5mm,topsep=0pt,partopsep=0pt,parsep=0pt,itemsep=1.4mm}
+\setlist[itemize]{label={\small\textbullet}}
+\setcounter{secnumdepth}{0}
+
+% Zwischenüberschriften der Übersicht (eine je Gegenstandsart)
+\titleformat{\subsection}{\fontsize{11.5}{14}\selectfont\scshape\addfontfeature{LetterSpace=3}}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{3.4mm}{0.2mm}
+
+% ---------------------------------------------------------------- Titel
+\newcommand\fwtitle[2]{%
+  \noindent\begin{minipage}[b]{\dimexpr\linewidth-24mm\relax}%
+    {\fontsize{24}{27}\selectfont\bfseries\color{fwred}#1\par}%
+    \vspace{1mm}{\itshape\color{fwgrey}#2\par}%
+  \end{minipage}\hfill
+  \includegraphics[height=20mm]{assets/logo-print.png}\par
+  \vspace{2.5mm}{\color{fwred}\hrule height 1.2pt}\vspace{2mm}%
+  \phantomsection\pdfbookmark[0]{\advStrContents}{bm-contents}}
+
+% \fwnote{Hinweis} – kleiner Hinweis unter dem Titel; \fwnone{Text} – Abschnitt ohne Einträge
+\newcommand\fwnote[1]{{\small\itshape\color{fwgrey}#1\par}}
+\newcommand\fwnone[1]{{\small\itshape\color{fwgrey}#1\par}\vspace{1mm}}
+
+% ---------------------------------------------------------------- Fußzeile
+% Linker und rechter Rand der Fußzeile in mm; die Kartenseiten setzen sie neu
+\gdef\fw@footl{26}
+\gdef\fw@footr{196}
+\newcommand\fw@footerfont{\fontsize{8}{10}\selectfont\color{fwgrey}}
+\newcommand\fw@pageno{\thepage\ / \pageref*{fw-lastnum}}
+\AddToShipoutPictureBG{%
+  \setlength\unitlength{1mm}%
+  \put(\fw@footl,7){\makebox(0,0)[lb]{\fw@footerfont\advTitleShort{} · TOR 2e}}%
+  \put(105,7){\makebox(0,0)[b]{\fontsize{7.5}{9}\selectfont\color{fwgrey}\advStrVersion{} \fwversion\ · \advStrDate{} \fwstand\ · \advCredit}}%
+  \put(\fw@footr,7){\makebox(0,0)[rb]{\fw@footerfont\fw@pageno}}}
+
+% ---------------------------------------------------------------- Tabellen
+\newcolumntype{P}[1]{>{\fw@ragged\arraybackslash}p{\dimexpr#1\linewidth-2\tabcolsep\relax}}
+\newcolumntype{B}[1]{>{\fw@ragged\arraybackslash\bfseries}p{\dimexpr#1\linewidth-2\tabcolsep\relax}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{\dimexpr#1\linewidth-2\tabcolsep\relax}}
+\newcommand\fwth[1]{\textcolor{fwred}{\bfseries #1}}
+\newcommand\fwheadrule{\arrayrulecolor{fwred}\specialrule{0.8pt}{0pt}{0pt}}
+\newcommand\fwrowrule{\arrayrulecolor{fwrowline}\specialrule{0.4pt}{0pt}{0pt}}
+\newenvironment{fwtable}[1]{%
+  \par\vspace{0.6mm}%
+  \ifstrequal{#1}{small}{\small}{\normalsize}%
+  \setlength\tabcolsep{1.6mm}\renewcommand\arraystretch{1.3}%
+  \setlength\LTleft{0pt}\setlength\LTright{\fill}%
+  \setlength\LTpre{0pt}\setlength\LTpost{2mm}}{\par}
+
+% ---------------------------------------------------------------- Gegenstandskarten (63 × 88 mm)
+\tcbset{
+  fw card/.style={enhanced, width=59.8mm, height=84.8mm, colback=fwparch, colframe=fwgold,
+    boxrule=0.9pt, arc=2mm, left=2.8mm, right=2.8mm, top=2.6mm, bottom=1.8mm, boxsep=0pt,
+    space to upper, middle=1.2mm, lower separated=true,
+    segmentation style={draw=fwcardline, line width=0.5pt, solid},
+    fontupper=\fontsize{8}{10.2}\selectfont\fw@ragged,
+    fontlower=\fontsize{7}{8.5}\selectfont\itshape\color{fwgrey}\fw@ragged,
+    before upper={\setlength\parskip{0pt}}},
+  fw stats/.style={colback=fwparchdark, colframe=fwparchdark, boxrule=0pt, arc=1mm,
+    left=2mm, right=2mm, top=0.8mm, bottom=0.8mm, boxsep=0pt, before skip=0pt, after skip=1.8mm,
+    fontupper=\bfseries\fontsize{8.8}{11}\selectfont\fw@ragged},
+}
+\newsavebox\fw@cardbox
+% \fwcardanchor{label}{Lesezeichen} – Ziel für die Übersicht, am Anfang der Karte
+\newcommand\fwcardanchor[2]{\phantomsection\pdfbookmark[1]{#2}{bm-#1}\label{#1}}
+\newcommand\fwcardname[1]{{\fontsize{12}{13.8}\selectfont\bfseries\color{fwred}#1\par}}
+\newcommand\fwcardkind[1]{\vspace{0.6mm}{\itshape\color{fwgrey}#1\par}\vspace{1.4mm}{\color{fwcardline}\hrule height 0.5pt}\vspace{1.8mm}}
+\newcommand\fw@cardnote[1]{\ifblank{#1}{}{\par\vspace{1.2mm}{\mdseries\itshape\fontsize{7.2}{9}\selectfont\color{fwgrey}(#1)}}}
+\newcommand\fwstathead[1]{{\fontsize{6.2}{7.3}\selectfont\color{fwgrey}#1}}
+% \fwcardstats{Spalten}{Köpfe}{Werte}{Anmerkung} – Köpfe und Werte mit & getrennt
+\newcommand\fwcardstats[4]{%
+  \begin{tcolorbox}[fw stats]
+    \setlength\tabcolsep{0pt}%
+    \begin{tabular}{@{}*{#1}{>{\centering\arraybackslash}p{\dimexpr\linewidth/#1\relax}}@{}}
+      #2 \\
+      #3
+    \end{tabular}%
+    \fw@cardnote{#4}%
+  \end{tcolorbox}%
+}
+% \fwcardline{Text}{Anmerkung} – eine Zeile im selben Kasten (Horte)
+\newcommand\fwcardline[2]{\begin{tcolorbox}[fw stats]#1\fw@cardnote{#2}\end{tcolorbox}}
+\newcommand\fwcardtext[1]{#1\par\vspace{1.8mm}}
+\newenvironment{fwcardeffects}{\begin{itemize}[leftmargin=3.6mm,itemsep=0.9mm,label={\textbullet}]}{\end{itemize}}
+% Drei Karten je Reihe, drei Reihen je Seite
+\def\fw@cardcols{3}
+\newcount\fw@cardn
+\newsavebox\fw@cardsbox
+% \fwcard{Inhalt oben}{Fußzeile} – nur innerhalb von \fwcardspage; bricht die Reihe selbst um
+\newcommand\fwcard[2]{%
+  \sbox\fw@cardbox{\begin{tcolorbox}[fw card]#1\ifblank{#2}{}{\tcblower #2}\end{tcolorbox}}%
+  \ifnum\fw@cardn=0 \noindent\fi%
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (63mm,88mm);
+    \draw[fwline, line width=0.6pt, dash pattern=on 1.4pt off 1.4pt] (0,0) rectangle (63mm,88mm);
+    \node[inner sep=0pt] at (31.5mm,44mm) {\usebox\fw@cardbox};
+  \end{tikzpicture}%
+  \global\advance\fw@cardn 1
+  \ifnum\fw@cardn<\fw@cardcols\relax\else\global\fw@cardn=0 \par\nointerlineskip\fi%
+  \ignorespaces}
+% Kopfzeile der Kartenseite: links die Kategorie, rechts der Hinweis
+\newcommand\fw@cardhint[2]{{\fontsize{8.5}{11}\selectfont
+  \ifblank{#1}{}{{\bfseries\color{fwred}#1}\hfill}{\itshape\color{fwgrey}#2}\par}}
+% \fwcardspage[Lesezeichen]{Kategorie}{Hinweis}{Karten} – eine Seite mit bis zu neun Karten;
+% ohne Karten bleibt die Seite bis auf die Kopfzeile leer
+\NewDocumentCommand\fwcardspage{O{}mmm}{%
+  \clearpage
+  \newgeometry{top=9mm,bottom=14mm,left=10.5mm,right=10.4mm,nohead,nofoot}%
+  \gdef\fw@footl{10.5}\gdef\fw@footr{199.5}%
+  \ifblank{#1}{}{\phantomsection\pdfbookmark[0]{#1}{bm-cards-\thepage}}%
+  \global\fw@cardn=0
+  \sbox\fw@cardsbox{\begin{minipage}[b]{\dimexpr63mm*\fw@cardcols+0.1mm\relax}%
+    \setlength\parskip{0pt}#4\par\end{minipage}}%
+  \global\fw@cardn=0
+  \fw@cardhint{#2}{#3}\vspace{2mm}\nointerlineskip
+  \hbox to\linewidth{\hss\usebox\fw@cardsbox\hss}}
+
+\endinput

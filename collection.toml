@@ -1,0 +1,9 @@
+# Everything collection-specific that is not an item. The items live in src/cards.toml.
+
+title = "Schatzkammer"
+short_title = "Schatzkammer"        # footer
+subtitle = "Gegenstände und Horte für The One Ring, 2nd Edition"
+author = "Andy"
+license = "MIT License"
+language = "german"                 # "english" or "german" (babel, labels such as Contents/Inhalt)
+file_name = "Schatzkammer-TOR2e-DE" # base name of the PDF

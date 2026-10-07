@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <clipPath id="c"><circle cx="32" cy="32" r="29"/></clipPath>
+    <clipPath id="g"><rect width="64" height="54"/></clipPath>
+    <mask id="gap"><rect width="64" height="64" fill="#fff"/><ellipse cx="36" cy="54" rx="15.3" ry="17.3" fill="#000"/></mask>
+    <mask id="door"><rect width="64" height="64" fill="#fff"/><circle cx="36" cy="49.5" r="4.5" fill="#000"/></mask>
+  </defs>
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#f5f3f2" stroke-width="3"/>
+  <g clip-path="url(#c)"><g clip-path="url(#g)" fill="#f5f3f2">
+    <g mask="url(#gap)"><ellipse cx="13" cy="55" rx="13" ry="12"/><ellipse cx="55" cy="55" rx="12" ry="11"/></g>
+    <g mask="url(#door)"><ellipse cx="36" cy="54" rx="14" ry="16"/></g>
+    <circle cx="38.2" cy="49.5" r="0.8"/>
+  </g></g>
+  <g fill="none" stroke="#f5f3f2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18.03,18.20 19.00,17.93 19.98,17.75 20.98,17.65 21.99,17.64 22.99,17.72 23.98,17.89 24.95,18.14 25.89,18.47 26.81,18.89 27.68,19.38 28.51,19.95 29.28,20.59 30.00,21.29 30.65,22.06 31.23,22.87 31.74,23.74 32.17,24.64 32.52,25.58 32.79,26.55 32.97,27.54 33.07,28.54 33.08,29.54 33.00,30.54 32.83,31.53 32.58,32.50 32.25,33.44 31.83,34.36 31.34,35.23" stroke-width="2.4"/>
+    <line x1="18.03" y1="18.20" x2="31.34" y2="35.23" stroke-width="1.0"/>
+    <line x1="24.68" y1="26.72" x2="34.59" y2="18.98" stroke-width="1.5"/>
+    <polyline points="24.68,26.72 21.44,26.46" stroke-width="1.2"/><polyline points="26.42,25.36 23.17,25.10" stroke-width="1.2"/><polyline points="24.68,26.72 24.15,29.93" stroke-width="1.2"/><polyline points="26.42,25.36 25.88,28.57" stroke-width="1.2"/>
+  </g>
+  <polygon points="39.32,15.28 33.11,17.09 36.06,20.87" fill="#f5f3f2"/>
+</svg>
