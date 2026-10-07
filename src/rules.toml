@@ -524,7 +524,7 @@ rule = "You are always allowed to make one additional opening volley, even when 
 applies_to = ["weapon"]
 weapon_group = "close_combat"
 craftsmanship = ["Elven"]
-text = "die Klinge leuchtet fahl und kalt, wenn Bane-Kreaturen nahe sind; du und die Gefährten entgehen ihren Hinterhalten automatisch"
+text = "leuchtet fahl und kalt, wenn Bane-Kreaturen nahe sind; du und die Gefährten entgehen ihren Hinterhalten automatisch"
 rule = "This quality makes the weapon’s blade shine with a pale, cold light when a Bane creature is nearby. You and all members of the Company succeed automatically on all rolls made to avoid being ambushed by such creatures."
 
 [qualities."Mithril Armour"]

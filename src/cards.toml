@@ -47,7 +47,7 @@ terms = [
 # ================================================================ weapons
 
 [items.narcrist]
-name = "Narcrist, das Schwert des Hauptmanns"
+name = "Narcrist"
 type = "weapon"
 proficiency = "swords"
 base = "Long sword"
@@ -59,7 +59,7 @@ injury_two_handed = 18
 load = 3
 stats_note = ""
 text = "In Gondolin geschmiedet und von den Getreuen aus Númenor mitgebracht, weit älter als die Festung. Die Runen auf dem Stahl nannten ihren Namen: Narcrist, „Feuerspalter“."
-qualities = ["Superior Fell", "Luminescence"]
+qualities = ["Keen", "Superior Fell", "Luminescence"]
 banes = ["Orks"]
 tags = ["finsterwacht"]
 
@@ -76,7 +76,7 @@ injury_two_handed = 20
 load = 3
 stats_note = ""
 text = "Eine langstielige Axt nach der Kunst der Dúnedain. Ihr Name stammte von der Bresche in der Mauer, die ihr Träger drei Nächte lang hielt."
-qualities = ["Superior Grievous"]
+qualities = ["Fell", "Superior Grievous"]
 banes = ["Orks", "Trolle"]
 tags = ["finsterwacht"]
 
@@ -91,7 +91,7 @@ damage = 4
 injury = 16
 load = 2
 text = "Ein Schwert nach der Kunst der Dúnedain, „zum Verderben Angmars“ geschmiedet, mit Turm und Stern auf dem Knauf – die Schwester der zerbrochenen Klinge aus Fornost."
-qualities = ["Superior Grievous"]
+qualities = ["Keen", "Superior Grievous"]
 banes = ["Orks", "Trolle"]
 tags = ["finsterwacht"]
 
@@ -106,7 +106,7 @@ damage = 3
 injury = 16
 load = 1
 text = "Ein Kurzschwert nach der Kunst der Dúnedain, wie es die Wächter auf den Mauern im Gürtel trugen."
-qualities = ["Superior Fell"]
+qualities = ["Keen", "Superior Fell"]
 banes = ["Orks", "Trolle"]
 tags = ["finsterwacht"]
 
@@ -121,7 +121,7 @@ damage = 3
 injury = 14
 load = 2
 text = "Ein Eibenbogen von númenórischen Bogenmachern, mit einer Sehne, die nie ausfranste."
-qualities = ["Superior Fell"]
+qualities = ["Keen", "Superior Fell"]
 banes = ["Orks", "Trolle"]
 tags = ["finsterwacht"]
 
@@ -287,7 +287,7 @@ craftsmanship = "Númenórean"
 parry = 2
 load = 4
 text = "Der Schild des Torwächters, in númenórischer Kunst geschmiedet und mit Turm und Stern bemalt."
-qualities = ["Superior Reinforced"]
+qualities = ["Cunning Make", "Superior Reinforced"]
 banes = ["Orks", "Trolle"]
 tags = ["finsterwacht"]
 
