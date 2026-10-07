@@ -33,7 +33,7 @@ def python_problems(item, db, rules):
 def mutations(items, rules, count, rng):
     types = [*rules["types"], "bogus"]
     crafts = [*rules["craftsmanships"], "Elvish", None]
-    bases = [*rules["bases"], "Axe", "Dagger", None]
+    bases = [*rules["bases"], "Warhammer", "Halberd", None]
     profs = ["brawling", "swords", "axes", "spears", "bows", "magic", None]
     qualities = [*rules["qualities"], "Nonsense"]
     skills = [*rules["skills"], "Cooking"]

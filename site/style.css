@@ -107,6 +107,7 @@ legend { padding: 0; font-weight: bold; margin-bottom: .4rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* choices */
+h4.prof { margin: 1rem 0 .4rem; font-size: .95rem; color: var(--muted); font-weight: bold; text-transform: uppercase; letter-spacing: .06em; }
 .choices { display: grid; gap: .6rem; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
 .choices.one { grid-template-columns: 1fr; }
 .choice {

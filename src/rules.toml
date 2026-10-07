@@ -93,21 +93,30 @@ blessings = 2
 # type          the item type
 # proficiency   weapons only: the Combat Proficiency
 # damage, injury, injury_two_handed, protection, parry, load   the stats ("d" dice for protection)
+# note          what the rule book says besides the stats; only shown, not checked (optional)
+# The weapons are the Core Rules table; its Unarmed entry has no Injury, so it is not here.
 
-[bases."Long sword"]
+[bases.Dagger]
 type = "weapon"
-proficiency = "swords"
+proficiency = "brawling"
+damage = 2
+injury = 14
+load = 0
+note = "Can trigger Pierce as if it was a Sword"
+
+[bases.Cudgel]
+type = "weapon"
+proficiency = "brawling"
+damage = 3
+injury = 12
+load = 0
+
+[bases.Club]
+type = "weapon"
+proficiency = "brawling"
 damage = 4
 injury = 14
-injury_two_handed = 16
-load = 3
-
-[bases.Sword]
-type = "weapon"
-proficiency = "swords"
-damage = 4
-injury = 16
-load = 2
+load = 1
 
 [bases."Short sword"]
 type = "weapon"
@@ -116,19 +125,53 @@ damage = 3
 injury = 16
 load = 1
 
-[bases.Bow]
+[bases.Sword]
 type = "weapon"
-proficiency = "bows"
+proficiency = "swords"
+damage = 4
+injury = 16
+load = 2
+
+[bases."Long sword"]
+type = "weapon"
+proficiency = "swords"
+damage = 5
+injury = 16
+injury_two_handed = 18
+load = 3
+note = "Can be used 1 or 2-handed"
+
+[bases."Short spear"]
+type = "weapon"
+proficiency = "spears"
 damage = 3
 injury = 14
 load = 2
+note = "Can be thrown"
 
-[bases."Great bow"]
+[bases.Spear]
 type = "weapon"
-proficiency = "bows"
+proficiency = "spears"
 damage = 4
+injury = 14
+injury_two_handed = 16
+load = 3
+note = "Can be used 1 or 2-handed. Can be thrown"
+
+[bases."Great spear"]
+type = "weapon"
+proficiency = "spears"
+damage = 5
 injury = 16
 load = 4
+note = "2-handed"
+
+[bases.Axe]
+type = "weapon"
+proficiency = "axes"
+damage = 5
+injury = 18
+load = 2
 
 [bases."Long-hafted axe"]
 type = "weapon"
@@ -137,6 +180,39 @@ damage = 6
 injury = 18
 injury_two_handed = 20
 load = 3
+note = "Can be used 1 or 2-handed"
+
+[bases."Great axe"]
+type = "weapon"
+proficiency = "axes"
+damage = 7
+injury = 20
+load = 4
+note = "2-handed"
+
+[bases.Mattock]
+type = "weapon"
+proficiency = "axes"
+damage = 7
+injury = 18
+load = 3
+note = "2-handed"
+
+[bases.Bow]
+type = "weapon"
+proficiency = "bows"
+damage = 3
+injury = 14
+load = 2
+note = "Ranged weapon. 2-handed"
+
+[bases."Great bow"]
+type = "weapon"
+proficiency = "bows"
+damage = 4
+injury = 16
+load = 4
+note = "Ranged weapon. 2-handed"
 
 [bases."Leather shirt"]
 type = "armour"

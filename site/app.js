@@ -131,6 +131,7 @@
         if (state.base === "__other") {
           const o = state.other, b = baseInfo(), want = kind().stats;
           if (!o.name.trim()) return "Name the base item.";
+          if (R.bases[o.name.trim()]) return `'${o.name.trim()}' is in the list: choose it there.`;
           for (const k of want) if (b.stats[k] === undefined) return "Enter the whole number for " + STAT_NAMES[k] + ".";
           if (o.injury_two_handed.trim() && toInt(o.injury_two_handed) === undefined) return "Injury (two-handed) must be a whole number.";
         }
@@ -166,12 +167,20 @@
     h += `</div></fieldset>`;
     if (isGear()) {
       const own = Object.entries(R.bases).filter(([, b]) => b.type === state.type);
-      h += `<h3>Base item</h3><p class="rulebook">The Core Rules item the new item is based on. Its stats are the base stats; qualities change them.</p><fieldset><legend class="sr-only">Base item</legend><div class="choices">`;
-      for (const [name, b] of own) {
-        const st = STATS.filter((k) => k in b).map((k) => `${STAT_NAMES[k].replace(" (d)", "")} ${k === "protection" ? b[k] + "d" : k === "parry" ? "+" + b[k] : b[k]}`).join(" · ").replace(/Injury (\d+) · Injury \(two-handed\) (\d+)/, "Injury $1/$2");
-        h += `<label class="choice"><input type="radio" name="base" value="${esc(name)}"${state.base === name ? " checked" : ""}><span class="t">${esc(name)}</span><span class="d">${esc(st)}${b.proficiency ? " · " + esc(b.proficiency) : ""}</span></label>`;
-      }
+      const stats = (b) => STATS.filter((k) => k in b).map((k) => `${STAT_NAMES[k].replace(" (d)", "")} ${k === "protection" ? b[k] + "d" : k === "parry" ? "+" + b[k] : b[k]}`)
+        .join(" · ").replace(/Injury (\d+) · Injury \(two-handed\) (\d+)/, "Injury $1/$2");
+      const baseChoice = ([name, b]) => `<label class="choice"><input type="radio" name="base" value="${esc(name)}"${state.base === name ? " checked" : ""}><span class="t">${esc(name)}</span><span class="d">${esc(stats(b))}</span>${b.note ? `<span class="r">${esc(b.note)}</span>` : ""}</label>`;
+      h += `<h3>Base item</h3><p class="rulebook">The Core Rules item the new item is based on. Its stats are the base stats; qualities change them.</p><fieldset><legend class="sr-only">Base item</legend>`;
+      if (state.type === "weapon") {
+        // weapons by Combat Proficiency, in the order of the categories
+        for (const prof of Object.values(R.categories).filter((c) => c.proficiency).map((c) => c.proficiency)) {
+          const list = own.filter(([, b]) => b.proficiency === prof);
+          if (list.length) h += `<h4 class="prof">${prof[0].toUpperCase() + prof.slice(1)}</h4><div class="choices">${list.map(baseChoice).join("")}</div>`;
+        }
+        h += `<h4 class="prof">Other</h4><div class="choices">`;
+      } else h += `<div class="choices">`;
       h += `<label class="choice"><input type="radio" name="base" value="__other"${state.base === "__other" ? " checked" : ""}><span class="t">Other base…</span><span class="d">Another Core Rules item: enter its stats yourself.</span></label></div></fieldset>`;
+      if (state.type !== "weapon") h = h.replace(`<div class="choices"><label class="choice"><input type="radio" name="base" value="__other"`, `<div class="choices">${own.map(baseChoice).join("")}<label class="choice"><input type="radio" name="base" value="__other"`);
       if (state.base === "__other") {
         const o = state.other;
         const num = (k) => `<div class="field"><label for="o-${k}">${STAT_NAMES[k]}</label><input id="o-${k}" data-other="${k}" inputmode="numeric" type="text" value="${esc(o[k])}"></div>`;
