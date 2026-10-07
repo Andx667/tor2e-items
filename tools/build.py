@@ -38,13 +38,13 @@ PER_PAGE = 9
 STRINGS = {
     "english": {"Contents": "Contents", "Version": "Version", "Date": "Date", "Cards": "Cards",
                 "Hoards": "Hoards", "Hoard": "Hoard", "Name": "Name", "Kind": "Kind",
-                "Stats": "Stats", "Holds": "Holds", "Page": "Page",
+                "Stats": "Stats", "Blessings": "Blessings", "Holds": "Holds", "Page": "Page",
                 "Selection": "Selection", "NoItems": "No items yet",
                 "ModifiersNote": "All stats in the overview and on the cards already include the "
                                  "modifiers of the listed qualities; do not apply them again."},
     "ngerman": {"Contents": "Inhalt", "Version": "Version", "Date": "Stand", "Cards": "Karten",
                 "Hoards": "Horte", "Hoard": "Hort", "Name": "Name", "Kind": "Art",
-                "Stats": "Werte", "Holds": "Inhalt", "Page": "Seite",
+                "Stats": "Werte", "Blessings": "Blessings", "Holds": "Inhalt", "Page": "Seite",
                 "Selection": "Auswahl", "NoItems": "Noch keine Gegenstände",
                 "ModifiersNote": "Alle Werte in der Übersicht und auf den Karten enthalten bereits die "
                                  "Modifikatoren der aufgeführten Eigenschaften; sie werden nicht noch "
@@ -272,10 +272,10 @@ def cards_tex(db, rules, groups, s):
 
 def index_tex(db, rules, groups, s):
     """The overview on the first pages: one table per group of cards."""
-    def table(title, widths, heads, rows):
+    def table(title, widths, heads, rows, kinds="BPPR"):
         if not rows:
             return r"\subsection{%s}" % tex_escape(title) + "\n" + r"\fwnone{%s}" % tex_escape(s["NoItems"]) + "\n"
-        cols = "".join("%s{%s}" % wc for wc in zip("BPPR", widths))
+        cols = "".join("%s{%s}" % wc for wc in zip(kinds, widths))
         head = " & ".join(r"\fwth{%s}" % tex_escape(h) for h in heads)
         body = "".join(" & ".join(r) + "\\\\\\fwrowrule\n" for r in rows)
         return (r"\subsection{%s}" % tex_escape(title or s["Selection"]) + "\n" + r"\begin{fwtable}{small}" + "\n"
@@ -292,7 +292,11 @@ def index_tex(db, rules, groups, s):
     for title, cards in groups:
         unique = list(dict.fromkeys(cards))
         keys = [k for table_, k in unique if table_ == "items"]
-        if keys or not unique:
+        useful = keys and all(rules["types"][db["items"][k]["type"]].get("blessings") is not None for k in keys)
+        if useful:  # useful items: their blessings are what counts, there is no kind and no stats
+            rows = [[link(k, db["items"][k]["name"]), tex_escape(", ".join(db["items"][k].get("blessings", []))), page(k)] for k in keys]
+            out.append(table(title, ("0.55", "0.38", "0.07"), (s["Name"], s["Blessings"], s["Page"]), rows, "BPR"))
+        elif keys or not unique:
             rows = []
             for k in keys:
                 c = db["items"][k]
