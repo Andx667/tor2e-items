@@ -61,6 +61,11 @@ The PDF follows the `[categories]` of `src/rules.toml`: the Combat Proficiencies
 shields and useful items (ordered by the skill they bless). Each category starts a new page of cards; one without
 items yet gets an empty page.
 
+**Source icons.** `source` says where an item or a hoard comes from: `canon` (Tolkien's works, a ring), `finsterwacht`
+(the adventure, its logo) or `rulebook` (the rule books, a book). The icon is printed in the lower right corner of the
+card and explained on the first page; a made-up item has no `source` and stays plain. The sources are defined in
+`src/rules.toml` (`[sources]`), the icons are in `assets/icons/` (`python3 tools/icons.py` draws the ring and the book).
+
 ## Stats and qualities
 
 The stats are the base values of the item's `base`, and that is what the cards and the overview show, like the

@@ -270,7 +270,8 @@ def cards_tex(db, rules, groups, s):
             up.append(r"\fwcardtext{" + it(c["text"]) + "}")
         if bullets:
             up += [r"\begin{fwcardeffects}", *bullets, r"\end{fwcardeffects}"]
-        return r"\fwcard{" + "\n".join(up) + "}{" + tex_escape(db["footer"]) + "}"
+        icon = "[%s]" % rules["sources"][c["source"]]["icon"] if "source" in c else ""  # where it comes from
+        return r"\fwcard" + icon + "{" + "\n".join(up) + "}{" + tex_escape(db["footer"]) + "}"
 
     # nine cards per page; \fwcard breaks the rows itself (3 x 3). Every group starts a new
     # page, and an empty group still gets one.
@@ -302,6 +303,11 @@ def index_tex(db, rules, groups, s):
         return r"\textcolor{fwred}{\pageref*{card-%s}}" % key
 
     out = []
+    used = {db[table][key].get("source") for _, cards in groups for table, key in cards}
+    legend = [r"\fwlegenditem{%s}{%s}" % (src["icon"], tex_escape(src["label"]))
+              for name, src in rules["sources"].items() if name in used]
+    if legend:  # what the icons in the corners of the cards mean
+        out.append(r"\fwlegend{" + r"\quad ".join(legend) + "}")
     for title, cards in groups:
         unique = list(dict.fromkeys(cards))
         keys = [k for table_, k in unique if table_ == "items"]

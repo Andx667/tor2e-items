@@ -156,9 +156,16 @@
 \def\fw@cardcols{3}
 \newcount\fw@cardn
 \newsavebox\fw@cardsbox
-% \fwcard{Inhalt oben}{Fußzeile} – nur innerhalb von \fwcardspage; bricht die Reihe selbst um
-\newcommand\fwcard[2]{%
-  \sbox\fw@cardbox{\begin{tcolorbox}[fw card]#1\ifblank{#2}{}{\tcblower #2}\end{tcolorbox}}%
+% Herkunftszeichen: assets/icons/<Name>.png, klein in der rechten unteren Ecke der Karte
+\newcommand\fw@icon[2]{\includegraphics[height=#1]{assets/icons/#2.png}}
+% \fwlegend{Einträge} mit \fwlegenditem{Zeichen}{Bedeutung} – erklärt die Zeichen unter dem Hinweis
+\newcommand\fwlegend[1]{{\small\color{fwgrey}#1\par}\vspace{1mm}}
+\newcommand\fwlegenditem[2]{\mbox{\raisebox{-0.7mm}{\fw@icon{3.4mm}{#1}}\,\itshape #2}}
+% \fwcard[Zeichen]{Inhalt oben}{Fußzeile} – nur innerhalb von \fwcardspage; bricht die Reihe selbst um
+\NewDocumentCommand\fwcard{O{}mm}{%
+  \sbox\fw@cardbox{\begin{tcolorbox}[fw card, overlay={\ifblank{#1}{}{%
+      \node[anchor=south east, inner sep=0pt, opacity=0.75] at ([xshift=-2mm,yshift=2mm]frame.south east) {\fw@icon{4.4mm}{#1}};}}]%
+    #2\ifblank{#3}{}{\tcblower #3}\end{tcolorbox}}%
   \ifnum\fw@cardn=0 \noindent\fi%
   \begin{tikzpicture}
     \useasboundingbox (0,0) rectangle (\fw@cw,\fw@ch);

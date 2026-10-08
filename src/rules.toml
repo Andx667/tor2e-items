@@ -254,6 +254,24 @@ type = "shield"
 parry = 3
 load = 6
 
+# ---------------------------------------------------------------- sources
+# Where an item or a hoard comes from (field `source`). Its card gets the icon in the lower right
+# corner, and the first page explains the icons. A card without a source is made up and stays plain.
+# label  what the first page says about the icon
+# icon   the file assets/icons/<icon>.png (ring and book are drawn by tools/icons.py)
+
+[sources.canon]
+label = "aus Tolkiens Werken"
+icon = "ring"
+
+[sources.finsterwacht]
+label = "aus dem Abenteuer „Die Finsterwacht“"
+icon = "finsterwacht"
+
+[sources.rulebook]
+label = "aus den Regelbüchern"
+icon = "book"
+
 # ---------------------------------------------------------------- categories
 # The sections of the overview and of the cards, in the order of the PDF. A category without
 # items still gets its heading and an empty page of cards.

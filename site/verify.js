@@ -5,7 +5,7 @@
   "use strict";
 
   const STATS = ["damage", "injury", "protection", "parry", "load"];
-  const ITEM_KEYS = new Set(["name", "type", "proficiency", "base", "craft", "craftsmanship", "text", "stats_note",
+  const ITEM_KEYS = new Set(["name", "source", "type", "proficiency", "base", "craft", "craftsmanship", "text", "stats_note",
     "qualities", "banes", "blessings", "effects", "tags", "injury_two_handed", ...STATS]);
   const EFFECT_LISTS = ["qualities", "banes", "blessings"];
 
@@ -47,6 +47,7 @@
   function checkItem(item, rules) {
     const out = [];
     for (const key of sorted(Object.keys(item).filter((k) => !ITEM_KEYS.has(k)))) out.push(`unknown field '${key}'`);
+    if (has(item, "source") && !has(rules.sources || {}, item.source)) out.push(`unknown source '${item.source}' (known: ${Object.keys(rules.sources || {}).join(", ")})`);
     for (const key of ["name", "type"]) {
       if (typeof item[key] !== "string" || !item[key].trim()) out.push(`'${key}' is missing`);
     }

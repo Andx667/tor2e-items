@@ -7,6 +7,8 @@
 #   type        required: a type from src/rules.toml (weapon, armour, helm, shield, artefact, wonder)
 #   proficiency weapons only: the Combat Proficiency, which is also the category in the PDF
 #               (brawling, swords, axes, spears, bows - see [categories] in src/rules.toml)
+#   source      where it comes from, a source from src/rules.toml (canon, finsterwacht, rulebook):
+#               its icon is printed in the corner of the card. Leave it out for a made-up item
 #   base        the Core Rules item it is based on ("Long sword"); required for weapons, armour,
 #               helms and shields, it is the type shown on the card
 #   craft       who made it ("elbische Arbeit")
@@ -28,6 +30,7 @@
 # Hoard fields:
 #   name        required
 #   text        description
+#   source      as for items
 #   items       what it holds: { <item id> = <count>, ... }
 #   wealth      generic wealth in Treasure points
 #   wealth_note what the wealth looks like ("Silbermünzen aus Arnor")
@@ -49,6 +52,7 @@ terms = [
 
 [items.narcrist]
 name = "Narcrist"
+source = "finsterwacht"
 type = "weapon"
 proficiency = "swords"
 base = "Long sword"
@@ -66,6 +70,7 @@ tags = ["finsterwacht"]
 
 [items.breschenwacht]
 name = "Die Breschenwacht"
+source = "finsterwacht"
 type = "weapon"
 proficiency = "axes"
 base = "Long-hafted axe"
@@ -83,6 +88,7 @@ tags = ["finsterwacht"]
 
 [items.rabenaxt-von-anor]
 name = "Die Rabenaxt von Anor"
+source = "rulebook"
 type = "weapon"
 proficiency = "axes"
 base = "Axe"
@@ -97,6 +103,7 @@ banes = ["Orks", "Böse Menschen"]
 
 [items.klinge-der-wacht]
 name = "Klinge der Wacht"
+source = "finsterwacht"
 type = "weapon"
 proficiency = "swords"
 base = "Sword"
@@ -112,6 +119,7 @@ tags = ["finsterwacht"]
 
 [items.kurzschwert-der-wacht]
 name = "Kurzschwert der Wacht"
+source = "finsterwacht"
 type = "weapon"
 proficiency = "swords"
 base = "Short sword"
@@ -127,6 +135,7 @@ tags = ["finsterwacht"]
 
 [items.bogen-der-wacht]
 name = "Bogen der Wacht"
+source = "finsterwacht"
 type = "weapon"
 proficiency = "bows"
 base = "Bow"
@@ -145,6 +154,7 @@ tags = ["finsterwacht"]
 
 [items.anduril]
 name = "Andúril, Flamme des Westens"
+source = "canon"
 type = "weapon"
 proficiency = "swords"
 base = "Long sword"
@@ -161,6 +171,7 @@ tags = ["film"]
 
 [items.narsil]
 name = "Narsil"
+source = "canon"
 type = "weapon"
 proficiency = "swords"
 base = "Long sword"
@@ -176,6 +187,7 @@ tags = ["film"]
 
 [items.stich]
 name = "Stich"
+source = "canon"
 type = "weapon"
 proficiency = "swords"
 base = "Short sword"
@@ -191,6 +203,7 @@ tags = ["film"]
 
 [items.glamdring]
 name = "Glamdring"
+source = "canon"
 type = "weapon"
 proficiency = "swords"
 base = "Long sword"
@@ -207,6 +220,7 @@ tags = ["film"]
 
 [items.herugrim]
 name = "Herugrim"
+source = "canon"
 type = "weapon"
 proficiency = "swords"
 base = "Sword"
@@ -220,6 +234,7 @@ tags = ["film"]
 
 [items.hadhafang]
 name = "Hadhafang"
+source = "canon"
 type = "weapon"
 proficiency = "swords"
 base = "Sword"
@@ -234,6 +249,7 @@ tags = ["film"]
 
 [items.huegelklinge]
 name = "Hügelklinge"
+source = "canon"
 type = "weapon"
 proficiency = "swords"
 base = "Short sword"
@@ -249,6 +265,7 @@ tags = ["film"]
 
 [items.bogen-der-galadhrim]
 name = "Bogen der Galadhrim"
+source = "canon"
 type = "weapon"
 proficiency = "bows"
 base = "Great bow"
@@ -267,6 +284,7 @@ tags = ["film"]
 
 [items.orcrist]
 name = "Orcrist"
+source = "canon"
 type = "weapon"
 proficiency = "swords"
 base = "Sword"
@@ -280,10 +298,80 @@ qualities = ["Superior Keen", "Cleaving", "Luminescence"]
 banes = ["Orks"]
 tags = ["hobbit"]
 
+[items.jagdbogen-aus-archet]
+name = "Jagdbogen aus Archet"
+source = "rulebook"
+type = "weapon"
+proficiency = "bows"
+base = "Bow"
+craft = "Arbeit aus dem Breeland"
+damage = 3
+injury = 14
+load = 2
+text = "Ein schlichter Eibenbogen, wie ihn die Jäger von Archet am Rand des Chetwalds seit Generationen bauen. Wer mit ihm aufgewachsen ist, verfehlt selten, was er im Unterholz gehört hat."
+effects = [
+  ["Spezial", "Bei einem Fernkampfangriff oder einem Hunting-Wurf mit diesem Bogen +3 auf den Wurf oder die Valour des Trägers, falls höher."],
+]
+
+# ---- examples for the other proficiencies: one with basic rewards only, one famous
+
+[items.keule-von-bree]
+name = "Keule von Bree"
+type = "weapon"
+proficiency = "brawling"
+base = "Club"
+craft = "Arbeit aus dem Breeland"
+damage = 4
+injury = 14
+load = 1
+text = "Ein Knüppel aus Eichenwurzel, mit Eisenbändern beschlagen. Die Torwächter von Bree reichen solche Keulen seit jeher vom Vater an den Sohn weiter."
+qualities = ["Grievous"]
+
+[items.dolch-von-eregion]
+name = "Dolch von Eregion"
+type = "weapon"
+proficiency = "brawling"
+base = "Dagger"
+craft = "elbische Arbeit"
+craftsmanship = "Elven"
+damage = 2
+injury = 14
+load = 0
+text = "Eine schmale Klinge der Elbenschmiede von Ost-in-Edhil, den Stechpalmenzweig Eregions auf dem Heft. Feine Runen ziehen sich die Hohlkehle entlang."
+qualities = ["Superior Fell", "Rune-scored Weapon"]
+banes = ["Wölfe"]
+
+[items.speer-von-edoras]
+name = "Speer von Edoras"
+type = "weapon"
+proficiency = "spears"
+base = "Great spear"
+craft = "Arbeit der Rohirrim"
+damage = 5
+injury = 16
+load = 4
+text = "Ein langer, schwerer Reiterspeer aus Eschenholz mit blattförmigem Blatt, wie ihn die Rohirrim tragen."
+qualities = ["Keen", "Fell"]
+
+[items.speer-von-erebor]
+name = "Speer von Erebor"
+type = "weapon"
+proficiency = "spears"
+base = "Spear"
+craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
+damage = 4
+injury = 14
+injury_two_handed = 16
+load = 3
+text = "Ein Stoßspeer aus den Schmieden unter dem Berg, für die Torwache des Königs geschmiedet. Seine Spitze fängt das Licht wie eine Flamme."
+qualities = ["Superior Grievous", "Flame of Hope"]
+
 # ================================================================ armour and shields
 
 [items.kettenhemd-der-wacht]
 name = "Kettenhemd der Wacht"
+source = "finsterwacht"
 type = "armour"
 base = "Coat of mail"
 craft = "númenórische Arbeit"
@@ -295,6 +383,7 @@ tags = ["finsterwacht"]
 
 [items.torhueter]
 name = "Der Torhüter"
+source = "finsterwacht"
 type = "shield"
 base = "Shield"
 craft = "númenórische Arbeit"
@@ -308,6 +397,7 @@ tags = ["finsterwacht"]
 
 [items.runenschild-von-ossiriand]
 name = "Runenschild von Ossiriand"
+source = "rulebook"
 type = "shield"
 base = "Shield"
 craft = "Zwergenarbeit"
@@ -317,10 +407,34 @@ load = 4
 text = "Ein Rundschild aus den Schmieden von Belegost, in den Tagen des alten Handels als Gabe für die Grünelben von Ossiriand gefertigt. Zwergenrunen laufen um seinen Rand, und er wiegt kaum mehr als seine Riemen."
 qualities = ["Ancient Cunning Make", "Rune-scored Shield"]
 
+# ---- helms: one with a basic reward only, one famous
+
+[items.helm-von-dol-amroth]
+name = "Helm von Dol Amroth"
+type = "helm"
+base = "Helm"
+craft = "Arbeit aus Dol Amroth"
+protection = 1
+load = 4
+text = "Ein hoher, blanker Helm der Schwanenritter, innen mit Leder gefüttert und genau auf den Kopf seines Trägers gearbeitet."
+qualities = ["Close-fitting"]
+
+[items.helm-von-khazad-dum]
+name = "Helm von Khazad-dûm"
+type = "helm"
+base = "Helm"
+craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
+protection = 1
+load = 4
+text = "Ein Helm aus den Tagen Durins, mit Nasenschutz und einem Kranz tief eingeschlagener Runen. Er sitzt, als wäre er für jeden gemacht, der ihn aufsetzt."
+qualities = ["Ancient Close-fitting", "Rune-scored Helm"]
+
 # ================================================================ artefacts
 
 [items.horn-der-finsterwacht]
 name = "Das Horn der Finsterwacht"
+source = "finsterwacht"
 type = "wonder"
 craft = "Arbeit der Dúnedain"
 text = "Ein silberbeschlagenes Horn, von den Dúnedain des Nordens gefertigt, das einst die Besatzung auf die Mauern rief."
@@ -335,6 +449,7 @@ tags = ["finsterwacht"]
 
 [items.lembas]
 name = "Lembas, das Wegbrot der Elben"
+source = "canon"
 type = "artefact"
 craft = "elbische Arbeit"
 text = "Ein dünner Kuchen der Elben von Lothlórien, in Mallornblätter gewickelt."
@@ -343,6 +458,7 @@ tags = ["buch"]
 
 [items.phiole-galadriels]
 name = "Die Phiole der Galadriel"
+source = "canon"
 type = "wonder"
 craft = "elbische Arbeit"
 text = "Ein Fläschchen mit dem Licht eines Sterns, gefangen im Wasser einer Quelle in Lothlórien."
@@ -351,6 +467,7 @@ tags = ["buch"]
 
 [items.lorien-mantel]
 name = "Der Elbenmantel von Lothlórien"
+source = "canon"
 type = "wonder"
 craft = "Arbeit der Galadhrim"
 text = "Ein Mantel der Galadhrim aus feinem grauen Gewebe, an der Kehle von einem silbernen Blatt gehalten."
@@ -359,6 +476,7 @@ tags = ["buch"]
 
 [items.lorien-seil]
 name = "Das Seil von Lothlórien"
+source = "canon"
 type = "artefact"
 craft = "Arbeit der Galadhrim"
 text = "Aus Hithlain gedreht, einem grauen Elbenfaden aus Lothlórien, dünn und leicht und doch stark genug für einen Mann."
@@ -367,6 +485,7 @@ tags = ["buch"]
 
 [items.miruvor]
 name = "Miruvor, der Trank von Bruchtal"
+source = "canon"
 type = "artefact"
 craft = "elbische Arbeit"
 text = "Der klare Stärkungstrank der Elben von Bruchtal."
@@ -375,6 +494,7 @@ tags = ["buch"]
 
 [items.athelas]
 name = "Athelas, das Königsblatt"
+source = "canon"
 type = "artefact"
 craft = "Kraut der Númenórer"
 text = "Ein unscheinbares Kraut, das die Númenórer nach Mittelerde brachten. Sein Name bedeutete „Königsblatt“."
@@ -383,6 +503,7 @@ tags = ["buch"]
 
 [items.ent-trank]
 name = "Der Ent-Trank"
+source = "canon"
 type = "artefact"
 craft = "Gabe der Ents"
 text = "Das Wasser aus den Quellen von Fangorn, das die Ents tranken."
@@ -391,6 +512,7 @@ tags = ["buch"]
 
 [items.elessar]
 name = "Der Elessar, der Elbenstein"
+source = "canon"
 type = "wonder"
 craft = "Arbeit Enerdhils von Gondolin"
 text = "Ein grüner Stein in einer silbernen Adlerbrosche, in Gondolin gefertigt. Sein Name, Elessar, bedeutete „Elbenstein“."
@@ -399,6 +521,7 @@ tags = ["buch"]
 
 [items.arkenstein]
 name = "Der Arkenstein"
+source = "canon"
 type = "wonder"
 craft = "Zwergenarbeit"
 text = "Das Herz des Berges, ein Stein von weißem Licht, in der Tiefe des Einsamen Berges gefunden."
@@ -407,6 +530,7 @@ tags = ["buch"]
 
 [items.horn-gondors]
 name = "Das Horn von Gondor"
+source = "canon"
 type = "artefact"
 craft = "Arbeit Gondors"
 text = "Ein mit Silber beschlagenes Horn, das der Erstgeborene der Truchsesse von Gondor trug."
@@ -415,6 +539,7 @@ tags = ["buch"]
 
 [items.palantir]
 name = "Der Palantír von Orthanc"
+source = "canon"
 type = "wonder"
 craft = "Arbeit der Noldor"
 text = "Ein Sehender Stein aus der Zeit vor dem Untergang Númenors, im Turm von Orthanc bewahrt."
@@ -423,6 +548,7 @@ tags = ["buch"]
 
 [items.gandalfs-stab]
 name = "Gandalfs Stab"
+source = "canon"
 type = "wonder"
 text = "Der Stab eines der Istari, der Zauberer, die von jenseits des Meeres nach Mittelerde kamen."
 blessings = ["Awe", "Travel"]
@@ -430,6 +556,7 @@ tags = ["buch"]
 
 [items.thrors-schluessel]
 name = "Thrórs Karte und Schlüssel"
+source = "canon"
 type = "artefact"
 craft = "Zwergenarbeit"
 text = "Die Karte mit den Mondbuchstaben und der kleine Schlüssel zur Geheimtür des Einsamen Berges."
@@ -440,6 +567,7 @@ tags = ["buch"]
 
 [hoards.kammer-der-wacht]
 name = "Die Kammer der Wacht"
+source = "finsterwacht"
 text = "Die Waffenkammer unter der Finsterwacht, die seit dem Fall der Festung verschlossen blieb."
 items = { narcrist = 1, torhueter = 1, horn-der-finsterwacht = 1, breschenwacht = 1, klinge-der-wacht = 2, kurzschwert-der-wacht = 2, bogen-der-wacht = 2, kettenhemd-der-wacht = 2 }
 wealth = 40
