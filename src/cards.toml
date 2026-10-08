@@ -585,11 +585,8 @@ name = "Der Ring von Greystock"
 source = "over-hill"
 type = "artefact"
 craftsmanship = "Númenórean"
-text = "Ein schlichter Goldring mit grauem Hämatit aus Númenor, über Generationen von den Heilern der Familie Stock aus Tharbad getragen."
+text = "Ein schlichter Goldring mit grauem Hämatit aus Númenor, über Generationen von den Heilern der Familie Stock aus Tharbad getragen. An eine vergiftete oder entzündete Wunde gedrückt, färbt sich der Stein rot und zieht das Gift heraus."
 blessings = ["Healing"]
-effects = [
-  ["Spezial", "An eine vergiftete oder entzündete Wunde gedrückt, färbt sich der Stein rot und zieht das Gift heraus."],
-]
 
 # ================================================================ hoards
 
