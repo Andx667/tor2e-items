@@ -61,11 +61,11 @@ craftsmanship = "Elven"
 text = "Ein silberner geringerer Ring, geschmiedet von einem vergessenen Lehrling Celebrimbors."
 blessings = ["Insight", "Riddle"]
 
-[items.weisser-same-des-westens]
-name = "Weißer Same des Westens"
+[items.weisser-samen-des-westens]
+name = "Weißer Samen des Westens"
 source = "lone-lands"
 type = "wonder"
-text = "An einer goldenen Halskette hängt, in Bernstein eingeschlossen, ein Same des Weißen Baumes."
+text = "An einer goldenen Halskette hängt, in Bernstein eingeschlossen, ein Samen des Weißen Baumes."
 blessings = ["Healing", "Lore"]
 
 [items.nimrodels-traene]
@@ -184,4 +184,4 @@ curse = "Shadow Taint"
 name = "Die Einsamen Lande"
 source = "lone-lands"
 campaign = "Tales from the Lone-lands"
-items = { kriegshorn-von-arveleg = 1, unausloeschliche-laterne = 1, stiefel-der-tausend-meilen = 1, koecher-des-araw = 1, durins-wetzstein = 1, mantel-der-feinheit = 1, ring-vom-sirannon = 1, weisser-same-des-westens = 1, nimrodels-traene = 1, armreife-von-tag-und-nacht = 1, krone-von-fornost = 1, adlerkopf = 1, schwert-der-stuerme = 1, helm-der-hadda = 1, gnadenlos = 1, koller-des-seefreunds = 1, schutz-des-schoepfers = 1, grosser-bogen-des-angnir = 1 }
+items = { kriegshorn-von-arveleg = 1, unausloeschliche-laterne = 1, stiefel-der-tausend-meilen = 1, koecher-des-araw = 1, durins-wetzstein = 1, mantel-der-feinheit = 1, ring-vom-sirannon = 1, weisser-samen-des-westens = 1, nimrodels-traene = 1, armreife-von-tag-und-nacht = 1, krone-von-fornost = 1, adlerkopf = 1, schwert-der-stuerme = 1, helm-der-hadda = 1, gnadenlos = 1, koller-des-seefreunds = 1, schutz-des-schoepfers = 1, grosser-bogen-des-angnir = 1 }
