@@ -72,7 +72,7 @@ The PDF follows the `[categories]` of `src/rules.toml`: the Combat Proficiencies
 shields and useful items (ordered by the skill they bless). Each category starts a new page of cards; one without
 items yet gets an empty page.
 
-**Source icons.** `source` says where an item or a hoard comes from: `canon` (Tolkien's works, a ring), `finsterwacht`
+**Source icons.** `source` says where an item or a hoard comes from: `canon` (Tolkien's works and Peter Jackson's films, a ring), `finsterwacht`
 (the adventure, its logo), `rulebook` (the rule books, a book), `lone-lands` (the publisher's sample Magical
 Treasure Index *Tales from the Lone-lands*, a horse with two riders in the snow) or `erebor` (the sample index
 *The Quest for Erebor*, a mountain). The icon is printed in the lower right corner of the

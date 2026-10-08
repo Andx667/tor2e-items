@@ -261,7 +261,7 @@ load = 6
 # icon   the file assets/icons/<icon>.png (ring, book, lone-lands and erebor are drawn by tools/icons.py)
 
 [sources.canon]
-label = "aus Tolkiens Werken"
+label = "aus Tolkiens Werken und Peter Jacksons Filmen"
 icon = "ring"
 
 [sources.finsterwacht]

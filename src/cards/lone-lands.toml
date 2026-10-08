@@ -208,7 +208,5 @@ tags = ["lone-lands"]
 name = "Die Einsamen Lande"
 source = "lone-lands"
 campaign = "Tales from the Lone-lands"
-members = ["Duinhir", "Geira", "Mentha North-tooks", "Fimbrethil", "Regin Stonefist", "Artie Wayward"]
 items = { kriegshorn-von-arveleg = 1, unausloeschliche-laterne = 1, stiefel-der-tausend-meilen = 1, koecher-des-araw = 1, durins-wetzstein = 1, mantel-der-feinheit = 1, ring-vom-sirannon = 1, weisser-same-des-westens = 1, nimrodels-traene = 1, armreife-von-tag-und-nacht = 1, krone-von-fornost = 1, adlerkopf = 1, schwert-der-stuerme = 1, helm-der-hadda = 1, gnadenlos = 1, koller-des-seefreunds = 1, schutz-des-schoepfers = 1, grosser-bogen-des-angnir = 1 }
-heroes = { schwert-der-stuerme = "Duinhir", helm-der-hadda = "Geira", gnadenlos = "Mentha North-tooks", koller-des-seefreunds = "Fimbrethil", schutz-des-schoepfers = "Regin Stonefist", grosser-bogen-des-angnir = "Artie Wayward" }
 tags = ["lone-lands"]

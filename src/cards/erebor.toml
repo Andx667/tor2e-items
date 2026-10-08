@@ -84,7 +84,5 @@ tags = ["erebor"]
 name = "Die Fahrt zum Erebor"
 source = "erebor"
 campaign = "The Quest for Erebor"
-members = ["Thorin", "Bilbo", "Gandalf", "Balin", "Fili", "Kili"]
 items = { diamantknoepfe-des-alten-tuk = 1, goldene-harfe = 1, weisser-guertel-des-prinzen = 1, arkenstein = 1, goldener-pokal-thrors = 1, koenigliche-ruestung-von-erebor = 1, orcrist = 1, stich = 1, mithrilhemd = 1, glamdring = 1, silbernes-kettenhemd = 1, schild-der-toten = 2 }
-heroes = { orcrist = "Thorin", stich = "Bilbo", mithrilhemd = "Bilbo", glamdring = "Gandalf", silbernes-kettenhemd = "Balin", schild-der-toten = "Fili und Kili" }
 tags = ["erebor"]
