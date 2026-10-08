@@ -367,6 +367,32 @@ load = 3
 text = "Ein Stoßspeer aus den Schmieden unter dem Berg, für die Torwache des Königs geschmiedet. Seine Spitze fängt das Licht wie eine Flamme."
 qualities = ["Superior Grievous", "Flame of Hope"]
 
+# ---- examples with basic rewards only for the proficiencies that had none
+
+[items.axt-der-beorninger]
+name = "Axt der Beorninger"
+type = "weapon"
+proficiency = "axes"
+base = "Great axe"
+craft = "Arbeit der Beorninger"
+damage = 7
+injury = 20
+load = 4
+text = "Eine schwere Holzfälleraxt mit breitem Blatt und einem Stiel aus Eschenholz, wie sie die Männer vom Carrock führen. Sie fällt eine Eiche ebenso sicher wie einen Ork."
+qualities = ["Grievous"]
+
+[items.eibenbogen-aus-esgaroth]
+name = "Eibenbogen aus Esgaroth"
+type = "weapon"
+proficiency = "bows"
+base = "Great bow"
+craft = "Arbeit der Seestadt"
+damage = 4
+injury = 16
+load = 4
+text = "Ein mannshoher Bogen aus dunklem Eibenholz, wie ihn die Bogenschützen der Seestadt auf den Brücken spannen. Seine Pfeile haben schwarze Federn."
+qualities = ["Keen"]
+
 # ================================================================ armour and shields
 
 [items.kettenhemd-der-wacht]
@@ -380,6 +406,32 @@ load = 12
 text = "Ein langes Hemd aus feinen númenórischen Ringen, leicht wie Leder und blank geblieben."
 qualities = ["Close-fitting", "Cunning Make"]
 tags = ["finsterwacht"]
+
+# ---- a famous example next to the coat of mail with basic rewards only
+
+[items.ringhemd-aus-den-eisenbergen]
+name = "Ringhemd aus den Eisenbergen"
+type = "armour"
+base = "Mail-shirt"
+craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
+protection = 3
+load = 9
+text = "Ein kurzes Hemd aus dicht vernieteten Ringen, in den Schmieden von Dáins Volk gefertigt. Auf jedem Ring der Brust ist eine winzige Rune eingeschlagen, und noch kein Speer hat sie alle durchdrungen."
+qualities = ["Ancient Close-fitting", "Rune-scored Armour"]
+
+[items.mithrilhemd]
+name = "Mithril"
+source = "canon"
+type = "armour"
+base = "Mail-shirt"
+craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
+protection = 3
+load = 9
+text = "Ein kleines Panzerhemd aus Silberstahl, vor langer Zeit für einen jungen Elbenprinzen geschmiedet und mit einem Gürtel aus Perlen und Kristallen getragen."
+qualities = ["Mithril Armour", "Ancient Close-fitting"]
+tags = ["hobbit", "buch"]
 
 [items.torhueter]
 name = "Der Torhüter"
@@ -406,6 +458,16 @@ parry = 2
 load = 4
 text = "Ein Rundschild aus den Schmieden von Belegost, in den Tagen des alten Handels als Gabe für die Grünelben von Ossiriand gefertigt. Zwergenrunen laufen um seinen Rand, und er wiegt kaum mehr als seine Riemen."
 qualities = ["Ancient Cunning Make", "Rune-scored Shield"]
+
+[items.turmschild-von-minas-tirith]
+name = "Turmschild von Minas Tirith"
+type = "shield"
+base = "Great shield"
+craft = "Arbeit Gondors"
+parry = 3
+load = 6
+text = "Ein hoher, schwarzer Schild der Turmwache, mit dem Weißen Baum bemalt und mit Stahl gerändert. Hinter ihm hält ein Mann eine Treppe gegen viele."
+qualities = ["Reinforced"]
 
 # ---- helms: one with a basic reward only, one famous
 
