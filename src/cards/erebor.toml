@@ -1,0 +1,90 @@
+# The publisher's sample Magical Treasure Index "The Quest for Erebor": three marvellous artefacts,
+# three wondrous items and the famous weapons and armour of Thorin's company.
+# Merged into src/cards.toml; the fields are listed at the top of that file.
+# Orcrist, Stich, Glamdring, the Mithril shirt and the Arkenstein are part of this index too; they
+# are in src/cards.toml.
+
+# ================================================================ marvellous artefacts
+
+[items.diamantknoepfe-des-alten-tuk]
+name = "Die Diamantknöpfe des Alten Tuk"
+source = "erebor"
+type = "artefact"
+text = "Ein Paar Diamantknöpfe, die sich selbst schließen und nicht wieder aufgehen, bis man es ihnen befiehlt."
+blessings = ["Courtesy"]
+tags = ["erebor"]
+
+[items.goldene-harfe]
+name = "Goldene Harfe"
+source = "erebor"
+type = "artefact"
+text = "Eine zauberische goldene Harfe mit silbernen Saiten, die sich nie zu verstimmen scheint."
+blessings = ["Song"]
+tags = ["erebor"]
+
+[items.weisser-guertel-des-prinzen]
+name = "Weißer Gürtel des Prinzen"
+source = "erebor"
+type = "artefact"
+text = "Ein Gürtel aus Perlen und Kristallen, gemacht, um die Bewegungen seines Trägers zu erleichtern."
+blessings = ["Athletics"]
+tags = ["erebor"]
+
+# ================================================================ wondrous items
+
+[items.goldener-pokal-thrors]
+name = "Der große goldene Pokal Thrórs"
+source = "erebor"
+type = "wonder"
+craft = "Zwergenarbeit"
+text = "Ein zweihenkliger Pokal, verziert mit Vögeln und Blumen, deren Augen und Blütenblätter Edelsteine sind. Gießt man Wein hinein, spiegelt er das wahre Wesen von Lebewesen und Dingen."
+blessings = ["Insight", "Riddle"]
+tags = ["erebor"]
+
+[items.koenigliche-ruestung-von-erebor]
+name = "Die königliche Rüstung von Erebor"
+source = "erebor"
+type = "wonder"
+craft = "Zwergenarbeit"
+text = "Das Prunkgewand des Königs unter dem Berg: ein Hemd aus vergoldeten Ringen und eine Prunkaxt mit silbernem Stiel in einem Gürtel voller scharlachroter Steine. Es verleiht Führungskraft und Weisheit in Zeiten des Krieges."
+blessings = ["Battle", "Enhearten"]
+tags = ["erebor"]
+
+# ================================================================ famous weapons and armour
+
+[items.silbernes-kettenhemd]
+name = "Silbernes Kettenhemd"
+source = "erebor"
+type = "armour"
+base = "Coat of mail"
+craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
+protection = 4
+load = 12
+text = "Einst dem Sohn Girions geschenkt, des Fürsten von Thal: aus Silber gewirkt und doch so stark wie dreifacher Stahl. Seinesgleichen hat man weder zuvor noch seither gesehen."
+qualities = ["Ancient Cunning Make", "Ancient Close-fitting"]
+tags = ["erebor"]
+
+[items.schild-der-toten]
+name = "Schild der Toten"
+source = "erebor"
+type = "shield"
+base = "Shield"
+craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
+parry = 2
+load = 4
+text = "Reich verziert von den Zwergenschmieden des alten Erebor, gefertigt für Krieger, die längst tot sind."
+qualities = ["Superior Reinforced", "Cunning Make"]
+tags = ["erebor"]
+
+# ================================================================ the index
+
+[hoards.erebor]
+name = "Die Fahrt zum Erebor"
+source = "erebor"
+campaign = "The Quest for Erebor"
+members = ["Thorin", "Bilbo", "Gandalf", "Balin", "Fili", "Kili"]
+items = { diamantknoepfe-des-alten-tuk = 1, goldene-harfe = 1, weisser-guertel-des-prinzen = 1, arkenstein = 1, goldener-pokal-thrors = 1, koenigliche-ruestung-von-erebor = 1, orcrist = 1, stich = 1, mithrilhemd = 1, glamdring = 1, silbernes-kettenhemd = 1, schild-der-toten = 2 }
+heroes = { orcrist = "Thorin", stich = "Bilbo", mithrilhemd = "Bilbo", glamdring = "Gandalf", silbernes-kettenhemd = "Balin", schild-der-toten = "Fili und Kili" }
+tags = ["erebor"]

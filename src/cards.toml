@@ -7,7 +7,8 @@
 #   type        required: a type from src/rules.toml (weapon, armour, helm, shield, artefact, wonder)
 #   proficiency weapons only: the Combat Proficiency, which is also the category in the PDF
 #               (brawling, swords, axes, spears, bows - see [categories] in src/rules.toml)
-#   source      where it comes from, a source from src/rules.toml (canon, finsterwacht, rulebook):
+#   source      where it comes from, a source from src/rules.toml (canon, finsterwacht, rulebook,
+#               lone-lands, erebor):
 #               its icon is printed in the corner of the card. Leave it out for a made-up item
 #   base        the Core Rules item it is based on ("Long sword"); required for weapons, armour,
 #               helms and shields, it is the type shown on the card
@@ -24,6 +25,8 @@
 #   qualities   extra effects from src/rules.toml; their rules text is added on the card
 #   banes       creatures the item is a Bane for
 #   blessings   skills the item blesses
+#   curse       the curse on the item, free text: curses are made by hand, there is no list
+#               ("Shadow Taint")
 #   effects     free lines: [["Label", "Text"], ...]
 #   tags        free keywords, not printed
 #
@@ -31,7 +34,12 @@
 #   name        required
 #   text        description
 #   source      as for items
-#   items       what it holds: { <item id> = <count>, ... }
+#   campaign    the campaign the hoard is the Magical Treasure Index of
+#   loremaster  who runs it
+#   members     the Player-heroes of the campaign: ["Duinhir", ...]
+#   items       what it holds: { <item id> = <count>, ... }; the card has a box per item to
+#               tick when it is found
+#   heroes      the Player-hero an item is meant for: { <item id> = "Duinhir", ... }
 #   wealth      generic wealth in Treasure points
 #   wealth_note what the wealth looks like ("Silbermünzen aus Arnor")
 #   tags        free keywords, not printed
@@ -187,7 +195,7 @@ tags = ["film"]
 
 [items.stich]
 name = "Stich"
-source = "canon"
+source = "erebor"
 type = "weapon"
 proficiency = "swords"
 base = "Short sword"
@@ -197,13 +205,13 @@ damage = 3
 injury = 16
 load = 1
 text = "Eine kleine Klinge aus Gondolin."
-qualities = ["Superior Fell", "Luminescence"]
+qualities = ["Luminescence", "Keen", "Fell"]
 banes = ["Orks"]
 tags = ["film"]
 
 [items.glamdring]
 name = "Glamdring"
-source = "canon"
+source = "erebor"
 type = "weapon"
 proficiency = "swords"
 base = "Long sword"
@@ -214,7 +222,7 @@ injury = 16
 injury_two_handed = 18
 load = 3
 text = "Eine Klinge aus Gondolin, deren Name „Feindhammer“ bedeutete; die Orks nannten es „Schläger“."
-qualities = ["Superior Fell", "Hammering", "Luminescence"]
+qualities = ["Luminescence", "Hammering", "Superior Fell"]
 banes = ["Orks"]
 tags = ["film"]
 
@@ -284,7 +292,7 @@ tags = ["film"]
 
 [items.orcrist]
 name = "Orcrist"
-source = "canon"
+source = "erebor"
 type = "weapon"
 proficiency = "swords"
 base = "Sword"
@@ -293,8 +301,8 @@ craftsmanship = "Elven"
 damage = 4
 injury = 16
 load = 2
-text = "Eine Klinge aus Gondolin, deren Name „Orkspalter“ bedeutete; die Orks nannten es „Beißer“."
-qualities = ["Superior Keen", "Cleaving", "Luminescence"]
+text = "Der „Orkspalter“ aus Gondolin."
+qualities = ["Luminescence", "Cleaving", "Foe-slaying"]
 banes = ["Orks"]
 tags = ["hobbit"]
 
@@ -422,7 +430,7 @@ qualities = ["Ancient Close-fitting", "Rune-scored Armour"]
 
 [items.mithrilhemd]
 name = "Mithril"
-source = "canon"
+source = "erebor"
 type = "armour"
 base = "Mail-shirt"
 craft = "Zwergenarbeit"
@@ -430,7 +438,7 @@ craftsmanship = "Dwarven"
 protection = 3
 load = 9
 text = "Ein kleines Panzerhemd aus Silberstahl, vor langer Zeit für einen jungen Elbenprinzen geschmiedet und mit einem Gürtel aus Perlen und Kristallen getragen."
-qualities = ["Mithril Armour", "Ancient Close-fitting"]
+qualities = ["Mithril Armour", "Ancient Close-fitting", "Cunning Make"]
 tags = ["hobbit", "buch"]
 
 [items.torhueter]
@@ -583,11 +591,11 @@ tags = ["buch"]
 
 [items.arkenstein]
 name = "Der Arkenstein"
-source = "canon"
+source = "erebor"
 type = "wonder"
 craft = "Zwergenarbeit"
 text = "Das Herz des Berges, ein Stein von weißem Licht, in der Tiefe des Einsamen Berges gefunden."
-blessings = ["Craft", "Persuade"]
+blessings = ["Awe", "Persuade"]
 tags = ["buch"]
 
 [items.horn-gondors]
@@ -635,3 +643,12 @@ items = { narcrist = 1, torhueter = 1, horn-der-finsterwacht = 1, breschenwacht 
 wealth = 40
 wealth_note = "Silbermünzen aus Arnor"
 tags = ["finsterwacht"]
+
+[hoards.trollhoehle]
+name = "Die Trollhöhle"
+source = "canon"
+text = "Die Höhle der drei Trolle Tom, Bert und Bill in den Trollhöhen, hinter einer steinernen Tür. Zwischen Knochen, geraubten Kleidern und verdorbenen Vorräten lagen Schwerter aus Gondolin."
+items = { glamdring = 1, orcrist = 1, stich = 1 }
+wealth = 30
+wealth_note = "Töpfe voller Goldmünzen"
+tags = ["hobbit"]

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws the source icons of the cards -> assets/icons/ring.png and book.png (512, red, transparent).
+"""Draws the source icons of the cards -> assets/icons/ring.png, book.png, lone-lands.png and erebor.png (512, red, transparent).
 
 The icon in the corner of a card says where the item comes from; src/rules.toml ([sources]) names
 the icon of each source. assets/icons/finsterwacht.png is the logo of the adventure and is not drawn here.
@@ -77,6 +77,44 @@ def book():
     save(im, "book.png")
 
 
+def lone_lands():
+    """A horse with two riders, up to its knees in snow: the cover of Tales from the Lone-lands."""
+    im, d = canvas()
+
+    def poly(points):
+        d.polygon([(x * S, y * S) for x, y in points], fill=RED)
+
+    d.ellipse(box(240, 290, 140, 62), fill=RED)                                 # body
+    poly([(318, 262), (372, 150), (420, 176), (382, 318)])                      # neck
+    poly([(372, 150), (396, 132), (486, 204), (470, 236), (412, 204)])          # head
+    poly([(378, 150), (384, 104), (408, 140)])                                  # ear
+    poly([(112, 262), (62, 300), (52, 392), (84, 392), (128, 316)])             # tail
+    for x in (128, 176, 292, 340):                                              # legs, cut off by the snow
+        d.rectangle([x * S, 300 * S, (x + 30) * S, 404 * S], fill=RED)
+    for x, top, r in ((284, 150, 26), (196, 164, 24)):                          # the riders
+        poly([(x - 36, 252), (x - 24, top), (x + 24, top), (x + 40, 252)])
+        d.ellipse(box(x + 4, top - r + 2, r, r), fill=RED)
+    d.line([(x * S, y * S) for x, y in ((14, 430), (120, 412), (256, 428), (392, 410), (498, 428))],
+           fill=RED, width=18 * S, joint="curve")                               # the snow
+    save(im, "lone-lands.png")
+
+
+def erebor():
+    """The Lonely Mountain: a single peak with a cap of snow, two lower shoulders."""
+    im, d = canvas()
+
+    def poly(points, fill=RED):
+        d.polygon([(x * S, y * S) for x, y in points], fill=fill)
+
+    poly([(8, 440), (112, 318), (150, 352), (256, 70), (362, 352), (400, 318), (504, 440)])
+    # the snow line: a jagged gap below the summit
+    top = [(176, 204), (212, 226), (234, 198), (256, 226), (278, 198), (300, 226), (336, 204)]
+    poly(top + [(x, y + 28) for x, y in reversed(top)], fill=(0, 0, 0, 0))
+    save(im, "erebor.png")
+
+
 if __name__ == "__main__":
     ring()
     book()
+    lone_lands()
+    erebor()

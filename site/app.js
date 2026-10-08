@@ -10,7 +10,7 @@
     weapon: ["Weapon", "Swords, axes, bows and the like. Can have rewards, and Banes with Elven or Númenórean craftsmanship."],
     armour: ["Armour", "Leather and mail armour."],
     helm: ["Helm", "Headgear."],
-    shield: ["Shield", "Shields. With Superior Reinforced an Elven or Númenórean shield can have Banes."],
+    shield: ["Shield", "Shields. An Elven or Númenórean shield can have Banes."],
     artefact: ["Marvellous artefact", "A special item that is not a weapon or armour. Blesses one skill."],
     wonder: ["Wondrous item", "A very important item that seems like magic to people. Blesses two skills."],
   };
@@ -108,7 +108,6 @@
     return { ok: true };
   }
   const isSuperior = (n) => !!R.qualities[n].superior;
-  const hasSuperior = () => state.qualities.some(isSuperior);
 
   // Drop choices that the rules no longer allow after an earlier step changed
   function prune() {
@@ -146,7 +145,7 @@
       if (!isGear()) {
         const n = kind().blessings || 0;
         if (state.blessings.length !== n) return `Choose ${n} skill${n > 1 ? "s" : ""} to bless.`;
-      } else if (state.banes.length && !hasSuperior()) return "A Bane comes with a superior reward: choose one, or remove the Bane in step 3.";
+      }
       if ((state.effectLabel.trim() === "") !== (state.effectText.trim() === "")) return "A special effect needs a label and a text.";
     }
     if (id === "name") {
@@ -210,12 +209,12 @@
     const rule = baneRule();
     if (!rule) {
       let why = "Banes are only for weapons and shields of Elven or Númenórean craftsmanship.";
-      if (kind() && !(kind().banes)) why = `A ${TYPES[state.type][0].toLowerCase()} cannot have a Bane. Banes are for Elven or Númenórean weapons (and shields with Superior Reinforced).`;
+      if (kind() && !(kind().banes)) why = `A ${TYPES[state.type][0].toLowerCase()} cannot have a Bane. Banes are for Elven or Númenórean weapons and shields.`;
       else if (kind() && !craftValue()) why = "This item has no special craftsmanship. Go back if it should be Elven or Númenórean.";
       else if (kind()) why = `${CRAFTS[craftValue()][0]} ${TYPES[state.type][0].toLowerCase()}s cannot have a Bane.`;
       return `<div class="note">${esc(why)} Nothing to choose here: continue.</div>`;
     }
-    let h = `<p class="rulebook">${CRAFTS[craftValue()][0]} ${TYPES[state.type][0].toLowerCase()}s choose <b>${rule.choose}</b> kind${rule.choose > 1 ? "s" : ""} of creature. A Bane is optional, but it needs a superior reward in the next step.</p>`;
+    let h = `<p class="rulebook">${CRAFTS[craftValue()][0]} ${TYPES[state.type][0].toLowerCase()}s choose <b>${rule.choose}</b> kind${rule.choose > 1 ? "s" : ""} of creature. A Bane is optional.</p>`;
     h += `<fieldset><legend>Bane against (${state.banes.length} of ${rule.choose})</legend><div class="skills">`;
     for (const b of rule.from) {
       const on = state.banes.includes(b), full = !on && state.banes.length >= rule.choose;
@@ -249,8 +248,7 @@
         return shown.length ? `<h3>${title}</h3>${note ? `<p class="rulebook">${note}</p>` : ""}<fieldset><legend class="sr-only">${title}</legend><div class="choices">${shown.map(qualityCard).join("")}</div></fieldset>` : "";
       };
       h += `<p class="rulebook">Greyed qualities do not fit this item; the reason is under each. Every quality that is not a basic reward makes the item famous.</p>`;
-      if (state.banes.length) h += `<div class="note ${hasSuperior() ? "ok" : "bad"}">Bane: ${esc(state.banes.join(", "))}. ${hasSuperior() ? "A superior reward is chosen." : "Choose a superior reward for it."}</div>`;
-      h += section("Basic rewards", basic) + section("Superior rewards", sup, "The stronger rewards of Elven, Dwarven and Númenórean items; a Bane needs one.") + section("Ancient and special qualities", rest);
+      h += section("Basic rewards", basic) + section("Superior rewards", sup, "The stronger rewards of Elven, Dwarven and Númenórean items.") + section("Ancient and special qualities", rest);
     } else {
       const n = kind().blessings || 0;
       h += `<p class="rulebook">A ${TYPES[state.type][0].toLowerCase()} blesses <b>${n}</b> skill${n > 1 ? "s" : ""}: a hero using it gets a bonus on rolls of those skills.</p><fieldset><legend>Blessed skills (${state.blessings.length} of ${n})</legend><div class="skills">`;

@@ -42,7 +42,7 @@ def mutations(items, rules, count, rng):
     for _ in range(count):
         item = copy.deepcopy(rng.choice(items))
         for _ in range(rng.randint(1, 4)):
-            op = rng.randrange(13)
+            op = rng.randrange(14)
             if op == 0:
                 item["type"] = rng.choice(types)
             elif op == 1:
@@ -71,6 +71,9 @@ def mutations(items, rules, count, rng):
                 item[rng.choice(["colour", "weight"])] = 3
             elif op == 11:
                 item["effects"] = rng.choice([[["Label", "Text"]], [["Only"]], [["A", "B"], ["C", "D"]]])
+            elif op == 12:
+                c = rng.choice(["Shadow Taint", 3, None])
+                item.pop("curse", None) if c is None else item.update(curse=c)
             else:
                 item["name"] = rng.choice(["", "Something", "  "])
         out.append(item)

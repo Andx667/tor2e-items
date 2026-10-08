@@ -1,0 +1,214 @@
+# The publisher's sample Magical Treasure Index "Tales from the Lone-lands": six marvellous
+# artefacts, six wondrous items and one famous weapon or piece of armour per Player-hero.
+# Merged into src/cards.toml; the fields are listed at the top of that file.
+
+# ================================================================ marvellous artefacts
+
+[items.kriegshorn-von-arveleg]
+name = "Kriegshorn von Arveleg"
+source = "lone-lands"
+type = "artefact"
+craft = "Arbeit aus Arnor"
+text = "Ein Horn aus Elfenbein, gefertigt aus dem Stoßzahn eines mächtigen Tieres des Nordens, das der König von Arnor im Kampf gegen Angmar erschlug."
+blessings = ["Enhearten"]
+tags = ["lone-lands"]
+
+[items.unausloeschliche-laterne]
+name = "Die unauslöschliche Laterne"
+source = "lone-lands"
+type = "artefact"
+craft = "elbische Arbeit"
+text = "In einem schlichten Gehäuse aus Glas und Bronze leuchtet ein Kristallsplitter, das letzte Überbleibsel einer Elbenlampe."
+blessings = ["Scan"]
+tags = ["lone-lands"]
+
+[items.stiefel-der-tausend-meilen]
+name = "Stiefel der tausend Meilen"
+source = "lone-lands"
+type = "artefact"
+craft = "elbische Arbeit"
+text = "Der alte Elbenzauber im Leder dieser Stiefel nimmt ihrem Träger die Müdigkeit."
+blessings = ["Travel"]
+tags = ["lone-lands"]
+
+[items.koecher-des-araw]
+name = "Köcher des Araw"
+source = "lone-lands"
+type = "artefact"
+craft = "Arbeit der Sindar"
+text = "Ein Köcher der Sindar, verziert mit Bildern von den Taten Oromës. Wer ihn trägt, dem entgeht keine Beute."
+blessings = ["Hunting"]
+tags = ["lone-lands"]
+
+[items.durins-wetzstein]
+name = "Durins Wetzstein"
+source = "lone-lands"
+type = "artefact"
+craft = "Zwergenarbeit"
+text = "Mit diesem wunderbaren Stein hielten die Könige von Durins Volk ihre Werkzeuge scharf wie frisch geschmiedet."
+blessings = ["Craft"]
+tags = ["lone-lands"]
+
+[items.mantel-der-feinheit]
+name = "Mantel der Feinheit"
+source = "lone-lands"
+type = "artefact"
+text = "In seinen Stoff ist mit der Wolle das Wesen der Höflichkeit gewoben; er macht seinen Träger anmutig und redegewandt."
+blessings = ["Courtesy"]
+tags = ["lone-lands"]
+
+# ================================================================ wondrous items
+
+[items.ring-vom-sirannon]
+name = "Ring vom Sirannon"
+source = "lone-lands"
+type = "wonder"
+craft = "elbische Arbeit"
+text = "Ein silberner geringerer Ring, geschmiedet von einem vergessenen Lehrling Celebrimbors."
+blessings = ["Insight", "Riddle"]
+tags = ["lone-lands"]
+
+[items.weisser-same-des-westens]
+name = "Weißer Same des Westens"
+source = "lone-lands"
+type = "wonder"
+text = "An einer goldenen Halskette hängt, in Bernstein eingeschlossen, ein Same des Weißen Baumes."
+blessings = ["Healing", "Lore"]
+tags = ["lone-lands"]
+
+[items.nimrodels-traene]
+name = "Nimrodels Träne"
+source = "lone-lands"
+type = "wonder"
+text = "Ein kleiner Ohrring, ein blauer Saphir in der Form eines Wassertropfens."
+blessings = ["Awareness", "Song"]
+tags = ["lone-lands"]
+
+[items.armreife-von-tag-und-nacht]
+name = "Zwillingsarmreife von Tag und Nacht"
+source = "lone-lands"
+type = "wonder"
+craft = "Zwergenarbeit"
+text = "In Nogrod geschmiedet: Der rechte Reif zeigt die Sonne, der linke den Mond."
+blessings = ["Athletics", "Stealth"]
+tags = ["lone-lands"]
+
+[items.krone-von-fornost]
+name = "Krone von Fornost"
+source = "lone-lands"
+type = "wonder"
+craft = "númenórische Arbeit"
+text = "Ein goldener Stirnreif, einst getragen von den númenórischen Herrschern von Fornost Erain."
+blessings = ["Awe", "Persuade"]
+tags = ["lone-lands"]
+
+[items.adlerkopf]
+name = "Adlerkopf"
+source = "lone-lands"
+type = "wonder"
+craft = "Arbeit der Noldor"
+text = "Eine Brosche der Noldor, gefertigt zur Feier des Bundes zwischen ihrem Volk und dem Herrn der Adler."
+blessings = ["Battle", "Explore"]
+tags = ["lone-lands"]
+
+# ================================================================ famous weapons and armour
+
+[items.schwert-der-stuerme]
+name = "Schwert der Stürme"
+source = "lone-lands"
+type = "weapon"
+proficiency = "swords"
+base = "Long sword"
+craft = "númenórische Arbeit"
+craftsmanship = "Númenórean"
+damage = 5
+injury = 16
+injury_two_handed = 18
+load = 3
+text = "Im Zweiten Zeitalter in Lond Daer geschmiedet, das lange Heft mit Seestürmen verziert."
+qualities = ["Fell", "Hammering", "Superior Grievous"]
+banes = ["Böse Menschen", "Trolle"]
+tags = ["lone-lands"]
+
+[items.helm-der-hadda]
+name = "Helm der Hadda"
+source = "lone-lands"
+type = "helm"
+base = "Helm"
+craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
+protection = 1
+load = 4
+text = "Dieser offene Helm wurde in Nogrod für die Rüstung einer Kriegerprinzessin gefertigt. Er ist nicht nur von außerordentlicher Machart, sondern auch mit Runen graviert, die ihn noch wirksamer machen."
+qualities = ["Ancient Close-fitting", "Rune-scored Helm"]
+tags = ["lone-lands"]
+
+[items.gnadenlos]
+name = "Gnadenlos"
+source = "lone-lands"
+type = "weapon"
+proficiency = "swords"
+base = "Short sword"
+craft = "elbische Arbeit"
+craftsmanship = "Elven"
+damage = 3
+injury = 16
+load = 1
+text = "Einst eine Speerspitze, schwarz von Wolfsblut."
+qualities = ["Luminescence", "Cleaving", "Foe-slaying"]
+banes = ["Wölfe"]
+tags = ["lone-lands"]
+
+[items.koller-des-seefreunds]
+name = "Koller des Seefreunds"
+source = "lone-lands"
+type = "armour"
+base = "Leather corslet"
+craft = "elbische Arbeit"
+craftsmanship = "Elven"
+protection = 2
+load = 6
+text = "Weiß wie Meeresschaum und mit Silberdraht vernäht, ist dieses Koller vom Zauber der seefahrenden Elben von Lindon durchdrungen: zäh wie der stählerne Rammsporn eines Kriegsschiffs, doch leicht wie dessen seidene Segel."
+qualities = ["Ancient Cunning Make", "Close-fitting"]
+tags = ["lone-lands"]
+
+[items.schutz-des-schoepfers]
+name = "Schutz des Schöpfers"
+source = "lone-lands"
+type = "shield"
+base = "Shield"
+craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
+parry = 2
+load = 4
+text = "Ein Rundschild aus Buchenholz, am Rand mit dunklem Stahl verstärkt. Sein Griff ist aus einem Schmiedehammer gemacht, und neun flammenförmige Streben verbinden ihn mit dem Rand."
+qualities = ["Superior Reinforced", "Cunning Make"]
+tags = ["lone-lands"]
+
+[items.grosser-bogen-des-angnir]
+name = "Großer Bogen des Angnir"
+source = "lone-lands"
+type = "weapon"
+proficiency = "bows"
+base = "Great bow"
+craft = "númenórische Arbeit"
+craftsmanship = "Númenórean"
+damage = 4
+injury = 16
+load = 4
+text = "Mit ihm erlöste Angnir seinen Herrn."
+qualities = ["Keen", "Straight Flight", "Hollow Steel"]
+banes = ["Orks", "Untote"]
+curse = "Shadow Taint"
+tags = ["lone-lands"]
+
+# ================================================================ the index
+
+[hoards.lone-lands]
+name = "Die Einsamen Lande"
+source = "lone-lands"
+campaign = "Tales from the Lone-lands"
+members = ["Duinhir", "Geira", "Mentha North-tooks", "Fimbrethil", "Regin Stonefist", "Artie Wayward"]
+items = { kriegshorn-von-arveleg = 1, unausloeschliche-laterne = 1, stiefel-der-tausend-meilen = 1, koecher-des-araw = 1, durins-wetzstein = 1, mantel-der-feinheit = 1, ring-vom-sirannon = 1, weisser-same-des-westens = 1, nimrodels-traene = 1, armreife-von-tag-und-nacht = 1, krone-von-fornost = 1, adlerkopf = 1, schwert-der-stuerme = 1, helm-der-hadda = 1, gnadenlos = 1, koller-des-seefreunds = 1, schutz-des-schoepfers = 1, grosser-bogen-des-angnir = 1 }
+heroes = { schwert-der-stuerme = "Duinhir", helm-der-hadda = "Geira", gnadenlos = "Mentha North-tooks", koller-des-seefreunds = "Fimbrethil", schutz-des-schoepfers = "Regin Stonefist", grosser-bogen-des-angnir = "Artie Wayward" }
+tags = ["lone-lands"]

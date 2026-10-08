@@ -28,7 +28,7 @@ ranged = ["bows"]
 # banes  the Banes an item of this type may have, per craftsmanship, as [types.<type>.banes.<craftsmanship>]
 #        tables: `choose` is how many kinds of creature the item has a Bane for (exactly), `from` the
 #        kinds to choose from. A type without it, or a craftsmanship not listed, has no Bane. The kinds are
-#        written like on the cards. Banes also need a superior reward (tools/check.py)
+#        written like on the cards. A Bane comes with the craftsmanship: it needs no particular quality
 # blessings  how many skills an item of this type blesses (exactly); a type without it has no
 #        such rule. A marvellous artefact blesses one skill, a wondrous item two
 # plain_label  kind-line start for an item with nothing but basic rewards (and without blessings
@@ -65,7 +65,7 @@ label = "Famous Armour"
 plain_label = ""
 stats = ["parry", "load"]
 
-# A shield with Superior Reinforced has the same Banes as a weapon
+# A shield has the same Banes as a weapon
 [types.shield.banes.Elven]
 choose = 1
 from = ["Orks", "Wölfe", "Spinnen"]
@@ -258,7 +258,7 @@ load = 6
 # Where an item or a hoard comes from (field `source`). Its card gets the icon in the lower right
 # corner, and the first page explains the icons. A card without a source is made up and stays plain.
 # label  what the first page says about the icon
-# icon   the file assets/icons/<icon>.png (ring and book are drawn by tools/icons.py)
+# icon   the file assets/icons/<icon>.png (ring, book, lone-lands and erebor are drawn by tools/icons.py)
 
 [sources.canon]
 label = "aus Tolkiens Werken"
@@ -271,6 +271,14 @@ icon = "finsterwacht"
 [sources.rulebook]
 label = "aus den Regelbüchern"
 icon = "book"
+
+[sources.lone-lands]
+label = "aus dem Beispiel-Index „Tales from the Lone-lands“"
+icon = "lone-lands"
+
+[sources.erebor]
+label = "aus dem Beispiel-Index „The Quest for Erebor“"
+icon = "erebor"
 
 # ---------------------------------------------------------------- categories
 # The sections of the overview and of the cards, in the order of the PDF. A category without
@@ -337,8 +345,7 @@ sort = "blessings"
 #               a Load to 0)                                      (optional)
 # basic         true for the basic rewards. Every other quality (superior, ancient, the weapon
 #               blessings, ...) makes its item famous             (optional)
-# superior      true for the superior rewards. A Bane is only allowed on an item with a
-#               superior reward, but none is required (tools/check.py)   (optional)
+# superior      true for the superior rewards (the item wizard lists them apart)   (optional)
 # craftsmanship the craftsmanships that may carry the quality; the item names its own in
 #               `craftsmanship`. Without it any item may               (optional)
 # weapon_group  only weapons of this group (see [weapon_groups])       (optional)
@@ -402,7 +409,7 @@ modifies = { load = -2 }
 text = "Load −2"
 rule = "Reduce your Load rating by 2."
 
-# ---- superior rewards: with a Bane where the rule book asks for one
+# ---- superior rewards
 
 [qualities."Superior Fell"]
 applies_to = ["weapon"]
@@ -607,12 +614,18 @@ rule = "The bearer of such a weapon always enjoys a clean shot, even when they a
 # Highest number of extra effects per item type. A missing value means "no limit", 0 forbids.
 #   qualities, banes, blessings   each list on its own
 #   total                         qualities and blessings together. A Bane does not count: it
-#                                 comes free with a superior reward
-#
-# [limits.weapon]
-# qualities = 3
-# banes = 1
-# blessings = 0
-# total = 3
+#                                 comes with the craftsmanship
+# The Magical Treasure Index of the rule book has three lines for the qualities of a famous
+# weapon or piece of armour.
 
-[limits]
+[limits.weapon]
+qualities = 3
+
+[limits.armour]
+qualities = 3
+
+[limits.helm]
+qualities = 3
+
+[limits.shield]
+qualities = 3

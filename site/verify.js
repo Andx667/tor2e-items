@@ -6,7 +6,7 @@
 
   const STATS = ["damage", "injury", "protection", "parry", "load"];
   const ITEM_KEYS = new Set(["name", "source", "type", "proficiency", "base", "craft", "craftsmanship", "text", "stats_note",
-    "qualities", "banes", "blessings", "effects", "tags", "injury_two_handed", ...STATS]);
+    "qualities", "banes", "blessings", "curse", "effects", "tags", "injury_two_handed", ...STATS]);
   const EFFECT_LISTS = ["qualities", "banes", "blessings"];
 
   const isInt = (v) => Number.isInteger(v);
@@ -40,9 +40,6 @@
       && (!has(e, "bases") || e.bases.includes(item.base)));
   }
 
-  const superiorQualities = (item, rules) =>
-    effectList(item, "qualities").filter((q) => rules.qualities[q] && rules.qualities[q].superior);
-
   // 1. schema
   function checkItem(item, rules) {
     const out = [];
@@ -51,7 +48,7 @@
     for (const key of ["name", "type"]) {
       if (typeof item[key] !== "string" || !item[key].trim()) out.push(`'${key}' is missing`);
     }
-    for (const key of ["proficiency", "base", "craft", "craftsmanship", "text", "stats_note"]) {
+    for (const key of ["proficiency", "base", "craft", "craftsmanship", "text", "stats_note", "curse"]) {
       if (has(item, key) && typeof item[key] !== "string") out.push(`'${key}' must be text`);
     }
     if (typeof item.craftsmanship === "string" && !rules.craftsmanships.includes(item.craftsmanship)) {
@@ -129,7 +126,7 @@
     const limits = rules.limits[kind] || {};
     const counts = {};
     for (const key of EFFECT_LISTS) counts[key] = effectList(item, key).length;
-    counts.total = counts.qualities + counts.blessings; // a Bane is free with a superior reward
+    counts.total = counts.qualities + counts.blessings; // a Bane comes with the craftsmanship
     for (const [key, highest] of Object.entries(limits)) {
       if (has(counts, key) && counts[key] > highest) {
         out.push(`${counts[key]} ${key === "total" ? "extra effects in total" : key}, a ${kind} may have ${highest}`);
@@ -182,12 +179,6 @@
       if (wanted !== undefined && have !== wanted) return [`a ${item.type} blesses ${wanted} skill${wanted !== 1 ? "s" : ""}, this one ${have}`];
       return [];
     },
-    function baneNeedsASuperiorReward(item, rules) {
-      if (effectList(item, "banes").length && !superiorQualities(item, rules).length) {
-        return ["a Bane is only allowed on an item with a superior quality (Superior Fell, Superior Grievous, ...)"];
-      }
-      return [];
-    },
   ];
 
   const LABELS = {
@@ -195,7 +186,6 @@
     statsFollowTheBase: "The stats follow the base",
     banesFollowTheCraftsmanship: "Banes: Elven or Númenórean, the right number and kinds",
     blessingsByType: "The number of blessed skills fits the item type",
-    baneNeedsASuperiorReward: "A Bane comes with a superior reward",
   };
 
   // The checks one by one, in the order of check.py: [{label, problems}]
@@ -273,7 +263,7 @@
     return lines.join("\n") + "\n";
   }
 
-  const api = { toToml, verify, groups, checkItem, checkEffects, cardStats, qualityText, qualityEffects, kindLine, proficienciesOf, superiorQualities, effectList };
+  const api = { toToml, verify, groups, checkItem, checkEffects, cardStats, qualityText, qualityEffects, kindLine, proficienciesOf, effectList };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.TorVerify = api;
 })(typeof window !== "undefined" ? window : globalThis);

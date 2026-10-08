@@ -151,6 +151,8 @@
 % \fwcardline{Text}{Anmerkung} – eine Zeile im selben Kasten (Horte)
 \newcommand\fwcardline[2]{\begin{tcolorbox}[fw stats]#1\fw@cardnote{#2}\end{tcolorbox}}
 \newcommand\fwcardtext[1]{#1\par\vspace{1.8mm}}
+% Kästchen zum Abhaken vor den Gegenständen eines Horts (gefunden)
+\newcommand\fwfound{\raisebox{-0.2mm}{\tikz\draw[fwgrey, line width=0.5pt] (0,0) rectangle (2mm,2mm);}}
 \newenvironment{fwcardeffects}{\begin{itemize}[leftmargin=3.6mm,itemsep=0.9mm,label={\textbullet}]}{\end{itemize}}
 % Drei Karten je Reihe, drei Reihen je Seite
 \def\fw@cardcols{3}

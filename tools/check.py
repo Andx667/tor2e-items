@@ -26,8 +26,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATS = ("damage", "injury", "protection", "parry", "load")
 VALOUR_STATS = (*STATS, "piercing_blow")  # what a `valour_bonus` may name
 ITEM_KEYS = {"name", "source", "type", "proficiency", "base", "craft", "craftsmanship", "text", "stats_note", "qualities",
-             "banes", "blessings", "effects", "tags", "injury_two_handed", *STATS}
-HOARD_KEYS = {"name", "source", "text", "items", "wealth", "wealth_note", "tags"}
+             "banes", "blessings", "curse", "effects", "tags", "injury_two_handed", *STATS}
+HOARD_KEYS = {"name", "source", "text", "campaign", "loremaster", "members", "items", "heroes", "wealth", "wealth_note",
+              "tags"}
 EFFECT_LISTS = ("qualities", "banes", "blessings")
 
 
@@ -219,7 +220,7 @@ def check_item(item, rules):
     for key in ("name", "type"):
         if not isinstance(item.get(key), str) or not item[key].strip():
             yield f"'{key}' is missing"
-    for key in ("proficiency", "base", "craft", "craftsmanship", "text", "stats_note"):
+    for key in ("proficiency", "base", "craft", "craftsmanship", "text", "stats_note", "curse"):
         if key in item and not isinstance(item[key], str):
             yield f"'{key}' must be text"
     if isinstance(item.get("craftsmanship"), str) and item["craftsmanship"] not in rules["craftsmanships"]:
@@ -263,11 +264,12 @@ def check_hoard(hoard, db):
         yield f"unknown field '{key}'"
     if not isinstance(hoard.get("name"), str) or not hoard["name"].strip():
         yield "'name' is missing"
-    for key in ("text", "wealth_note"):
+    for key in ("text", "campaign", "loremaster", "wealth_note"):
         if key in hoard and not isinstance(hoard[key], str):
             yield f"'{key}' must be text"
-    if "tags" in hoard and not is_strings(hoard["tags"]):
-        yield "'tags' must be a list of texts"
+    for key in ("members", "tags"):
+        if key in hoard and not is_strings(hoard[key]):
+            yield f"'{key}' must be a list of texts"
     if "wealth" in hoard and (not is_int(hoard["wealth"]) or hoard["wealth"] < 0):
         yield "'wealth' must be a whole number, 0 or more"
     items = hoard.get("items", {})
@@ -281,6 +283,15 @@ def check_hoard(hoard, db):
             yield f"the count of '{key}' must be a whole number, 1 or more"
     if not items and not hoard.get("wealth"):
         yield "holds neither items nor wealth"
+    heroes = hoard.get("heroes", {})
+    if not isinstance(heroes, dict):
+        yield "'heroes' must be a table: { <item id> = <Player-hero> }"
+        return
+    for key, hero in heroes.items():
+        if key not in items:
+            yield f"heroes: '{key}' is not an item of this hoard"
+        if not isinstance(hero, str) or not hero.strip():
+            yield f"heroes: the Player-hero of '{key}' must be text"
 
 
 # ------------------------------------------------------------------ 2. rules from src/rules.toml
@@ -322,7 +333,7 @@ def check_effects(item, rules):
             yield f"blessings: unknown skill '{skill}' (known: {', '.join(rules['skills'])})"
     limits = rules["limits"].get(kind, {})
     counts = {key: len(effect_list(item, key)) for key in EFFECT_LISTS}
-    counts["total"] = counts["qualities"] + counts["blessings"]  # a Bane is free with a superior reward
+    counts["total"] = counts["qualities"] + counts["blessings"]  # a Bane comes with the craftsmanship
     for key, highest in limits.items():
         if key in counts and counts[key] > highest:
             what = "extra effects in total" if key == "total" else key
@@ -343,10 +354,6 @@ RULES = []
 def rule(fn):
     RULES.append(fn)
     return fn
-
-
-def superior_qualities(item, rules):
-    return [q for q in effect_list(item, "qualities") if rules["qualities"].get(q, {}).get("superior")]
 
 
 @rule
@@ -407,13 +414,6 @@ def blessings_by_type(key, item, db, rules):
     if wanted is not None and have != wanted:
         yield f"a {item['type']} blesses {wanted} skill{'s' if wanted != 1 else ''}, this one {have}"
 
-
-@rule
-def bane_needs_a_superior_reward(key, item, db, rules):
-    """A Bane comes with a superior reward, so it is only allowed on an item that has one. The
-    other way round it is optional."""
-    if effect_list(item, "banes") and not superior_qualities(item, rules):
-        yield "a Bane is only allowed on an item with a superior quality (Superior Fell, Superior Grievous, ...)"
 
 
 # ------------------------------------------------------------------ flow

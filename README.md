@@ -54,6 +54,17 @@ items = { narcrist = 1, klinge-der-wacht = 2 }
 wealth = 40
 ```
 
+A hoard can also be the *Magical Treasure Index* of a campaign, with the fields of that sheet:
+
+```toml
+campaign = "Tales from the Lone-lands"
+loremaster = "Andy"
+members = ["Duinhir", "Geira"]         # the Player-heroes
+heroes = { narcrist = "Duinhir" }      # the Player-hero an item is meant for
+```
+
+The hoard card prints them, and a box in front of every item to tick when it is found.
+
 An item may leave out all its stats and its qualities: the card then shows only the name, the kind line and the
 text. Weapons, armour, helms and shields always need a `base`. Partial stats are an error.
 
@@ -62,9 +73,11 @@ shields and useful items (ordered by the skill they bless). Each category starts
 items yet gets an empty page.
 
 **Source icons.** `source` says where an item or a hoard comes from: `canon` (Tolkien's works, a ring), `finsterwacht`
-(the adventure, its logo) or `rulebook` (the rule books, a book). The icon is printed in the lower right corner of the
+(the adventure, its logo), `rulebook` (the rule books, a book), `lone-lands` (the publisher's sample Magical
+Treasure Index *Tales from the Lone-lands*, a horse with two riders in the snow) or `erebor` (the sample index
+*The Quest for Erebor*, a mountain). The icon is printed in the lower right corner of the
 card and explained on the first page; a made-up item has no `source` and stays plain. The sources are defined in
-`src/rules.toml` (`[sources]`), the icons are in `assets/icons/` (`python3 tools/icons.py` draws the ring and the book).
+`src/rules.toml` (`[sources]`), the icons are in `assets/icons/` (`python3 tools/icons.py` draws the ring, the book, the riders and the mountain).
 
 ## Stats and qualities
 
@@ -87,8 +100,13 @@ not change the stats.
 **Famous items.** Everything that is not a basic reward makes an item famous: a superior or ancient reward, any
 other special quality (*Luminescence*, *Mithril Armour*, …), a blessing or a free effect. Famous weapons and
 armour start their kind line with *Famous Weapon* or *Famous Armour*. Items with only basic rewards (`basic = true`
-in `src/rules.toml`), or none, are just well made and get no such label. A *Bane* comes with a superior reward
-and is only allowed on an item that has one. It does not count towards the number of rewards.
+in `src/rules.toml`), or none, are just well made and get no such label. A *Bane* comes with the craftsmanship
+(Elven and Númenórean weapons and shields), whatever the qualities of the item. It does not count towards the
+number of rewards. A famous weapon or piece of armour has at most three qualities, like the three lines of the
+Magical Treasure Index (`[limits]` in `src/rules.toml`).
+
+**Curses.** `curse` is the curse on an item, as free text: curses are made by hand, so there is no list and no
+rule for them. The card prints the text, the overview only says that the item is cursed.
 
 ## Useful items
 
@@ -124,16 +142,15 @@ quickjs`. A new `@rule` in `tools/check.py` has to be added to `site/verify.js` 
 `python3 tools/check.py` prints one line per problem and fails if there is any. The build and the CI run it first.
 
 1. **Schema** (built in): known fields, required fields, whole numbers, the stats each type needs (all or none),
-   a `base` on weapons, armour, helms and shields, known craftsmanships, hoards that only hold existing items.
+   a `base` on weapons, armour, helms and shields, known craftsmanships, hoards that only hold
+   existing items and only name heroes for items they hold.
    The rules file is checked too, including a German text on every quality.
 2. **Rules** from `src/rules.toml`: `applies_to`, `weapon_group`, `proficiency`, `bases`, `craftsmanship`,
    `excludes` and `requires` per quality, and `[limits.<type>]` for the highest number of rewards and blessings
    (a Bane is not counted).
 3. **Custom rules**: whatever the tables cannot express is a Python function with `@rule` at the end of
-   `tools/check.py`: a Bane only with a superior reward and with the kinds and number of Banes that the
-   craftsmanship allows, stats that follow the base, a base on all gear, and the number of blessings of a type.
-
-There are no limits on the number of rewards yet.
+   `tools/check.py`: the kinds and number of Banes that the craftsmanship allows, stats that follow the base,
+   a base on all gear, and the number of blessings of a type.
 
 ## Build
 

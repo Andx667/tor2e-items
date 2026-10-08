@@ -39,14 +39,14 @@ STRINGS = {
     "english": {"Contents": "Contents", "Version": "Version", "Date": "Date", "Cards": "Cards",
                 "Hoards": "Hoards", "Hoard": "Hoard", "Name": "Name", "Kind": "Kind",
                 "Stats": "Stats", "Blessings": "Blessings", "Holds": "Holds", "Page": "Page",
-                "Selection": "Selection", "NoItems": "No items yet",
+                "Selection": "Selection", "NoItems": "No items yet", "Members": "Company",
                 "ModifiersNote": "All stats in the overview and on the cards are the base values. The "
                                  "bonuses of the listed qualities are not included; they stand below "
                                  "the values (in brackets in the overview)."},
     "ngerman": {"Contents": "Inhalt", "Version": "Version", "Date": "Stand", "Cards": "Karten",
                 "Hoards": "Horte", "Hoard": "Hort", "Name": "Name", "Kind": "Art",
                 "Stats": "Werte", "Blessings": "Blessings", "Holds": "Inhalt", "Page": "Seite",
-                "Selection": "Auswahl", "NoItems": "Noch keine Gegenstände",
+                "Selection": "Auswahl", "NoItems": "Noch keine Gegenstände", "Members": "Gefährten",
                 "ModifiersNote": "Alle Werte in der Übersicht und auf den Karten sind Grundwerte. Die "
                                  "Boni der aufgeführten Eigenschaften sind nicht eingerechnet; sie stehen "
                                  "unter den Werten (in der Übersicht in Klammern)."},
@@ -225,8 +225,34 @@ def wealth_line(hoard):
     return f"Treasure {hoard['wealth']}" if hoard.get("wealth") else ""
 
 
-def holds(hoard, db):
-    return [f"{count}× {db['items'][key]['name']}" for key, count in hoard.get("items", {}).items()]
+def holds(hoard, db, heroes=False):
+    """What a hoard holds, one text per item; with `heroes` also the Player-hero it is meant for."""
+    meant = hoard.get("heroes", {}) if heroes else {}
+    return [f"{count}× {db['items'][key]['name']}" + (f" ({meant[key]})" if key in meant else "")
+            for key, count in hoard.get("items", {}).items()]
+
+
+CARD_LINES = 17  # lines of text below the kind line of a card
+
+
+def hoard_parts(hoard, lines):
+    """The items of a hoard card in parts, one per card: a long list goes on on further cards.
+    The first card also holds the wealth, the text and the people, so it takes fewer items."""
+    def rows(text, width=38):
+        return -(-len(text) // width)
+
+    used = max(0, rows(hoard["name"], 22) - 1) * 1.5 + (2 if hoard.get("wealth") else 0)
+    for text in (hoard.get("text", ""), hoard.get("loremaster", ""), ", ".join(hoard.get("members", []))):
+        if text:
+            used += rows(text + " " * 12) + 0.5
+    parts = [[]]
+    for line in lines:
+        if parts[-1] and used + rows(line, 34) > CARD_LINES:
+            parts.append([])
+            used = 0
+        parts[-1].append(line)
+        used += rows(line, 34)
+    return parts
 
 
 def cards_tex(db, rules, groups, s):
@@ -240,7 +266,16 @@ def cards_tex(db, rules, groups, s):
         return term_re.sub(lambda m: r"\textit{" + m[1] + "}", text) if term_re else text
 
     def card(table, key):
+        """The cards of one entry: one, or several for a hoard whose items do not fit on one."""
         c = db[table][key]
+        if table == "hoards":
+            parts = hoard_parts(c, holds(c, db, heroes=True))
+            return [one(table, key, part, n, len(parts)) for n, part in enumerate(parts, 1)]
+        return [one(table, key)]
+
+    def one(table, key, part=(), n=1, of=1):
+        c = db[table][key]
+        name = tex_escape(c["name"]) + (f" ({n}/{of})" if of > 1 else "")
         if table == "items":
             kind, stats, note = kind_line(c, rules), stats_entries(c, rules), c.get("stats_note", "")
             lines = [(q, quality_text(q, c, rules)) for q in c.get("qualities", [])]
@@ -250,14 +285,19 @@ def cards_tex(db, rules, groups, s):
                 lines.append(("Blessings" if len(c["blessings"]) > 1 else "Blessing", ", ".join(c["blessings"])))
             lines += [tuple(e) for e in c.get("effects", [])]
             bullets = [r"\item \textbf{" + tex_escape(a) + (":} " + it(b) if b else "}") for a, b in lines]
+            if c.get("curse"):  # free text, so no rules terms are set in italics in it
+                bullets.append(r"\item \textbf{Curse:} " + tex_escape(c["curse"]))
+            people = []
         else:
-            kind, stats, note = s["Hoard"], wealth_line(c), c.get("wealth_note", "")
-            bullets = [r"\item " + tex_escape(line) for line in holds(c, db)]
+            kind = " · ".join(x for x in (s["Hoard"], c.get("campaign")) if x)
+            stats, note = (wealth_line(c), c.get("wealth_note", "")) if n == 1 else ("", "")
+            people = [("Loremaster", c.get("loremaster", "")), (s["Members"], ", ".join(c.get("members", [])))] if n == 1 else []
+            bullets = [r"\item[\fwfound] " + tex_escape(line) for line in part]  # a box to tick when found
         up = []
         if (table, key) not in labelled:  # the overview points at the first copy
             labelled.add((table, key))
             up.append(r"\fwcardanchor{card-%s}{%s}" % (key, tex_escape(c["name"])))
-        up += [r"\fwcardname{" + tex_escape(c["name"]) + "}", r"\fwcardkind{" + it(kind) + "}"]
+        up += [r"\fwcardname{" + name + "}", r"\fwcardkind{" + it(kind) + "}"]
         if stats:
             if table == "items":  # labels like table headers, below them the base values and the bonuses
                 heads = " & ".join(r"\fwstathead{" + tex_escape(label) + "}" for label, _, _ in stats)
@@ -266,8 +306,9 @@ def cards_tex(db, rules, groups, s):
                 up.append(r"\fwcardstats{%d}{%s}{%s}{%s}{%s}" % (len(stats), heads, values, bonuses, it(note)))
             else:
                 up.append(r"\fwcardline{" + it(stats) + "}{" + it(note) + "}")
-        if c.get("text"):
+        if c.get("text") and n == 1:
             up.append(r"\fwcardtext{" + it(c["text"]) + "}")
+        up += [r"\fwcardtext{\textbf{" + tex_escape(a) + ":} " + tex_escape(b) + "}" for a, b in people if b]
         if bullets:
             up += [r"\begin{fwcardeffects}", *bullets, r"\end{fwcardeffects}"]
         icon = "[%s]" % rules["sources"][c["source"]]["icon"] if "source" in c else ""  # where it comes from
@@ -277,10 +318,11 @@ def cards_tex(db, rules, groups, s):
     # page, and an empty group still gets one.
     out = []
     for title, cards in groups:
-        for i in range(0, max(len(cards), 1), PER_PAGE):
+        made = [x for c in cards for x in card(*c)]
+        for i in range(0, max(len(made), 1), PER_PAGE):
             bookmark = "[%s]" % tex_escape(title or s["Cards"]) if i == 0 else ""
             out.append(r"\fwcardspage%s{%s}{%s}{%%" % (bookmark, tex_escape(title), tex_escape(db["hint"])) + "\n"
-                       + "\n".join(card(*c) for c in cards[i:i + PER_PAGE]) + "}")
+                       + "\n".join(made[i:i + PER_PAGE]) + "}")
     return "\n\n".join(out) + "\n"
 
 
@@ -319,7 +361,8 @@ def index_tex(db, rules, groups, s):
             rows = []
             for k in keys:
                 c = db["items"][k]
-                extras = c.get("qualities", []) + [f"Bane: {b}" for b in c.get("banes", [])] + c.get("blessings", [])
+                extras = (c.get("qualities", []) + [f"Bane: {b}" for b in c.get("banes", [])] + c.get("blessings", [])
+                          + (["Curse"] if c.get("curse") else []))
                 rows.append([link(k, c["name"]), tex_escape(" · ".join(x for x in (c.get("base"), c.get("craft")) if x)),
                              tex_escape(" · ".join(x for x in (stats_line(c, rules), ", ".join(extras)) if x)), page(k)])
             out.append(table(title, ("0.30", "0.27", "0.36", "0.07"),
