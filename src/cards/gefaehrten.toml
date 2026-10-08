@@ -7,56 +7,49 @@
 [items.heilstein]
 name = "Heilstein"
 type = "artefact"
-craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
 text = "Ein glatter Stein, in den eine Zwergenrune geschnitten ist. Die Rune steht für einen alten Heilzauber."
 blessings = ["Healing"]
-tags = ["gefaehrten"]
 
 [items.sternenknoepfe]
 name = "Sternenknöpfe"
 type = "artefact"
 text = "Zwei Knöpfe, mit sieben winzigen Diamanten wie Sterne besetzt. An den Ärmeln oder der Brust eines Rocks getragen, sind sie ein eindrucksvoller Anblick."
 blessings = ["Courtesy"]
-tags = ["gefaehrten"]
 
 [items.sonnenmantel]
 name = "Sonnenmantel"
 type = "artefact"
 text = "Auf diesen prächtigen Mantel ist das Bild einer roten, lodernden Sonne gestickt."
 blessings = ["Enhearten"]
-tags = ["gefaehrten"]
 
 [items.koeniglicher-jagdguertel]
 name = "Königlicher Jagdgürtel"
 type = "artefact"
 text = "Ein goldener Gürtel, verziert mit Bildern von Menschen auf der Jagd nach Hirschen und Ebern."
 blessings = ["Hunting"]
-tags = ["gefaehrten"]
 
 [items.ring-des-sehens]
 name = "Ring des Sehens"
 type = "artefact"
 text = "Ein goldener Ring, der die Sinne seines Trägers für das Unsichtbare schärft."
 blessings = ["Awareness"]
-tags = ["gefaehrten"]
 
 # ================================================================ wondrous items
 
 [items.waldlaeuferstiefel]
 name = "Waldläuferstiefel"
 type = "wonder"
-craft = "elbische Arbeit"
+craftsmanship = "Elven"
 text = "Feine Lederstiefel elbischer Machart, mit eingeprägten Blättern verziert."
 blessings = ["Athletics", "Stealth"]
-tags = ["gefaehrten"]
 
 [items.harfe-von-doriath]
 name = "Harfe von Doriath"
 type = "wonder"
-craft = "elbische Arbeit"
+craftsmanship = "Elven"
 text = "Eine kleine Elbenharfe aus Silber. Sie gehörte einem Hofmusiker König Thingols."
 blessings = ["Song", "Enhearten"]
-tags = ["gefaehrten"]
 
 # ================================================================ weapons and armour
 
@@ -64,32 +57,27 @@ tags = ["gefaehrten"]
 name = "Schwanenfederhelm"
 type = "helm"
 base = "Helm"
-craft = "númenórische Arbeit"
 craftsmanship = "Númenórean"
 protection = 1
 load = 4
 text = "Ein Helm mit weißem Federbusch. Im Krieg des Letzten Bundes trug ihn Beleg, einer von Isildurs Hauptleuten."
 qualities = ["Close-fitting", "Cunning Make"]
-tags = ["gefaehrten"]
 
 [items.koeniglicher-mithrilpanzer]
 name = "Königlicher Mithrilpanzer"
 type = "armour"
 base = "Coat of mail"
-craft = "Zwergenarbeit"
 craftsmanship = "Dwarven"
 protection = 4
 load = 12
 text = "Ein Kettenpanzer aus Mithrilringen, ein Geschenk der Zwerge von Khazad-dûm an die Menschen. Die Brust zieren sieben Sterne um ein silbernes Zepter, ein Zeichen des alten Arnor."
 qualities = ["Mithril Armour", "Ancient Close-fitting"]
-tags = ["gefaehrten"]
 
 [items.tinusigil]
 name = "Sternenschneide, Tinusigil"
 type = "weapon"
 proficiency = "swords"
 base = "Short sword"
-craft = "elbische Arbeit"
 craftsmanship = "Elven"
 damage = 3
 injury = 16
@@ -97,14 +85,12 @@ load = 1
 text = "Bronzedraht und bronzene Sterne zieren das Heft. Die Elbenschmiede von Nargothrond schmiedeten die Klinge; sie leuchtet in der Nähe der Diener des Feindes."
 qualities = ["Keen", "Luminescence"]
 banes = ["Orks"]
-tags = ["gefaehrten"]
 
 [items.flammenspitze]
 name = "Flammenspitze"
 type = "weapon"
 proficiency = "spears"
 base = "Spear"
-craft = "Zwergenarbeit"
 craftsmanship = "Dwarven"
 damage = 4
 injury = 14
@@ -112,14 +98,12 @@ injury_two_handed = 16
 load = 3
 text = "Die Zwerge von Nogrod schmiedeten diesen Speer aus hohlem Stahl für den Kampf gegen Drachen. Die goldgefasste Spitze leuchtet in der Nähe eines Feuers auf."
 qualities = ["Fell", "Flame of Hope"]
-tags = ["gefaehrten"]
 
 [items.gwathmaeg]
 name = "Schattenstecher, Gwathmaeg"
 type = "weapon"
 proficiency = "bows"
 base = "Great bow"
-craft = "númenórische Arbeit"
 craftsmanship = "Númenórean"
 damage = 4
 injury = 16
@@ -127,4 +111,3 @@ load = 4
 text = "Für den Krieg gegen Saurons Heerführer gebaut."
 qualities = ["Keen", "Fell", "Foe-slaying"]
 banes = ["Untote", "Böse Menschen"]
-tags = ["gefaehrten"]

@@ -25,10 +25,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 STATS = ("damage", "injury", "protection", "parry", "load")
 VALOUR_STATS = (*STATS, "piercing_blow")  # what a `valour_bonus` may name
-ITEM_KEYS = {"name", "source", "type", "proficiency", "base", "craft", "craftsmanship", "text", "stats_note", "qualities",
-             "banes", "blessings", "curse", "effects", "tags", "injury_two_handed", *STATS}
-HOARD_KEYS = {"name", "source", "text", "campaign", "loremaster", "members", "items", "heroes", "wealth", "wealth_note",
-              "tags"}
+ITEM_KEYS = {"name", "source", "type", "proficiency", "base", "craftsmanship", "text", "stats_note", "qualities",
+             "banes", "blessings", "curse", "effects", "injury_two_handed", *STATS}
+HOARD_KEYS = {"name", "source", "text", "campaign", "items", "wealth", "wealth_note"}
 EFFECT_LISTS = ("qualities", "banes", "blessings")
 
 
@@ -39,7 +38,7 @@ def load_toml(*parts):
 
 def load_rules():
     rules = load_toml("src", "rules.toml")
-    for key in ("types", "sources", "categories", "qualities", "limits"):
+    for key in ("types", "sources", "categories", "qualities", "limits", "craft_labels"):
         rules.setdefault(key, {})
     rules.setdefault("craftsmanships", [])
     rules.setdefault("skills", [])
@@ -56,6 +55,11 @@ def quality_effects(quality, item):
     return [e for e in quality["effects"]
             if ("crafts" not in e or item.get("craftsmanship") in e["crafts"])
             and ("bases" not in e or item.get("base") in e["bases"])]
+
+
+def craft_label(item, rules):
+    """What the card says about the make of an item: the line of its craftsmanship, "" without one."""
+    return rules["craft_labels"].get(item.get("craftsmanship"), "")
 
 
 def proficiencies_of(quality, rules):
@@ -107,6 +111,9 @@ def is_strings(v):
 
 # ------------------------------------------------------------------ 1. schema
 def check_rules_file(rules):
+    for c in rules["craftsmanships"]:
+        if not isinstance(rules["craft_labels"].get(c), str) or not rules["craft_labels"][c].strip():
+            yield f"rules: craft_labels: the line for '{c}' is missing"
     for name, t in rules["types"].items():
         if "plain_label" in t and not isinstance(t["plain_label"], str):
             yield f"rules: types.{name}: 'plain_label' must be text"
@@ -145,6 +152,11 @@ def check_rules_file(rules):
                 yield f"rules: categories.{name}: types names the unknown type '{t}'"
         if c.get("sort") not in (None, "blessings"):
             yield f"rules: categories.{name}: unknown sort '{c['sort']}' (known: blessings)"
+    known = {c["proficiency"] for c in rules["categories"].values() if "proficiency" in c}
+    for group, members in rules.get("weapon_groups", {}).items():
+        for p in members:
+            if p not in known:
+                yield f"rules: weapon_groups.{group}: unknown proficiency '{p}'"
     for name, q in rules["qualities"].items():
         for t in q.get("applies_to", []):
             if t not in rules["types"]:
@@ -158,11 +170,6 @@ def check_rules_file(rules):
                 yield f"rules: qualities.{name}: craftsmanship names the unknown craftsmanship '{c}'"
         if "weapon_group" in q and q["weapon_group"] not in rules.get("weapon_groups", {}):
             yield f"rules: qualities.{name}: unknown weapon_group '{q['weapon_group']}'"
-        known = {c["proficiency"] for c in rules["categories"].values() if "proficiency" in c}
-        for group, members in rules.get("weapon_groups", {}).items():
-            for p in members:
-                if p not in known:
-                    yield f"rules: weapon_groups.{group}: unknown proficiency '{p}'"
         for p in q.get("proficiency", []):
             if p not in known:
                 yield f"rules: qualities.{name}: proficiency names the unknown proficiency '{p}'"
@@ -202,9 +209,17 @@ def check_rules_file(rules):
                         yield f"rules: {where}: {field} names the unknown stat '{s}'"
                     if not is_int(change):
                         yield f"rules: {where}: the value of '{s}' in {field} must be a whole number"
-    for name in rules["limits"]:
+    for name, limits in rules["limits"].items():
         if name not in rules["types"]:
             yield f"rules: limits.{name}: unknown type"
+        if not isinstance(limits, dict):
+            yield f"rules: limits.{name}: must be a table: [limits.{name}]"
+            continue
+        for key, highest in limits.items():
+            if key not in (*EFFECT_LISTS, "total"):
+                yield f"rules: limits.{name}: unknown limit '{key}' (known: {', '.join((*EFFECT_LISTS, 'total'))})"
+            if not is_int(highest) or highest < 0:
+                yield f"rules: limits.{name}: '{key}' must be a whole number, 0 or more"
 
 
 def check_source(entry, rules):
@@ -220,12 +235,12 @@ def check_item(item, rules):
     for key in ("name", "type"):
         if not isinstance(item.get(key), str) or not item[key].strip():
             yield f"'{key}' is missing"
-    for key in ("proficiency", "base", "craft", "craftsmanship", "text", "stats_note", "curse"):
+    for key in ("proficiency", "base", "craftsmanship", "text", "stats_note", "curse"):
         if key in item and not isinstance(item[key], str):
             yield f"'{key}' must be text"
     if isinstance(item.get("craftsmanship"), str) and item["craftsmanship"] not in rules["craftsmanships"]:
         yield f"unknown craftsmanship '{item['craftsmanship']}' (known: {', '.join(rules['craftsmanships'])})"
-    for key in (*EFFECT_LISTS, "tags"):
+    for key in EFFECT_LISTS:
         if key in item and not is_strings(item[key]):
             yield f"'{key}' must be a list of texts"
     effects = item.get("effects", [])
@@ -264,12 +279,9 @@ def check_hoard(hoard, db):
         yield f"unknown field '{key}'"
     if not isinstance(hoard.get("name"), str) or not hoard["name"].strip():
         yield "'name' is missing"
-    for key in ("text", "campaign", "loremaster", "wealth_note"):
+    for key in ("text", "campaign", "wealth_note"):
         if key in hoard and not isinstance(hoard[key], str):
             yield f"'{key}' must be text"
-    for key in ("members", "tags"):
-        if key in hoard and not is_strings(hoard[key]):
-            yield f"'{key}' must be a list of texts"
     if "wealth" in hoard and (not is_int(hoard["wealth"]) or hoard["wealth"] < 0):
         yield "'wealth' must be a whole number, 0 or more"
     items = hoard.get("items", {})
@@ -283,15 +295,6 @@ def check_hoard(hoard, db):
             yield f"the count of '{key}' must be a whole number, 1 or more"
     if not items and not hoard.get("wealth"):
         yield "holds neither items nor wealth"
-    heroes = hoard.get("heroes", {})
-    if not isinstance(heroes, dict):
-        yield "'heroes' must be a table: { <item id> = <Player-hero> }"
-        return
-    for key, hero in heroes.items():
-        if key not in items:
-            yield f"heroes: '{key}' is not an item of this hoard"
-        if not isinstance(hero, str) or not hero.strip():
-            yield f"heroes: the Player-hero of '{key}' must be text"
 
 
 # ------------------------------------------------------------------ 2. rules from src/rules.toml
@@ -332,6 +335,7 @@ def check_effects(item, rules):
         if skill not in rules["skills"]:
             yield f"blessings: unknown skill '{skill}' (known: {', '.join(rules['skills'])})"
     limits = rules["limits"].get(kind, {})
+    limits = {k: v for k, v in limits.items() if is_int(v)} if isinstance(limits, dict) else {}
     counts = {key: len(effect_list(item, key)) for key in EFFECT_LISTS}
     counts["total"] = counts["qualities"] + counts["blessings"]  # a Bane comes with the craftsmanship
     for key, highest in limits.items():

@@ -5,8 +5,8 @@
   "use strict";
 
   const STATS = ["damage", "injury", "protection", "parry", "load"];
-  const ITEM_KEYS = new Set(["name", "source", "type", "proficiency", "base", "craft", "craftsmanship", "text", "stats_note",
-    "qualities", "banes", "blessings", "curse", "effects", "tags", "injury_two_handed", ...STATS]);
+  const ITEM_KEYS = new Set(["name", "source", "type", "proficiency", "base", "craftsmanship", "text", "stats_note",
+    "qualities", "banes", "blessings", "curse", "effects", "injury_two_handed", ...STATS]);
   const EFFECT_LISTS = ["qualities", "banes", "blessings"];
 
   const isInt = (v) => Number.isInteger(v);
@@ -48,13 +48,13 @@
     for (const key of ["name", "type"]) {
       if (typeof item[key] !== "string" || !item[key].trim()) out.push(`'${key}' is missing`);
     }
-    for (const key of ["proficiency", "base", "craft", "craftsmanship", "text", "stats_note", "curse"]) {
+    for (const key of ["proficiency", "base", "craftsmanship", "text", "stats_note", "curse"]) {
       if (has(item, key) && typeof item[key] !== "string") out.push(`'${key}' must be text`);
     }
     if (typeof item.craftsmanship === "string" && !rules.craftsmanships.includes(item.craftsmanship)) {
       out.push(`unknown craftsmanship '${item.craftsmanship}' (known: ${rules.craftsmanships.join(", ")})`);
     }
-    for (const key of [...EFFECT_LISTS, "tags"]) {
+    for (const key of EFFECT_LISTS) {
       if (has(item, key) && !isStrings(item[key])) out.push(`'${key}' must be a list of texts`);
     }
     const effects = has(item, "effects") ? item.effects : [];
@@ -123,7 +123,7 @@
     for (const skill of effectList(item, "blessings")) {
       if (!rules.skills.includes(skill)) out.push(`blessings: unknown skill '${skill}' (known: ${rules.skills.join(", ")})`);
     }
-    const limits = rules.limits[kind] || {};
+    const limits = Object.fromEntries(Object.entries(rules.limits[kind] || {}).filter(([, v]) => isInt(v)));
     const counts = {};
     for (const key of EFFECT_LISTS) counts[key] = effectList(item, key).length;
     counts.total = counts.qualities + counts.blessings; // a Bane comes with the craftsmanship
@@ -245,7 +245,7 @@
     const famous = effectList(item, "qualities").some((q) => rules.qualities[q] && !rules.qualities[q].basic)
       || effectList(item, "blessings").length || (item.effects || []).length;
     const label = !famous && has(kind, "plain_label") ? kind.plain_label : kind.label;
-    return [label, item.base, item.craft].filter(Boolean).join(" · ");
+    return [label, item.base, (rules.craft_labels || {})[item.craftsmanship]].filter(Boolean).join(" · ");
   }
 
   // The TOML table of an item for src/cards.toml, in the field order of that file

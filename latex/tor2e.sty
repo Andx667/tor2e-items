@@ -164,7 +164,17 @@
 \newcommand\fwlegend[1]{{\small\color{fwgrey}#1\par}\vspace{1mm}}
 \newcommand\fwlegenditem[2]{\mbox{\raisebox{-0.7mm}{\fw@icon{3.4mm}{#1}}\,\itshape #2}}
 % \fwcard[Zeichen]{Inhalt oben}{Fußzeile} – nur innerhalb von \fwcardspage; bricht die Reihe selbst um
+% Vorher misst sie den Inhalt ohne feste Höhe: ist er höher als die Karte, steht
+% "FWOVERFLOW<\fwcardid><Überstand>" im Log, und tools/build.py bricht ab.
+\newsavebox\fw@measbox
+\providecommand\fwcardid{?}
 \NewDocumentCommand\fwcard{O{}mm}{%
+  \begingroup\let\fwcardanchor\@gobbletwo
+    \sbox\fw@measbox{\begin{tcolorbox}[fw card, natural height]#2\ifblank{#3}{}{\tcblower #3}\end{tcolorbox}}%
+    \ifdim\dimexpr\ht\fw@measbox+\dp\fw@measbox\relax>\dimexpr\fw@bh+0.3mm\relax
+      \typeout{FWOVERFLOW<\fwcardid><\strip@pt\dimexpr\ht\fw@measbox+\dp\fw@measbox-\fw@bh\relax pt>}%
+    \fi
+  \endgroup
   \sbox\fw@cardbox{\begin{tcolorbox}[fw card, overlay={\ifblank{#1}{}{%
       \node[anchor=south east, inner sep=0pt, opacity=0.75] at ([xshift=-2mm,yshift=2mm]frame.south east) {\fw@icon{4.4mm}{#1}};}}]%
     #2\ifblank{#3}{}{\tcblower #3}\end{tcolorbox}}%

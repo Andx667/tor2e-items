@@ -3,6 +3,7 @@
 
     python3 tools/build.py                      # everything: all items, then all hoards
     python3 tools/build.py kammer-der-wacht     # a selection: ids of items and hoards
+    python3 tools/build.py source:canon         # ... or every item of a source
 
 A hoard in a selection brings its own card and one card per copy of every item it holds.
 Without a selection the PDF follows the categories of src/rules.toml; each one starts a new
@@ -15,7 +16,7 @@ Everything collection-specific lives in collection.toml (title, language, credit
   2. version and date from git (latest tag v*, commit date)  -> build/version.tex
   3. collection.toml                                          -> build/meta.tex
   4. src/cards.toml -> build/index.tex (overview) and build/cards.tex (nine cards per A4 page)
-  5. LuaLaTeX (latexmk) -> build/<file_name>.pdf
+  5. LuaLaTeX (latexmk) -> build/<file_name>.pdf; a card with more text than fits stops the build
   6. copy with the exact version in the name (published by CI)
 
 Needs: LuaLaTeX with latexmk (TeX Live or MiKTeX), Python 3.11+.
@@ -39,14 +40,14 @@ STRINGS = {
     "english": {"Contents": "Contents", "Version": "Version", "Date": "Date", "Cards": "Cards",
                 "Hoards": "Hoards", "Hoard": "Hoard", "Name": "Name", "Kind": "Kind",
                 "Stats": "Stats", "Blessings": "Blessings", "Holds": "Holds", "Page": "Page",
-                "Selection": "Selection", "NoItems": "No items yet", "Members": "Company",
+                "Selection": "Selection", "NoItems": "No items yet",
                 "ModifiersNote": "All stats in the overview and on the cards are the base values. The "
                                  "bonuses of the listed qualities are not included; they stand below "
                                  "the values (in brackets in the overview)."},
     "ngerman": {"Contents": "Inhalt", "Version": "Version", "Date": "Stand", "Cards": "Karten",
                 "Hoards": "Horte", "Hoard": "Hort", "Name": "Name", "Kind": "Art",
                 "Stats": "Werte", "Blessings": "Blessings", "Holds": "Inhalt", "Page": "Seite",
-                "Selection": "Auswahl", "NoItems": "Noch keine Gegenstände", "Members": "Gefährten",
+                "Selection": "Auswahl", "NoItems": "Noch keine Gegenstände",
                 "ModifiersNote": "Alle Werte in der Übersicht und auf den Karten sind Grundwerte. Die "
                                  "Boni der aufgeführten Eigenschaften sind nicht eingerechnet; sie stehen "
                                  "unter den Werten (in der Übersicht in Klammern)."},
@@ -66,11 +67,13 @@ def git(*args):
         return ""
 
 
+TEX_ESCAPES = {"\\": r"\textbackslash{}", "&": r"\&", "%": r"\%", "$": r"\$", "#": r"\#", "_": r"\_",
+               "{": r"\{", "}": r"\}", "~": r"\textasciitilde{}", "^": r"\textasciicircum{}"}
+
+
 def tex_escape(s):
-    for a, b in (("\\", r"\textbackslash{}"), ("&", r"\&"), ("%", r"\%"), ("$", r"\$"),
-                 ("#", r"\#"), ("_", r"\_"), ("{", r"\{"), ("}", r"\}")):
-        s = s.replace(a, b)
-    return s
+    # in one pass, so that the braces of a replacement are not escaped again
+    return re.sub(r"[\\&%$#_{}~^]", lambda m: TEX_ESCAPES[m[0]], s)
 
 
 def load_config():
@@ -145,7 +148,12 @@ def select(db, rules, wanted, s):
         return groups
     cards = []
     for key in wanted:
-        if key in db["items"]:
+        if key.startswith("source:"):  # every item of a source, in the order of the database
+            source = key.removeprefix("source:")
+            if source not in rules["sources"]:
+                sys.exit(f"Unknown source '{source}' (known: {', '.join(rules['sources'])})")
+            cards += [("items", k) for k, item in db["items"].items() if item.get("source") == source]
+        elif key in db["items"]:
             cards.append(("items", key))
         elif key in db["hoards"]:
             cards.append(("hoards", key))
@@ -164,7 +172,7 @@ def kind_line(item, rules):
     famous = (any(not rules["qualities"][q].get("basic") for q in item.get("qualities", []))
               or item.get("blessings") or item.get("effects"))
     label = kind["plain_label"] if not famous and "plain_label" in kind else kind["label"]
-    return " · ".join(x for x in (label, item.get("base"), item.get("craft")) if x)
+    return " · ".join(x for x in (label, item.get("base"), check.craft_label(item, rules)) if x)
 
 
 def quality_text(name, item, rules):
@@ -225,26 +233,23 @@ def wealth_line(hoard):
     return f"Treasure {hoard['wealth']}" if hoard.get("wealth") else ""
 
 
-def holds(hoard, db, heroes=False):
-    """What a hoard holds, one text per item; with `heroes` also the Player-hero it is meant for."""
-    meant = hoard.get("heroes", {}) if heroes else {}
-    return [f"{count}× {db['items'][key]['name']}" + (f" ({meant[key]})" if key in meant else "")
-            for key, count in hoard.get("items", {}).items()]
+def holds(hoard, db):
+    return [f"{count}× {db['items'][key]['name']}" for key, count in hoard.get("items", {}).items()]
 
 
-CARD_LINES = 17  # lines of text below the kind line of a card
+CARD_LINES = 16  # lines of text below the kind line of a card
 
 
 def hoard_parts(hoard, lines):
     """The items of a hoard card in parts, one per card: a long list goes on on further cards.
-    The first card also holds the wealth, the text and the people, so it takes fewer items."""
+    The first card also holds the wealth and the text, so it takes fewer items. The lines are an
+    estimate; a card that is too full after all stops the build (see overflowing)."""
     def rows(text, width=38):
         return -(-len(text) // width)
 
     used = max(0, rows(hoard["name"], 22) - 1) * 1.5 + (2 if hoard.get("wealth") else 0)
-    for text in (hoard.get("text", ""), hoard.get("loremaster", ""), ", ".join(hoard.get("members", []))):
-        if text:
-            used += rows(text + " " * 12) + 0.5
+    if hoard.get("text"):
+        used += rows(hoard["text"]) + 0.5
     parts = [[]]
     for line in lines:
         if parts[-1] and used + rows(line, 34) > CARD_LINES:
@@ -269,7 +274,7 @@ def cards_tex(db, rules, groups, s):
         """The cards of one entry: one, or several for a hoard whose items do not fit on one."""
         c = db[table][key]
         if table == "hoards":
-            parts = hoard_parts(c, holds(c, db, heroes=True))
+            parts = hoard_parts(c, holds(c, db))
             return [one(table, key, part, n, len(parts)) for n, part in enumerate(parts, 1)]
         return [one(table, key)]
 
@@ -287,11 +292,9 @@ def cards_tex(db, rules, groups, s):
             bullets = [r"\item \textbf{" + tex_escape(a) + (":} " + it(b) if b else "}") for a, b in lines]
             if c.get("curse"):  # free text, so no rules terms are set in italics in it
                 bullets.append(r"\item \textbf{Curse:} " + tex_escape(c["curse"]))
-            people = []
         else:
             kind = " · ".join(x for x in (s["Hoard"], c.get("campaign")) if x)
             stats, note = (wealth_line(c), c.get("wealth_note", "")) if n == 1 else ("", "")
-            people = [("Loremaster", c.get("loremaster", "")), (s["Members"], ", ".join(c.get("members", [])))] if n == 1 else []
             bullets = [r"\item[\fwfound] " + tex_escape(line) for line in part]  # a box to tick when found
         up = []
         if (table, key) not in labelled:  # the overview points at the first copy
@@ -308,11 +311,12 @@ def cards_tex(db, rules, groups, s):
                 up.append(r"\fwcardline{" + it(stats) + "}{" + it(note) + "}")
         if c.get("text") and n == 1:
             up.append(r"\fwcardtext{" + it(c["text"]) + "}")
-        up += [r"\fwcardtext{\textbf{" + tex_escape(a) + ":} " + tex_escape(b) + "}" for a, b in people if b]
         if bullets:
             up += [r"\begin{fwcardeffects}", *bullets, r"\end{fwcardeffects}"]
         icon = "[%s]" % rules["sources"][c["source"]]["icon"] if "source" in c else ""  # where it comes from
-        return r"\fwcard" + icon + "{" + "\n".join(up) + "}{" + tex_escape(db["footer"]) + "}"
+        where = key + (f" ({n}/{of})" if of > 1 else "")  # named in the log if the card is too full
+        return (r"\def\fwcardid{%s}" % tex_escape(where) + "\n"
+                + r"\fwcard" + icon + "{" + "\n".join(up) + "}{" + tex_escape(db["footer"]) + "}")
 
     # nine cards per page; \fwcard breaks the rows itself (3 x 3). Every group starts a new
     # page, and an empty group still gets one.
@@ -363,7 +367,7 @@ def index_tex(db, rules, groups, s):
                 c = db["items"][k]
                 extras = (c.get("qualities", []) + [f"Bane: {b}" for b in c.get("banes", [])] + c.get("blessings", [])
                           + (["Curse"] if c.get("curse") else []))
-                rows.append([link(k, c["name"]), tex_escape(" · ".join(x for x in (c.get("base"), c.get("craft")) if x)),
+                rows.append([link(k, c["name"]), tex_escape(" · ".join(x for x in (c.get("base"), check.craft_label(c, rules)) if x)),
                              tex_escape(" · ".join(x for x in (stats_line(c, rules), ", ".join(extras)) if x)), page(k)])
             out.append(table(title, ("0.30", "0.27", "0.36", "0.07"),
                              (s["Name"], s["Kind"], s["Stats"], s["Page"]), rows))
@@ -376,6 +380,18 @@ def index_tex(db, rules, groups, s):
             out.append(table(s["Hoards"], ("0.30", "0.14", "0.49", "0.07"),
                              (s["Name"], "Treasure", s["Holds"], s["Page"]), rows))
     return "\n".join(out)
+
+
+def overflowing(log):
+    """The cards whose content is higher than the card, as the layout reports them in the log
+    (\\fwcard in latex/tor2e.sty): "id (by 3.2 mm)"."""
+    try:
+        with open(log, encoding="utf-8", errors="replace") as f:
+            text = f.read().replace("\n", "")  # the log breaks long lines
+    except FileNotFoundError:
+        return []
+    return list(dict.fromkeys(f"{m[1]} (by {float(m[2]) / 2.845:.1f} mm)"
+                              for m in re.finditer(r"FWOVERFLOW<(.*?)><([0-9.]+)pt>", text)))
 
 
 # ------------------------------------------------------------------ flow
@@ -418,6 +434,10 @@ def main():
     else:  # without latexmk three runs settle page references and bookmarks
         for _ in range(3):
             run([engine, *tex, "-output-directory=build", "-jobname=" + job, "latex/tor2e.tex"], env=env)
+    full = overflowing(os.path.join(BUILD, job + ".log"))
+    if full:
+        sys.exit("\n".join("error: the card of " + c + " is too full" for c in full)
+                 + "\nShorten the texts of these cards - no PDF published.")
     pdf = os.path.join("build", f"{job}-{slug}.pdf")
     shutil.copyfile(os.path.join(BUILD, job + ".pdf"), os.path.join(ROOT, pdf))
     if os.environ.get("GITHUB_OUTPUT"):

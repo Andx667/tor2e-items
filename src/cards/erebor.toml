@@ -12,7 +12,6 @@ source = "erebor"
 type = "artefact"
 text = "Ein Paar Diamantknöpfe, die sich selbst schließen und nicht wieder aufgehen, bis man es ihnen befiehlt."
 blessings = ["Courtesy"]
-tags = ["erebor"]
 
 [items.goldene-harfe]
 name = "Goldene Harfe"
@@ -20,7 +19,6 @@ source = "erebor"
 type = "artefact"
 text = "Eine zauberische goldene Harfe mit silbernen Saiten, die sich nie zu verstimmen scheint."
 blessings = ["Song"]
-tags = ["erebor"]
 
 [items.weisser-guertel-des-prinzen]
 name = "Weißer Gürtel des Prinzen"
@@ -28,7 +26,6 @@ source = "erebor"
 type = "artefact"
 text = "Ein Gürtel aus Perlen und Kristallen, gemacht, um die Bewegungen seines Trägers zu erleichtern."
 blessings = ["Athletics"]
-tags = ["erebor"]
 
 # ================================================================ wondrous items
 
@@ -36,19 +33,17 @@ tags = ["erebor"]
 name = "Der große goldene Pokal Thrórs"
 source = "erebor"
 type = "wonder"
-craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
 text = "Ein zweihenkliger Pokal, verziert mit Vögeln und Blumen, deren Augen und Blütenblätter Edelsteine sind. Gießt man Wein hinein, spiegelt er das wahre Wesen von Lebewesen und Dingen."
 blessings = ["Insight", "Riddle"]
-tags = ["erebor"]
 
 [items.koenigliche-ruestung-von-erebor]
 name = "Die königliche Rüstung von Erebor"
 source = "erebor"
 type = "wonder"
-craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
 text = "Das Prunkgewand des Königs unter dem Berg: ein Hemd aus vergoldeten Ringen und eine Prunkaxt mit silbernem Stiel in einem Gürtel voller scharlachroter Steine. Es verleiht Führungskraft und Weisheit in Zeiten des Krieges."
 blessings = ["Battle", "Enhearten"]
-tags = ["erebor"]
 
 # ================================================================ famous weapons and armour
 
@@ -57,26 +52,22 @@ name = "Silbernes Kettenhemd"
 source = "erebor"
 type = "armour"
 base = "Coat of mail"
-craft = "Zwergenarbeit"
 craftsmanship = "Dwarven"
 protection = 4
 load = 12
 text = "Einst dem Sohn Girions geschenkt, des Fürsten von Thal: aus Silber gewirkt und doch so stark wie dreifacher Stahl. Seinesgleichen hat man weder zuvor noch seither gesehen."
 qualities = ["Ancient Cunning Make", "Ancient Close-fitting"]
-tags = ["erebor"]
 
 [items.schild-der-toten]
 name = "Schild der Toten"
 source = "erebor"
 type = "shield"
 base = "Shield"
-craft = "Zwergenarbeit"
 craftsmanship = "Dwarven"
 parry = 2
 load = 4
 text = "Reich verziert von den Zwergenschmieden des alten Erebor, gefertigt für Krieger, die längst tot sind."
 qualities = ["Superior Reinforced", "Cunning Make"]
-tags = ["erebor"]
 
 # ================================================================ the index
 
@@ -85,4 +76,3 @@ name = "Die Fahrt zum Erebor"
 source = "erebor"
 campaign = "The Quest for Erebor"
 items = { diamantknoepfe-des-alten-tuk = 1, goldene-harfe = 1, weisser-guertel-des-prinzen = 1, arkenstein = 1, goldener-pokal-thrors = 1, koenigliche-ruestung-von-erebor = 1, orcrist = 1, stich = 1, mithrilhemd = 1, glamdring = 1, silbernes-kettenhemd = 1, schild-der-toten = 2 }
-tags = ["erebor"]

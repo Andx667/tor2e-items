@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Checks that the item wizard (site/verify.js) finds exactly the problems tools/check.py finds.
+"""Checks that the item wizard (site/verify.js) finds exactly the problems tools/check.py finds,
+and that its card preview shows what tools/build.py prints.
 
     python3 tools/test_site.py
 
@@ -17,6 +18,7 @@ import sys
 import tomllib
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import build
 import check
 
 ROOT = check.ROOT
@@ -80,8 +82,12 @@ def mutations(items, rules, count, rng):
     return out
 
 
+# per case: the problems, the TOML and the card (stats, kind line, quality texts; null if it cannot be drawn)
+JS_CASE = ("function(c){var r=d.rules,card=null;try{card={s:V.cardStats(c,r),k:V.kindLine(c,r),"
+           "q:(c.qualities||[]).map(function(n){return V.qualityText(n,c,r);})};}catch(e){}"
+           "return {p:V.verify(c,r),t:V.toToml(c,'test-item'),c:card};}")
 JS_NODE = ("const V=require(process.argv[1]);const d=JSON.parse(require('fs').readFileSync(0,'utf8'));"
-           "console.log(JSON.stringify(d.cases.map(c=>({p:V.verify(c,d.rules),t:V.toToml(c,'test-item')}))));")
+           "console.log(JSON.stringify(d.cases.map(" + JS_CASE + ")));")
 
 
 def run_js(payload):
@@ -99,7 +105,7 @@ def run_js(payload):
     ctx = quickjs.Context()
     with open(VERIFY, encoding="utf-8") as f:
         ctx.eval(f.read())
-    return json.loads(ctx.eval("JSON.stringify((function(d){return d.cases.map(function(c){return {p:TorVerify.verify(c,d.rules),t:TorVerify.toToml(c,'test-item')};});})"
+    return json.loads(ctx.eval("JSON.stringify((function(d){var V=TorVerify;return d.cases.map(" + JS_CASE + ");})"
                                "(JSON.parse(" + json.dumps(payload) + ")))"))
 
 
@@ -112,7 +118,7 @@ def main():
     payload = json.dumps({"rules": rules, "cases": cases}, ensure_ascii=False)
     js = run_js(payload)
     if js is None:
-        print("skipped: no Node and no quickjs package found")
+        print("SKIPPED, nothing was compared: install Node or `pip install quickjs` to run this test")
         return 1 if os.environ.get("TEST_SITE_REQUIRED") else 0
     wrong = 0
     for i, (item, got) in enumerate(zip(cases, js)):
@@ -130,8 +136,15 @@ def main():
             wrong += 1
             if wrong <= 5:
                 print(f"case {i} ({item.get('name')!r}): the TOML does not read back as the item\n{got['t']}")
+        if not want:  # a valid item: the preview of the wizard shows the card of the PDF
+            card = {"s": [list(e) for e in build.stats_entries(item, rules)], "k": build.kind_line(item, rules),
+                    "q": [build.quality_text(q, item, rules) for q in item.get("qualities", [])]}
+            if card != got["c"]:
+                wrong += 1
+                if wrong <= 5:
+                    print(f"case {i} ({item.get('name')!r}): the cards differ\n  build.py : {card}\n  verify.js: {got['c']}")
     clean = sum(1 for item in cases if not python_problems(item, db, rules))
-    print(f"{len(cases)} items ({len(items)} real, {clean} without problems): {wrong} differences in the checks or the TOML")
+    print(f"{len(cases)} items ({len(items)} real, {clean} without problems): {wrong} differences in the checks, the TOML or the cards")
     return 1 if wrong else 0
 
 

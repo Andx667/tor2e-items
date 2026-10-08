@@ -15,10 +15,13 @@
     wonder: ["Wondrous item", "A very important item that seems like magic to people. Blesses two skills."],
   };
   const CRAFTS = {
-    Dwarven: ["Dwarven", "Zwergenarbeit", "Dwarves: Superior Grievous and Keen, Flame of Hope, Gleam of Terror, ancient armour."],
-    Elven: ["Elven", "elbische Arbeit", "Elves: Superior Fell and Keen, Luminescence, Biting Dart, Foe-slaying; one kind of Bane."],
-    "Númenórean": ["Númenórean", "númenórische Arbeit", "Númenor: Superior Fell and Grievous, Foe-slaying, Hollow Steel; two kinds of Bane."],
+    Dwarven: ["Dwarven", "Dwarves: Superior Grievous and Keen, Flame of Hope, Gleam of Terror, ancient armour."],
+    Elven: ["Elven", "Elves: Superior Fell and Keen, Luminescence, Biting Dart, Foe-slaying; one kind of Bane."],
+    "Númenórean": ["Númenórean", "Númenor: Superior Fell and Grievous, Foe-slaying, Hollow Steel; two kinds of Bane."],
   };
+  // a type or craftsmanship that is new in src/rules.toml still gets a plain entry
+  for (const t of Object.keys(R.types)) if (!TYPES[t]) TYPES[t] = [t, ""];
+  for (const c of R.craftsmanships) if (!CRAFTS[c]) CRAFTS[c] = [c, ""];
   const BANE_EN = { Orks: "Orcs", Trolle: "Trolls", "Wölfe": "Wolves", "Böse Menschen": "Evil Men", Untote: "Undead", Spinnen: "Spiders" };
   const GROUPS = { close_combat: "close combat weapons", ranged: "ranged weapons" };
   const STATS = ["damage", "injury", "injury_two_handed", "protection", "parry", "load"];
@@ -35,8 +38,8 @@
   // ---------------------------------------------------------------- state
   const fresh = () => ({
     step: 0, reached: 0, type: "", base: "", other: { name: "", proficiency: "swords", damage: "", injury: "", injury_two_handed: "", protection: "", parry: "", load: "" },
-    craft: "", craftText: "", craftTouched: false, banes: [], qualities: [], blessings: [], effectLabel: "", effectText: "",
-    name: "", id: "", idTouched: false, text: "", tags: "",
+    craft: "", banes: [], qualities: [], blessings: [], effectLabel: "", effectText: "",
+    curse: "", name: "", id: "", idTouched: false, text: "", source: "", sourceLabel: "",
   });
   let state = fresh();
   const KEY = "tor-item-wizard-v1";
@@ -49,6 +52,8 @@
   const isGear = () => !!(kind() && kind().stats && kind().stats.length);
   const craftValue = () => (state.craft && state.craft !== "none" ? state.craft : undefined);
   const baneRule = () => (kind() && kind().banes && craftValue() ? kind().banes[craftValue()] || null : null);
+  // a source that src/rules.toml does not have yet: it is added together with the item
+  const newSource = () => (state.source.trim() && !R.sources[state.source.trim()] ? state.source.trim() : "");
   const toInt = (v) => (/^\s*-?\d+\s*$/.test(String(v)) ? parseInt(v, 10) : undefined);
 
   function baseInfo() {
@@ -72,6 +77,7 @@
   function buildItem() {
     const it = {};
     it.name = state.name.trim();
+    if (state.source.trim()) it.source = state.source.trim();
     if (!state.type) return it;
     it.type = state.type;
     if (isGear()) {
@@ -81,16 +87,14 @@
         if (b.name) it.base = b.name;
       }
     }
-    if (state.craftText.trim()) it.craft = state.craftText.trim();
     if (craftValue()) it.craftsmanship = craftValue();
     if (isGear()) { const b = baseInfo(); if (b) for (const k of STATS) if (k in b.stats) it[k] = b.stats[k]; }
     if (state.text.trim()) it.text = state.text.trim();
     if (state.qualities.length) it.qualities = [...state.qualities];
     if (state.banes.length) it.banes = [...state.banes];
     if (state.blessings.length) it.blessings = [...state.blessings];
+    if (state.curse.trim()) it.curse = state.curse.trim();
     if (state.effectLabel.trim() && state.effectText.trim()) it.effects = [[state.effectLabel.trim(), state.effectText.trim()]];
-    const tags = state.tags.split(",").map((t) => t.trim()).filter(Boolean);
-    if (tags.length) it.tags = tags;
     return it;
   }
 
@@ -152,6 +156,8 @@
       if (!state.name.trim()) return "Give the item a name.";
       if (!/^[A-Za-z0-9_-]+$/.test(state.id)) return "The id may only have letters, digits, - and _.";
       if (window.TOR_DATA.existing.some((e) => e.id === state.id)) return `The id '${state.id}' exists already: ${window.TOR_DATA.existing.find((e) => e.id === state.id).name}.`;
+      if (newSource() && !/^[a-z0-9-]+$/.test(newSource())) return "A new source may only have small letters, digits and -.";
+      if (newSource() && !state.sourceLabel.trim()) return "Say what the new source is: the text for the first page.";
     }
     return "";
   }
@@ -197,11 +203,11 @@
   function stepCraft() {
     let h = `<fieldset><legend class="sr-only">Craftsmanship</legend><div class="choices one">`;
     for (const c of R.craftsmanships) {
-      h += `<label class="choice"><input type="radio" name="craft" value="${c}"${state.craft === c ? " checked" : ""}><span class="t">${CRAFTS[c][0]}</span><span class="d">${CRAFTS[c][2]}</span></label>`;
+      h += `<label class="choice"><input type="radio" name="craft" value="${c}"${state.craft === c ? " checked" : ""}><span class="t">${CRAFTS[c][0]}</span><span class="d">${CRAFTS[c][1]}</span></label>`;
     }
     h += `<label class="choice"><input type="radio" name="craft" value="none"${state.craft === "none" ? " checked" : ""}><span class="t">Ordinary or other</span><span class="d">No special craftsmanship: no superior or ancient qualities, no Banes.</span></label></div></fieldset>`;
-    const dflt = CRAFTS[craftValue()] ? CRAFTS[craftValue()][1] : "";
-    h += `<div class="field"><label for="craftText">Craft line on the card (German)</label><input id="craftText" type="text" value="${esc(state.craftText)}" placeholder="${esc(dflt || "Arbeit der Dúnedain")}"><span class="help">Printed after the base, for example “Famous Weapon · Long sword · elbische Arbeit”. Optional.</span></div>`;
+    const line = (R.craft_labels || {})[craftValue()];
+    h += `<p class="help">${line ? `The card says “${esc(line)}” after the base.` : "The rule book knows these three; an item of any other make has no craftsmanship and no such line on its card."}</p>`;
     return h;
   }
 
@@ -259,6 +265,7 @@
       h += `</div></fieldset>`;
     }
     h += `<h3>Special effect <span class="chip plain">optional</span></h3><p class="rulebook">A free effect that is not a rule-book quality, like “Ruf der Wacht”.</p><div class="grid2"><div class="field"><label for="effectLabel">Label</label><input id="effectLabel" type="text" value="${esc(state.effectLabel)}"></div></div><div class="field"><label for="effectText">Text (German)</label><input id="effectText" type="text" value="${esc(state.effectText)}"></div>`;
+    h += `<h3>Curse <span class="chip plain">optional</span></h3><p class="rulebook">Curses have no fixed rules: the Loremaster invents the curse of an item.</p><div class="field"><label for="curse">Curse</label><input id="curse" type="text" value="${esc(state.curse)}" placeholder="Shadow Taint"><span class="help">Free text, printed on the card as “Curse: …”.</span></div>`;
     return h;
   }
 
@@ -266,7 +273,8 @@
     return `<div class="field"><label for="name">Name of the item</label><input id="name" type="text" value="${esc(state.name)}" autocomplete="off" placeholder="Die Klinge der Wacht"><span class="help">As it is printed on the card.</span></div>`
       + `<div class="field"><label for="id">Id</label><input id="id" type="text" value="${esc(state.id)}" autocomplete="off"><span class="help">The key in <code>src/cards.toml</code>: letters, digits and “-”. It must not exist yet.</span></div>`
       + `<div class="field"><label for="text">Lore text (German, optional)</label><textarea id="text">${esc(state.text)}</textarea><span class="help">Only the name or origin of the item, in the past tense, without the names of characters.</span></div>`
-      + `<div class="field"><label for="tags">Tags (optional)</label><input id="tags" type="text" value="${esc(state.tags)}" placeholder="finsterwacht, film"><span class="help">Comma separated. Not printed.</span></div>`;
+      + `<div class="field"><label for="source">Source (optional)</label><input id="source" type="text" list="sources" value="${esc(state.source)}" autocomplete="off"><datalist id="sources">${Object.entries(R.sources).map(([k, s]) => `<option value="${esc(k)}">${esc(s.label)}</option>`).join("")}</datalist><span class="help">Where the item comes from; its icon is printed in the corner of the card. Choose one of the list or type a new one. Leave it empty for a made-up item.</span></div>`
+      + (newSource() ? `<div class="field"><label for="sourceLabel">What the new source “${esc(newSource())}” is (German)</label><input id="sourceLabel" type="text" value="${esc(state.sourceLabel)}" placeholder="aus dem Abenteuer „…“"><span class="help">Printed on the first page next to the icon.</span></div>` : "");
   }
 
   // ---------------------------------------------------------------- check and TOML
@@ -274,7 +282,9 @@
 
   function verification() {
     const item = buildItem();
-    const groups = V.groups(item, R);
+    // a new source counts as known: its table for src/rules.toml comes with the item
+    const rules = newSource() ? Object.assign({}, R, { sources: Object.assign({}, R.sources, { [newSource()]: { label: state.sourceLabel.trim(), icon: newSource() } }) }) : R;
+    const groups = V.groups(item, rules);
     const idProblems = [];
     if (!/^[A-Za-z0-9_-]+$/.test(state.id)) idProblems.push("the id may only have letters, digits, - and _");
     else if (window.TOR_DATA.existing.some((e) => e.id === state.id)) idProblems.push(`the id '${state.id}' exists already`);
@@ -299,6 +309,7 @@
       h += `<h3>TOML for <code>src/cards.toml</code></h3><pre class="toml" id="toml" tabindex="0">${esc(toml)}</pre>`
         + `<div class="actions" style="margin-top:.4rem"><div class="right"><button class="btn primary" data-act="copy">Copy TOML</button><button class="btn" data-act="download">Download</button></div></div>`
         + `<p class="help" id="copied" role="status"></p>`
+        + (newSource() ? `<h3>New source for <code>src/rules.toml</code></h3><pre class="toml" tabindex="0">${esc(`[sources.${newSource()}]\nlabel = ${JSON.stringify(state.sourceLabel.trim())}\nicon = "${newSource()}"\n`)}</pre><p class="help">Add this table to the sources in <code>src/rules.toml</code> and put the icon at <code>assets/icons/${esc(newSource())}.png</code>.</p>` : "")
         + `<h3>Add it to the project</h3><ol><li>Paste the table into <code>src/cards.toml</code>, for example under the weapons.</li><li>If the item belongs to a hoard, add it to <code>items</code> of that <code>[hoards.…]</code> table.</li><li>Run <code>python3 tools/check.py</code>: it must report no problems.</li></ol>`;
     }
     return h;
@@ -317,6 +328,7 @@
     if ((item.banes || []).length) li.push(`<li><b>Bane:</b> ${esc(item.banes.join(", "))}</li>`);
     if ((item.blessings || []).length) li.push(`<li><b>Blessing${item.blessings.length > 1 ? "s" : ""}:</b> ${esc(item.blessings.join(", "))}</li>`);
     for (const e of item.effects || []) li.push(`<li><b>${esc(e[0])}:</b> ${esc(e[1])}</li>`);
+    if (item.curse) li.push(`<li><b>Curse:</b> ${esc(item.curse)}</li>`);
     if (li.length) h += `<ul>${li.join("")}</ul>`;
     else if (!stats.length && !item.text) h += `<p class="empty">Nothing special yet.</p>`;
     return h + `</div>`;
@@ -371,13 +383,12 @@
     else if (n === "base") { state.base = t.value; prune(); }
     else if (n === "craft") {
       state.craft = t.value;
-      const old = CRAFTS[Object.keys(CRAFTS).find((k) => CRAFTS[k][1] === state.craftText)];
-      if (!state.craftTouched || old || !state.craftText) { state.craftText = CRAFTS[t.value] ? CRAFTS[t.value][1] : ""; state.craftTouched = false; }
       prune();
     }
     else if (n === "bane") toggle(state.banes, t.value, t.checked);
     else if (n === "quality") { toggle(state.qualities, t.value, t.checked); prune(); }
     else if (n === "skill") toggle(state.blessings, t.value, t.checked);
+    else if (t.id === "source") { /* draw the step again: the field for a new source comes or goes */ }
     else if (t.dataset.other === "proficiency") { state.other.proficiency = t.value; prune(); return refreshLight(); }
     else return;
     render(false);
@@ -386,9 +397,10 @@
     const t = e.target;
     if (!t.closest("#wizard")) return;
     if (t.dataset.other) { state.other[t.dataset.other] = t.value; return refreshLight(); }
-    const f = { craftText: () => { state.craftText = t.value; state.craftTouched = true; }, effectLabel: () => (state.effectLabel = t.value), effectText: () => (state.effectText = t.value),
+    const f = { effectLabel: () => (state.effectLabel = t.value), effectText: () => (state.effectText = t.value),
       name: () => { state.name = t.value; if (!state.idTouched) { state.id = slug(state.name); const idEl = $("#id"); if (idEl) idEl.value = state.id; } },
-      id: () => { state.id = t.value; state.idTouched = true; }, text: () => (state.text = t.value), tags: () => (state.tags = t.value) }[t.id];
+      id: () => { state.id = t.value; state.idTouched = true; }, text: () => (state.text = t.value), curse: () => (state.curse = t.value),
+      source: () => (state.source = t.value), sourceLabel: () => (state.sourceLabel = t.value) }[t.id];
     if (f) { f(); refreshLight(); }
   });
   document.addEventListener("click", (e) => {

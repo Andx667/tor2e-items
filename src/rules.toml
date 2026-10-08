@@ -4,8 +4,8 @@
 # PROVISIONAL: the types and qualities below only cover what the first items need. The rules for
 # extra effects (which, how many, in which combination) are still to be filled in.
 
-# Craftsmanships an item can have (item field `craftsmanship`). The superior and ancient
-# qualities below depend on it.
+# Craftsmanships an item can have (item field `craftsmanship`): the three the rule book knows. The
+# superior and ancient qualities below depend on it. An item of any other make has none.
 craftsmanships = ["Dwarven", "Elven", "Númenórean"]
 
 # The skills an item can bless (item field `blessings`): Strength, Heart and Wits skills.
@@ -14,6 +14,12 @@ skills = [
   "Enhearten", "Travel", "Insight", "Healing", "Courtesy", "Battle",
   "Persuade", "Stealth", "Scan", "Explore", "Riddle", "Lore",
 ]
+
+# What the card says for each craftsmanship, in its kind line ("Famous Weapon · Sword · elbische Arbeit").
+[craft_labels]
+Dwarven = "Zwergenarbeit"
+Elven = "elbische Arbeit"
+"Númenórean" = "númenórische Arbeit"
 
 # Groups of weapons by Combat Proficiency, for the qualities that name one (`weapon_group`).
 [weapon_groups]
@@ -258,7 +264,7 @@ load = 6
 # Where an item or a hoard comes from (field `source`). Its card gets the icon in the lower right
 # corner, and the first page explains the icons. A card without a source is made up and stays plain.
 # label  what the first page says about the icon
-# icon   the file assets/icons/<icon>.png (ring, book, lone-lands and erebor are drawn by tools/icons.py)
+# icon   the file assets/icons/<icon>.png (all but finsterwacht are drawn by tools/icons.py)
 
 [sources.canon]
 label = "aus Tolkiens Werken und Peter Jacksons Filmen"
@@ -279,6 +285,10 @@ icon = "lone-lands"
 [sources.erebor]
 label = "aus dem Beispiel-Index „The Quest for Erebor“"
 icon = "erebor"
+
+[sources.over-hill]
+label = "aus dem Starterset „Over Hill and Under Hill“"
+icon = "over-hill"
 
 # ---------------------------------------------------------------- categories
 # The sections of the overview and of the cards, in the order of the PDF. A category without

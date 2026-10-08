@@ -18,8 +18,9 @@ Actions on every commit; tagged commits (`v*`) are published as a release.
 | `tools/check.py` | Checks the database against the rules |
 | `tools/build.py` | PDF build |
 | `tools/logo.py` | Draws the logo into `assets/` (needs Pillow) |
+| `tools/icons.py` | Draws the source icons into `assets/icons/` (needs Pillow) |
 | `tools/site.py` | Writes `site/data.js` for the item wizard |
-| `tools/test_site.py` | Checks that the wizard and the checker agree |
+| `tools/test_site.py` | Checks that the wizard agrees with the checker and the build |
 | `site/` | The item wizard (static website, published on GitHub Pages) |
 | `latex/` | Layout |
 
@@ -33,8 +34,8 @@ name = "Narcrist, das Schwert des Hauptmanns"
 type = "weapon"                    # a type from src/rules.toml
 proficiency = "swords"             # weapons only: the category in the PDF
 base = "Long sword"                # the Core Rules item; shown on the card as its type
-craft = "elbische Arbeit"          # printed on the card
-craftsmanship = "Elven"            # Dwarven, Elven or Númenórean: what the qualities below depend on
+craftsmanship = "Elven"            # Dwarven, Elven or Númenórean: printed as "elbische Arbeit", and
+                                   # what the qualities below depend on; other makes have none
 damage = 4                         # the base stats of a Long sword
 injury = 14
 injury_two_handed = 16
@@ -54,16 +55,9 @@ items = { narcrist = 1, klinge-der-wacht = 2 }
 wealth = 40
 ```
 
-A hoard can also be the *Magical Treasure Index* of a campaign, with the fields of that sheet:
-
-```toml
-campaign = "Tales from the Lone-lands"
-loremaster = "Andy"
-members = ["Duinhir", "Geira"]         # the Player-heroes
-heroes = { narcrist = "Duinhir" }      # the Player-hero an item is meant for
-```
-
-The hoard card prints them, and a box in front of every item to tick when it is found.
+A hoard can also be the *Magical Treasure Index* of a campaign: `campaign = "Tales from the Lone-lands"` is
+printed on its card. Every item on a hoard card has a box to tick when it is found, and a long list goes on on
+further cards.
 
 An item may leave out all its stats and its qualities: the card then shows only the name, the kind line and the
 text. Weapons, armour, helms and shields always need a `base`. Partial stats are an error.
@@ -74,10 +68,11 @@ items yet gets an empty page.
 
 **Source icons.** `source` says where an item or a hoard comes from: `canon` (Tolkien's works and Peter Jackson's films, a ring), `finsterwacht`
 (the adventure, its logo), `rulebook` (the rule books, a book), `lone-lands` (the publisher's sample Magical
-Treasure Index *Tales from the Lone-lands*, a horse with two riders in the snow) or `erebor` (the sample index
-*The Quest for Erebor*, a mountain). The icon is printed in the lower right corner of the
+Treasure Index *Tales from the Lone-lands*, a horse with two riders in the snow) `erebor` (the sample index
+*The Quest for Erebor*, a mountain) or `over-hill` (the starter set *Over Hill and Under Hill*, a hill with a
+round door). The icon is printed in the lower right corner of the
 card and explained on the first page; a made-up item has no `source` and stays plain. The sources are defined in
-`src/rules.toml` (`[sources]`), the icons are in `assets/icons/` (`python3 tools/icons.py` draws the ring, the book, the riders and the mountain).
+`src/rules.toml` (`[sources]`), the icons are in `assets/icons/` (`python3 tools/icons.py` draws all but the adventure's logo).
 
 ## Stats and qualities
 
@@ -121,7 +116,8 @@ cards of this category are ordered by the first skill they bless.
 `site/` is a small website that walks through the steps of the rule book (item type, craftsmanship, Banes,
 qualities, name), checks the new item against the rules, and ends with the TOML table to paste into
 `src/cards.toml`. Qualities that do not fit the item are greyed out with the reason, and a live card shows the
-result. The workflow `.github/workflows/pages.yml` publishes it on GitHub Pages (once: Settings > Pages >
+result. A curse is free text. The source is one of the existing ones or a new one; for a new one the wizard also
+writes the table for `src/rules.toml` and names the icon file to add. The workflow `.github/workflows/pages.yml` publishes it on GitHub Pages (once: Settings > Pages >
 Source: GitHub Actions); it is then at `https://<user>.github.io/<repository>/`.
 
 To run it locally:
@@ -143,7 +139,7 @@ quickjs`. A new `@rule` in `tools/check.py` has to be added to `site/verify.js` 
 
 1. **Schema** (built in): known fields, required fields, whole numbers, the stats each type needs (all or none),
    a `base` on weapons, armour, helms and shields, known craftsmanships, hoards that only hold
-   existing items and only name heroes for items they hold.
+   existing items.
    The rules file is checked too, including a German text on every quality.
 2. **Rules** from `src/rules.toml`: `applies_to`, `weapon_group`, `proficiency`, `bases`, `craftsmanship`,
    `excludes` and `requires` per quality, and `[limits.<type>]` for the highest number of rewards and blessings
@@ -160,7 +156,11 @@ Needs TeX Live or MiKTeX with LuaLaTeX and `latexmk`, and Python 3.11+.
 make            # check, then build/<file_name>.pdf
 make check      # only the checker
 python3 tools/build.py kammer-der-wacht narcrist    # a selection: ids of items and hoards
+python3 tools/build.py source:finsterwacht          # ... or every item of a source
 ```
+
+A card with more text than fits stops the build with the id of the item and by how much it is too full;
+shorten its text.
 
 A hoard in a selection brings its own card and one card per copy of every item it holds, so a selection is the
 set of cards to hand out at the table.

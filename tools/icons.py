@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws the source icons of the cards -> assets/icons/ring.png, book.png, lone-lands.png and erebor.png (512, red, transparent).
+"""Draws the source icons of the cards -> assets/icons/ring.png, book.png, lone-lands.png, erebor.png and over-hill.png (512, red, transparent).
 
 The icon in the corner of a card says where the item comes from; src/rules.toml ([sources]) names
 the icon of each source. assets/icons/finsterwacht.png is the logo of the adventure and is not drawn here.
@@ -113,8 +113,20 @@ def erebor():
     save(im, "erebor.png")
 
 
+def over_hill():
+    """A hill with a round door in it: Over Hill and Under Hill."""
+    im, d = canvas()
+    d.pieslice(box(256, 420, 240, 320), 180, 360, fill=RED)          # the hill
+    d.rectangle([4 * S, 404 * S, 508 * S, 436 * S], fill=RED)          # the ground
+    d.ellipse(box(256, 318, 92, 92), fill=(0, 0, 0, 0))                # the door ...
+    d.ellipse(box(256, 318, 66, 66), fill=RED)                         # ... in its frame
+    d.ellipse(box(256, 318, 14, 14), fill=(0, 0, 0, 0))                # the knob in the middle
+    save(im, "over-hill.png")
+
+
 if __name__ == "__main__":
     ring()
     book()
     lone_lands()
     erebor()
+    over_hill()
