@@ -134,16 +134,18 @@
 \newcommand\fwcardkind[1]{\vspace{0.6mm}{\itshape\color{fwgrey}#1\par}\vspace{1.4mm}{\color{fwcardline}\hrule height 0.5pt}\vspace{1.8mm}}
 \newcommand\fw@cardnote[1]{\ifblank{#1}{}{\par\vspace{1.2mm}{\mdseries\itshape\fontsize{7.2}{9}\selectfont\color{fwgrey}(#1)}}}
 \newcommand\fwstathead[1]{{\fontsize{6.2}{7.3}\selectfont\color{fwgrey}#1}}
-% \fwcardstats{Spalten}{Köpfe}{Werte}{Anmerkung} – Köpfe und Werte mit & getrennt
-\newcommand\fwcardstats[4]{%
+\newcommand\fwstatbonus[1]{{\mdseries\fontsize{7}{8}\selectfont\color{fwgrey}#1}}
+% \fwcardstats{Spalten}{Köpfe}{Grundwerte}{Boni}{Anmerkung} – Köpfe, Werte und Boni mit & getrennt;
+% die Boni der Eigenschaften stehen klein unter den Grundwerten (leer: keine Zeile)
+\newcommand\fwcardstats[5]{%
   % top is negative: the table's first row has about 2.7 mm of built-in space above the header
   \begin{tcolorbox}[fw stats, top=-1.9mm]
     \setlength\tabcolsep{0pt}%
     \begin{tabular}{@{}*{#1}{>{\centering\arraybackslash}p{\dimexpr\linewidth/#1\relax}}@{}}
       #2 \\
-      #3
+      #3\ifblank{#4}{}{\\[-2.2mm] #4}
     \end{tabular}%
-    \fw@cardnote{#4}%
+    \fw@cardnote{#5}%
   \end{tcolorbox}%
 }
 % \fwcardline{Text}{Anmerkung} – eine Zeile im selben Kasten (Horte)

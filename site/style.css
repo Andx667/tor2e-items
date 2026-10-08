@@ -191,6 +191,7 @@ pre.toml {
 .card .stats div { flex: 1; text-align: center; }
 .card .stats small { display: block; font-size: .65rem; color: var(--muted); }
 .card .stats b { font-size: .95rem; }
+.card .stats i { display: block; font-style: normal; font-size: .7rem; color: var(--muted); }
 .card ul { margin: .4rem 0 0; padding-left: 1.1rem; }
 .card li { margin-bottom: .3rem; }
 .card .empty { color: var(--muted); font-style: italic; }

@@ -240,7 +240,7 @@
     let h = "";
     if (isGear()) {
       const names = Object.keys(R.qualities);
-      const basic = names.filter((n) => !isSuperior(n) && !R.qualities[n].craftsmanship && !R.qualities[n].weapon_group && !R.qualities[n].proficiency && !R.qualities[n].bases);
+      const basic = names.filter((n) => R.qualities[n].basic);
       const sup = names.filter(isSuperior);
       const rest = names.filter((n) => !basic.includes(n) && !sup.includes(n));
       const fits = (n) => R.qualities[n].applies_to.includes(state.type);
@@ -248,9 +248,9 @@
         const shown = list.filter(fits);
         return shown.length ? `<h3>${title}</h3>${note ? `<p class="rulebook">${note}</p>` : ""}<fieldset><legend class="sr-only">${title}</legend><div class="choices">${shown.map(qualityCard).join("")}</div></fieldset>` : "";
       };
-      h += `<p class="rulebook">Greyed qualities do not fit this item; the reason is under each. A superior reward makes the item famous.</p>`;
+      h += `<p class="rulebook">Greyed qualities do not fit this item; the reason is under each. Every quality that is not a basic reward makes the item famous.</p>`;
       if (state.banes.length) h += `<div class="note ${hasSuperior() ? "ok" : "bad"}">Bane: ${esc(state.banes.join(", "))}. ${hasSuperior() ? "A superior reward is chosen." : "Choose a superior reward for it."}</div>`;
-      h += section("Basic rewards", basic) + section("Superior rewards", sup, "The famous qualities of Elven, Dwarven and Númenórean items.") + section("Ancient and special qualities", rest);
+      h += section("Basic rewards", basic) + section("Superior rewards", sup, "The stronger rewards of Elven, Dwarven and Númenórean items; a Bane needs one.") + section("Ancient and special qualities", rest);
     } else {
       const n = kind().blessings || 0;
       h += `<p class="rulebook">A ${TYPES[state.type][0].toLowerCase()} blesses <b>${n}</b> skill${n > 1 ? "s" : ""}: a hero using it gets a bonus on rolls of those skills.</p><fieldset><legend>Blessed skills (${state.blessings.length} of ${n})</legend><div class="skills">`;
@@ -312,7 +312,7 @@
     if (!state.type) return `<div class="card"><p class="empty">Choose an item type to see the card.</p></div>`;
     const stats = V.cardStats(item, R);
     let h = `<div class="card"><div class="name">${esc(item.name || "Unnamed item")}</div><div class="kind">${esc(V.kindLine(item, R))}</div>`;
-    if (stats.length) h += `<div class="stats">${stats.map(([k, v]) => `<div><small>${k}</small><b>${esc(v)}</b></div>`).join("")}</div>`;
+    if (stats.length) h += `<div class="stats">${stats.map(([k, v, b]) => `<div><small>${k}</small><b>${esc(v)}</b>${stats.some((s) => s[2]) ? `<i>${esc(b) || "&nbsp;"}</i>` : ""}</div>`).join("")}</div>`;
     if (item.text) h += `<p>${esc(item.text)}</p>`;
     const li = [];
     for (const q of item.qualities || []) li.push(`<li><b>${esc(q)}:</b> ${esc(V.qualityText(q, item, R))}</li>`);

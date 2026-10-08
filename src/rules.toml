@@ -31,10 +31,10 @@ ranged = ["bows"]
 #        written like on the cards. Banes also need a superior reward (tools/check.py)
 # blessings  how many skills an item of this type blesses (exactly); a type without it has no
 #        such rule. A marvellous artefact blesses one skill, a wondrous item two
-# plain_label  kind-line start for an item without a superior quality (and without blessings or
-#        free effects): such an item is not famous, so it gets this instead of `label`. A
-#        superior reward makes an item famous. May be empty. Without it the item always gets
-#        `label`                                                               (optional)
+# plain_label  kind-line start for an item with nothing but basic rewards (and without blessings
+#        or free effects): such an item is not famous, so it gets this instead of `label`. Every
+#        quality that is not a basic reward makes an item famous. May be empty. Without it the
+#        item always gets `label`                                              (optional)
 
 [types.weapon]
 label = "Famous Weapon"
@@ -310,15 +310,17 @@ sort = "blessings"
 # The extra effects an item lists under `qualities`.
 # text          printed on the card after the quality's name. Every quality needs one (on its
 #               `effects` entries if it has them): the card explains the rule, also where
-#               `modifies` already changes the stats
+#               `modifies` puts a bonus under the stats
 # applies_to    item types that may carry the quality
 # excludes      qualities that may not be on the same item        (optional)
 # requires      qualities that must be on the same item as well   (optional)
 # modifies      changes to the base stats: { <stat> = <change> }; the card and the overview show
-#               the stats with these applied (a Load below 0 is shown as 0)   (optional)
-# superior      true for the superior rewards. An item with one is famous. A Bane is only
-#               allowed on an item with a superior reward, but none is required
-#               (tools/check.py)                                  (optional)
+#               the base stats and these as a bonus next to them (never more than would bring
+#               a Load to 0)                                      (optional)
+# basic         true for the basic rewards. Every other quality (superior, ancient, the weapon
+#               blessings, ...) makes its item famous             (optional)
+# superior      true for the superior rewards. A Bane is only allowed on an item with a
+#               superior reward, but none is required (tools/check.py)   (optional)
 # craftsmanship the craftsmanships that may carry the quality; the item names its own in
 #               `craftsmanship`. Without it any item may               (optional)
 # weapon_group  only weapons of this group (see [weapon_groups])       (optional)
@@ -334,46 +336,55 @@ sort = "blessings"
 #   sets          stats the quality fixes: { <stat> = <value> }, applied before `modifies`
 #   modifies      as above
 #   piercing_blow the result on the Feat die that scores a Piercing Blow
+#   protection_roll  bonus to the result of PROTECTION rolls; shown as a bonus under Protection
+#                 (also allowed on a quality without `effects`, like `modifies`)
 #   valour_bonus  stats ("injury", "damage", "parry", "load", "protection", "piercing_blow")
 #                 whose bonus becomes the bearer's VALOUR rating when that is higher
 #   vs_bane       true: only against a Bane creature; false or missing: always
 #   text          printed on the card
 
 [qualities.Keen]
+basic = true
 text = "Piercing Blow schon bei 9 auf dem Feat die"
 applies_to = ["weapon"]
 rule = "Attack rolls score a Piercing Blow on a 9+."
 
 [qualities.Fell]
+basic = true
 applies_to = ["weapon"]
 modifies = { injury = 2 }
 text = "Injury +2"
 rule = "Raise the Injury rating of a weapon by 2."
 
 [qualities.Grievous]
+basic = true
 applies_to = ["weapon"]
 modifies = { damage = 1 }
 text = "Damage +1"
 rule = "Raise the Damage rating of a weapon by 1."
 
 [qualities.Reinforced]
+basic = true
 applies_to = ["shield"]
 modifies = { parry = 1 }
 text = "Parry +1"
 rule = "Raise a shield’s Parry bonus by +1."
 
 [qualities.Close-fitting]
+basic = true
 applies_to = ["armour", "helm"]
+protection_roll = 2
 text = "+2 auf das Ergebnis deiner Protection-Würfe"
 rule = "Add +2 to the result of your PROTECTION roll."
 
 [qualities."Cunning Make"]
+basic = true
 applies_to = ["armour", "helm", "shield"]
 modifies = { load = -2 }
 text = "Load −2"
 rule = "Reduce your Load rating by 2."
 
-# ---- superior rewards: for famous items, with a Bane where the rule book asks for one
+# ---- superior rewards: with a Bane where the rule book asks for one
 
 [qualities."Superior Fell"]
 applies_to = ["weapon"]
@@ -458,6 +469,7 @@ excludes = ["Close-fitting"]
 rule = "When you make a PROTECTION roll while wearing a piece of armour or helm with this quality you add 3 to the result, or a bonus equal to your VALOUR rating, whichever is higher."
 
 [[qualities."Ancient Close-fitting".effects]]
+protection_roll = 3
 valour_bonus = ["protection"]
 text = "+3 auf Protection-Würfe oder die Valour des Trägers, falls höher"
 

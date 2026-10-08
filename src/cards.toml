@@ -14,7 +14,8 @@
 #               effect depends on it (Superior Fell, Ancient Close-fitting, ...)
 #   damage, injury, injury_two_handed, load, protection, parry
 #               base stats as whole numbers, before the qualities are applied; the card shows
-#               them with the `modifies` of the qualities (src/rules.toml) applied. Leave them
+#               them as they are, with the `modifies` of the qualities (src/rules.toml) as a
+#               small bonus below. Leave them
 #               all out for a card with only a name and a story (no stats box is printed)
 #   stats_note  small note behind the stats
 #   text        description
@@ -79,6 +80,20 @@ text = "Eine langstielige Axt nach der Kunst der Dúnedain. Ihr Name stammte von
 qualities = ["Fell", "Superior Grievous"]
 banes = ["Orks", "Trolle"]
 tags = ["finsterwacht"]
+
+[items.rabenaxt-von-anor]
+name = "Die Rabenaxt von Anor"
+type = "weapon"
+proficiency = "axes"
+base = "Axe"
+craft = "númenórische Arbeit"
+craftsmanship = "Númenórean"
+damage = 5
+injury = 18
+load = 2
+text = "Eine Axt aus den Waffenkammern von Anor. Auf dem Blatt ist ein Rabe mit ausgebreiteten Schwingen eingelegt; es heißt, die Vögel sammelten sich nach jeder Schlacht ihres Trägers."
+qualities = ["Superior Fell", "Foe-slaying"]
+banes = ["Orks", "Böse Menschen"]
 
 [items.klinge-der-wacht]
 name = "Klinge der Wacht"
@@ -290,6 +305,17 @@ text = "Der Schild des Torwächters, in númenórischer Kunst geschmiedet und mi
 qualities = ["Cunning Make", "Superior Reinforced"]
 banes = ["Orks", "Trolle"]
 tags = ["finsterwacht"]
+
+[items.runenschild-von-ossiriand]
+name = "Runenschild von Ossiriand"
+type = "shield"
+base = "Shield"
+craft = "Zwergenarbeit"
+craftsmanship = "Dwarven"
+parry = 2
+load = 4
+text = "Ein Rundschild aus den Schmieden von Belegost, in den Tagen des alten Handels als Gabe für die Grünelben von Ossiriand gefertigt. Zwergenrunen laufen um seinen Rand, und er wiegt kaum mehr als seine Riemen."
+qualities = ["Ancient Cunning Make", "Rune-scored Shield"]
 
 # ================================================================ artefacts
 

@@ -211,12 +211,15 @@
     return groups(item, rules).flatMap((g) => g.problems);
   }
 
-  // The stats of the card: the base stats with the `sets` and `modifies` of the qualities applied (as tools/build.py)
+  // The stats of the card as [label, base value, bonus]: the bonus is what the `sets` and `modifies`
+  // of the qualities change, "" if nothing (as tools/build.py)
   function cardStats(item, rules) {
     const it = JSON.parse(JSON.stringify(item));
+    let roll = 0; // bonus to the Protection roll, shown under Protection
     for (const q of effectList(item, "qualities")) {
       if (!rules.qualities[q]) continue;
       for (const e of qualityEffects(rules.qualities[q], item)) {
+        roll += e.protection_roll || 0;
         for (const [stat, value] of Object.entries(e.sets || {})) if (has(it, stat)) it[stat] = value;
         for (const [stat, change] of Object.entries(e.modifies || {})) {
           for (const key of stat === "injury" ? ["injury", "injury_two_handed"] : [stat]) if (has(it, key)) it[key] += change;
@@ -224,12 +227,16 @@
       }
     }
     if (has(it, "load")) it.load = Math.max(0, it.load);
+    const bonus = (stat, unit = "") => {
+      const change = it[stat] - item[stat];
+      return change ? (change > 0 ? "+" : "−") + Math.abs(change) + unit : "";
+    };
     const out = [];
-    if (has(it, "damage")) out.push(["Damage", String(it.damage)]);
-    if (has(it, "injury")) out.push(["Injury", String(it.injury) + (has(it, "injury_two_handed") ? `/${it.injury_two_handed}` : "")]);
-    if (has(it, "protection")) out.push(["Protection", `${it.protection}d`]);
-    if (has(it, "parry")) out.push(["Parry", (it.parry >= 0 ? "+" : "") + it.parry]);
-    if (has(it, "load")) out.push(["Load", String(it.load)]);
+    if (has(item, "damage")) out.push(["Damage", String(item.damage), bonus("damage")]);
+    if (has(item, "injury")) out.push(["Injury", String(item.injury) + (has(item, "injury_two_handed") ? `/${item.injury_two_handed}` : ""), bonus("injury")]);
+    if (has(item, "protection")) out.push(["Protection", `${item.protection}d`, [bonus("protection", "d"), roll ? (roll > 0 ? "+" : "−") + Math.abs(roll) : ""].filter(Boolean).join(" ")]);
+    if (has(item, "parry")) out.push(["Parry", (item.parry >= 0 ? "+" : "") + item.parry, bonus("parry")]);
+    if (has(item, "load")) out.push(["Load", String(item.load), bonus("load")]);
     return out;
   }
 
@@ -239,11 +246,13 @@
     return qualityEffects(rules.qualities[name], item).filter((e) => e.text).map((e) => e.text).join("; ");
   }
 
-  // The kind line of the card: a superior reward (or a blessing or free effect) makes an item famous
+  // The kind line of the card: everything that is not a basic reward (any other quality, a blessing
+  // or a free effect) makes an item famous
   function kindLine(item, rules) {
     const kind = rules.types[item.type];
     if (!kind) return "";
-    const famous = superiorQualities(item, rules).length || effectList(item, "blessings").length || (item.effects || []).length;
+    const famous = effectList(item, "qualities").some((q) => rules.qualities[q] && !rules.qualities[q].basic)
+      || effectList(item, "blessings").length || (item.effects || []).length;
     const label = !famous && has(kind, "plain_label") ? kind.plain_label : kind.label;
     return [label, item.base, item.craft].filter(Boolean).join(" · ");
   }

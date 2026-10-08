@@ -40,15 +40,16 @@ STRINGS = {
                 "Hoards": "Hoards", "Hoard": "Hoard", "Name": "Name", "Kind": "Kind",
                 "Stats": "Stats", "Blessings": "Blessings", "Holds": "Holds", "Page": "Page",
                 "Selection": "Selection", "NoItems": "No items yet",
-                "ModifiersNote": "All stats in the overview and on the cards already include the "
-                                 "modifiers of the listed qualities; do not apply them again."},
+                "ModifiersNote": "All stats in the overview and on the cards are the base values. The "
+                                 "bonuses of the listed qualities are not included; they stand below "
+                                 "the values (in brackets in the overview)."},
     "ngerman": {"Contents": "Inhalt", "Version": "Version", "Date": "Stand", "Cards": "Karten",
                 "Hoards": "Horte", "Hoard": "Hort", "Name": "Name", "Kind": "Art",
                 "Stats": "Werte", "Blessings": "Blessings", "Holds": "Inhalt", "Page": "Seite",
                 "Selection": "Auswahl", "NoItems": "Noch keine Gegenstände",
-                "ModifiersNote": "Alle Werte in der Übersicht und auf den Karten enthalten bereits die "
-                                 "Modifikatoren der aufgeführten Eigenschaften; sie werden nicht noch "
-                                 "einmal angerechnet."},
+                "ModifiersNote": "Alle Werte in der Übersicht und auf den Karten sind Grundwerte. Die "
+                                 "Boni der aufgeführten Eigenschaften sind nicht eingerechnet; sie stehen "
+                                 "unter den Werten (in der Übersicht in Klammern)."},
 }
 
 
@@ -156,11 +157,11 @@ def select(db, rules, wanted, s):
 
 
 def kind_line(item, rules):
-    """The kind line of a card. A superior reward makes an item famous. One without a superior
-    reward (and without blessings or free effects) is not, and gets the type's `plain_label` (if
-    it has one) instead of its `label`."""
+    """The kind line of a card. Everything that is not a basic reward makes an item famous: any
+    other quality, a blessing or a free effect. An item with nothing but basic rewards is not,
+    and gets the type's `plain_label` (if it has one) instead of its `label`."""
     kind = rules["types"][item["type"]]
-    famous = (any(rules["qualities"][q].get("superior") for q in item.get("qualities", []))
+    famous = (any(not rules["qualities"][q].get("basic") for q in item.get("qualities", []))
               or item.get("blessings") or item.get("effects"))
     label = kind["plain_label"] if not famous and "plain_label" in kind else kind["label"]
     return " · ".join(x for x in (label, item.get("base"), item.get("craft")) if x)
@@ -174,11 +175,15 @@ def quality_text(name, item, rules):
 
 
 def stats_entries(item, rules):
-    """The stats as (label, value) pairs, with the `modifies` of the item's qualities applied;
-    the injury of a versatile weapon is "18/20"."""
-    item = dict(item)
+    """The stats as (label, value, bonus) triples: the base value and what the item's qualities
+    change about it (`sets` and `modifies`), "" if nothing. The injury of a versatile weapon
+    is "18/20"; its bonus counts for both. A bonus to the Protection roll (`protection_roll`)
+    stands under Protection as "+2", next to a change of the dice ("+1d")."""
+    base, item = item, dict(item)
+    roll = 0
     for q in item.get("qualities", []):
         for effect in check.quality_effects(rules["qualities"][q], item):
+            roll += effect.get("protection_roll", 0)
             for stat, value in effect.get("sets", {}).items():
                 if stat in item:
                     item[stat] = value
@@ -188,25 +193,32 @@ def stats_entries(item, rules):
                         item[key] += change
     if "load" in item:
         item["load"] = max(0, item["load"])
+
+    def bonus(stat, unit=""):
+        change = item[stat] - base[stat]
+        return f"{change:+d}{unit}".replace("-", "−") if change else ""
+
     entries = []
-    if "damage" in item:
-        entries.append(("Damage", str(item["damage"])))
-    if "injury" in item:
-        injury = str(item["injury"])
-        if "injury_two_handed" in item:
-            injury += f"/{item['injury_two_handed']}"
-        entries.append(("Injury", injury))
-    if "protection" in item:
-        entries.append(("Protection", f"{item['protection']}d"))
-    if "parry" in item:
-        entries.append(("Parry", f"{item['parry']:+d}"))
-    if "load" in item:
-        entries.append(("Load", str(item["load"])))
+    if "damage" in base:
+        entries.append(("Damage", str(base["damage"]), bonus("damage")))
+    if "injury" in base:
+        injury = str(base["injury"])
+        if "injury_two_handed" in base:
+            injury += f"/{base['injury_two_handed']}"
+        entries.append(("Injury", injury, bonus("injury")))
+    if "protection" in base:
+        dice = [bonus("protection", "d"), f"{roll:+d}".replace("-", "−") if roll else ""]
+        entries.append(("Protection", f"{base['protection']}d", " ".join(x for x in dice if x)))
+    if "parry" in base:
+        entries.append(("Parry", f"{base['parry']:+d}", bonus("parry")))
+    if "load" in base:
+        entries.append(("Load", str(base["load"]), bonus("load")))
     return entries
 
 
 def stats_line(item, rules):
-    return " · ".join(f"{label} {value}" for label, value in stats_entries(item, rules))
+    return " · ".join(f"{label} {value}" + (f" ({bonus})" if bonus else "")
+                      for label, value, bonus in stats_entries(item, rules))
 
 
 def wealth_line(hoard):
@@ -247,10 +259,11 @@ def cards_tex(db, rules, groups, s):
             up.append(r"\fwcardanchor{card-%s}{%s}" % (key, tex_escape(c["name"])))
         up += [r"\fwcardname{" + tex_escape(c["name"]) + "}", r"\fwcardkind{" + it(kind) + "}"]
         if stats:
-            if table == "items":  # labels like table headers, the values below them
-                heads = " & ".join(r"\fwstathead{" + tex_escape(label) + "}" for label, _ in stats)
-                values = " & ".join(tex_escape(value) for _, value in stats)
-                up.append(r"\fwcardstats{%d}{%s}{%s}{%s}" % (len(stats), heads, values, it(note)))
+            if table == "items":  # labels like table headers, below them the base values and the bonuses
+                heads = " & ".join(r"\fwstathead{" + tex_escape(label) + "}" for label, _, _ in stats)
+                values = " & ".join(tex_escape(value) for _, value, _ in stats)
+                bonuses = " & ".join(r"\fwstatbonus{" + tex_escape(b) + "}" for _, _, b in stats) if any(b for _, _, b in stats) else ""
+                up.append(r"\fwcardstats{%d}{%s}{%s}{%s}{%s}" % (len(stats), heads, values, bonuses, it(note)))
             else:
                 up.append(r"\fwcardline{" + it(stats) + "}{" + it(note) + "}")
         if c.get("text"):

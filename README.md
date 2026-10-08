@@ -63,9 +63,10 @@ items yet gets an empty page.
 
 ## Stats and qualities
 
-The stats are the base values of the item's `base`. A quality changes them where the rule book says so
-(*Fell* +2 Injury, *Superior Grievous* of Dwarven craftsmanship +2 Damage, *Mithril Armour* sets the Load, …),
-and the overview and the cards show the result. A Load never goes below 0.
+The stats are the base values of the item's `base`, and that is what the cards and the overview show, like the
+war gear cards of the game. A quality changes them where the rule book says so (*Fell* +2 Injury, *Superior
+Grievous* of Dwarven craftsmanship +2 Damage, *Mithril Armour* sets the Load, …); that bonus is printed small
+below the base value on the card and in brackets in the overview, not added to it. A Load never goes below 0.
 
 `src/rules.toml` holds the qualities as the rule book gives them: the basic rewards (*Keen*, *Fell*, *Grievous*,
 *Close-fitting*, *Cunning Make*, *Reinforced*), the superior and ancient ones, and the weapon qualities
@@ -78,10 +79,11 @@ and the overview and the cards show the result. A Load never goes below 0.
 Bonuses that become the bearer's Valour rating against a Bane creature are printed as text on the card; they do
 not change the stats.
 
-**Famous items.** A superior reward makes an item famous, and so does a blessing or a free effect. Famous
-weapons and armour start their kind line with *Famous Weapon* or *Famous Armour*. Items with only basic rewards,
-or none, are just well made and get no such label. A *Bane* comes with a superior reward and is only allowed on an
-item that has one. It does not count towards the number of rewards.
+**Famous items.** Everything that is not a basic reward makes an item famous: a superior or ancient reward, any
+other special quality (*Luminescence*, *Mithril Armour*, …), a blessing or a free effect. Famous weapons and
+armour start their kind line with *Famous Weapon* or *Famous Armour*. Items with only basic rewards (`basic = true`
+in `src/rules.toml`), or none, are just well made and get no such label. A *Bane* comes with a superior reward
+and is only allowed on an item that has one. It does not count towards the number of rewards.
 
 ## Useful items
 

@@ -166,6 +166,8 @@ def check_rules_file(rules):
         if not isinstance(effects, list) or not all(isinstance(e, dict) for e in effects):
             yield f"rules: qualities.{name}: effects must be a list of [[qualities.<name>.effects]] tables"
             continue
+        if q.get("basic") and q.get("superior"):
+            yield f"rules: qualities.{name}: a quality is either basic or superior"
         explained = [(f"qualities.{name}.effects #{n}", e) for n, e in enumerate(effects, 1)] or [(f"qualities.{name}", q)]
         for where, part in explained:
             if not isinstance(part.get("text"), str) or not part["text"].strip():
@@ -180,6 +182,8 @@ def check_rules_file(rules):
                     yield f"rules: {where}: valour_bonus names the unknown stat '{s}'"
             if "piercing_blow" in part and not is_int(part["piercing_blow"]):
                 yield f"rules: {where}: piercing_blow must be a whole number"
+            if "protection_roll" in part and not is_int(part["protection_roll"]):
+                yield f"rules: {where}: protection_roll must be a whole number"
             if i and not is_strings(part.get("bases", [])):
                 yield f"rules: {where}: bases must be a list of texts"
             for field in ("modifies", "sets"):
