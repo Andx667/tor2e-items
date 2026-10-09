@@ -9,7 +9,7 @@
 #   proficiency weapons only: the Combat Proficiency, which is also the category in the PDF
 #               (brawling, swords, axes, spears, bows - see [categories] in src/rules.toml)
 #   source      where it comes from, a source from src/rules.toml (canon, finsterwacht, rulebook,
-#               lone-lands, erebor, starter-set, over-hill):
+#               lone-lands, erebor, starter-set, over-hill, homebrew):
 #               its icon is printed in the corner of the card. Leave it out for a made-up item
 #   base        the Core Rules item it is based on ("Long sword"); required for weapons, armour,
 #               helms and shields, it is the type shown on the card

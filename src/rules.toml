@@ -310,6 +310,10 @@ icon = "starter-set"
 label = "aus dem Starterset „Over Hill and Under Hill“"
 icon = "over-hill"
 
+[sources.homebrew]
+label = "aus der „Circleofnoms TOR 2e Homebrew Collection“"
+icon = "homebrew"
+
 # ---------------------------------------------------------------- categories
 # The sections of the overview and of the cards, in the order of the PDF. A category without
 # items still gets its heading and an empty page of cards.

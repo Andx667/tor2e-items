@@ -87,6 +87,7 @@ corner of the card and explained on the first page; a made-up item has no `sourc
 | `erebor` | the sample index *The Quest for Erebor* | a mountain |
 | `starter-set` | the first Starter Set | a tree |
 | `over-hill` | the starter set *Over Hill and Under Hill* | hills with a round door |
+| `homebrew` | the fan-made *Circleofnoms TOR 2e Homebrew Collection* | a tankard |
 
 The sources are defined in `src/rules.toml` (`[sources]`), the icons are in `assets/icons/`
 (`python3 tools/icons.py` draws all but the adventure's logo).

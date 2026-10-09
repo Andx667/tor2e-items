@@ -1,0 +1,585 @@
+# Sample useful items from the "Circleofnoms TOR 2e Homebrew Collection" (pages 20-23, by several
+# contributors). The lists there repeat each other and name some things under several skills: every
+# thing is here once, with the skill it is first listed under. Left out is what the database already
+# has in a similar form (fine clothes, cloak, umbrella, walking stick, wayfarer bundle, rabbit knife,
+# fiddle, harp, pipe, rope, boots, war horn, quiver, whetstone), and what is not a thing to find
+# (tattoo, scar, piercing).
+# Merged into src/cards.toml; the fields are listed at the top of that file.
+
+# ---- Awe
+
+[items.perlenohrringe]
+name = "Perlenohrringe"
+source = "homebrew"
+type = "useful"
+blessings = ["Awe"]
+
+[items.eindrucksvolle-goldkette]
+name = "Eindrucksvolle Goldkette"
+source = "homebrew"
+type = "useful"
+blessings = ["Awe"]
+
+[items.auffaelliger-halsreif]
+name = "Auffälliger Halsreif"
+source = "homebrew"
+type = "useful"
+blessings = ["Awe"]
+
+[items.auffaelliger-ring]
+name = "Auffälliger Ring"
+source = "homebrew"
+type = "useful"
+blessings = ["Awe"]
+
+[items.kunstvolle-haarkaemme]
+name = "Kunstvolle Haarkämme"
+source = "homebrew"
+type = "useful"
+blessings = ["Awe"]
+
+[items.erlesenes-diadem]
+name = "Erlesenes Diadem"
+source = "homebrew"
+type = "useful"
+blessings = ["Awe"]
+
+[items.klauenkette]
+name = "Kette aus Klauen und Zähnen"
+source = "homebrew"
+type = "useful"
+blessings = ["Awe"]
+
+[items.kriegsbemalung]
+name = "Kriegsbemalung"
+source = "homebrew"
+type = "useful"
+blessings = ["Awe"]
+
+# ---- Enhearten
+
+[items.staerkender-trunk]
+name = "Stärkender Trunk"
+source = "homebrew"
+type = "useful"
+text = "Ein Schnaps, der Kraft einflößt."
+blessings = ["Enhearten"]
+
+[items.fein-gearbeiteter-stirnreif]
+name = "Fein gearbeiteter Stirnreif"
+source = "homebrew"
+type = "useful"
+blessings = ["Enhearten"]
+
+[items.bedeutsame-gravur]
+name = "Bedeutsame Gravur"
+source = "homebrew"
+type = "useful"
+blessings = ["Enhearten"]
+
+[items.banner]
+name = "Banner"
+source = "homebrew"
+type = "useful"
+blessings = ["Enhearten"]
+
+[items.schellen-am-speer]
+name = "Schellen am Speer"
+source = "homebrew"
+type = "useful"
+text = "Ein Satz rasselnder Schellen, an den Speer gebunden. Beim Schlachtruf geschüttelt, geben sie ihm Nachdruck."
+blessings = ["Enhearten"]
+
+[items.geschnitztes-feldzeichen]
+name = "Geschnitztes Feldzeichen"
+source = "homebrew"
+type = "useful"
+text = "Eine Schnitzerei, die man als Zeichen der Gruppe emporhält. Sie erinnert an ein gutes Ereignis oder an den Patron."
+blessings = ["Enhearten"]
+
+# ---- Persuade
+
+[items.flasche-guten-weins]
+name = "Flasche guten Weins"
+source = "homebrew"
+type = "useful"
+blessings = ["Persuade"]
+
+[items.kunstvolle-schminke]
+name = "Kunstvolle Schminke"
+source = "homebrew"
+type = "useful"
+blessings = ["Persuade"]
+
+[items.feines-parfuem]
+name = "Feines Parfüm"
+source = "homebrew"
+type = "useful"
+blessings = ["Persuade"]
+
+[items.buch-der-ueberredung]
+name = "Buch über die Kunst der Überredung"
+source = "homebrew"
+type = "useful"
+blessings = ["Persuade"]
+
+# ---- Athletics
+
+[items.kletterhaken]
+name = "Kletterhaken"
+source = "homebrew"
+type = "useful"
+blessings = ["Athletics"]
+
+[items.leichte-laufschuhe]
+name = "Leichte Laufschuhe"
+source = "homebrew"
+type = "useful"
+blessings = ["Athletics"]
+
+[items.kletterhandschuhe]
+name = "Kletterhandschuhe"
+source = "homebrew"
+type = "useful"
+text = "Aus geschmeidigem Leder, das beim Klettern guten Halt gibt."
+blessings = ["Athletics"]
+
+[items.stiefel-mit-federabsatz]
+name = "Stiefel mit federndem Absatz"
+source = "homebrew"
+type = "useful"
+blessings = ["Athletics"]
+
+[items.sprungstab]
+name = "Sprungstab"
+source = "homebrew"
+type = "useful"
+text = "Ein langer Speer oder Wanderstab, mit dem sich Gräben und Bäche überspringen lassen."
+blessings = ["Athletics"]
+
+# ---- Travel
+
+[items.sonnenstein]
+name = "Sonnenstein"
+source = "homebrew"
+type = "useful"
+text = "Zum Navigieren bei schlechtem Wetter."
+blessings = ["Travel"]
+
+[items.reisezwieback]
+name = "Reisezwieback und Trockenfleisch"
+source = "homebrew"
+type = "useful"
+blessings = ["Travel"]
+
+[items.gute-lagerausruestung]
+name = "Gute Lagerausrüstung"
+source = "homebrew"
+type = "useful"
+blessings = ["Travel"]
+
+[items.liebgewonnenes-taschentuch]
+name = "Liebgewonnenes Taschentuch"
+source = "homebrew"
+type = "useful"
+blessings = ["Travel"]
+
+[items.dose-wachsoel]
+name = "Dose Wachsöl"
+source = "homebrew"
+type = "useful"
+text = "Macht Stiefel und anderes Lederzeug wasserdicht."
+blessings = ["Travel"]
+
+[items.wuerzige-essiggurken]
+name = "Würzige Essiggurken"
+source = "homebrew"
+type = "useful"
+text = "Eine Flasche Eingelegtes als Muntermacher für unterwegs."
+blessings = ["Travel"]
+
+# ---- Stealth
+
+[items.leiser-rucksack]
+name = "Leiser Rucksack"
+source = "homebrew"
+type = "useful"
+text = "Außen ohne Schlaufen und Schnallen aus Metall, innen mit Taschen, die den Inhalt polstern."
+blessings = ["Stealth"]
+
+[items.tarnfarbe]
+name = "Tarnfarbe"
+source = "homebrew"
+type = "useful"
+blessings = ["Stealth"]
+
+[items.blendlaterne]
+name = "Blendlaterne"
+source = "homebrew"
+type = "useful"
+text = "Eine Laterne, die nur einen schmalen Lichtstrahl freigibt."
+blessings = ["Stealth"]
+
+[items.dichter-schal]
+name = "Dichter Schal"
+source = "homebrew"
+type = "useful"
+text = "Vor dem Mund getragen, dämpft er das Atemgeräusch und verbirgt in der Kälte den Atem."
+blessings = ["Stealth"]
+
+[items.dietriche]
+name = "Dietriche"
+source = "homebrew"
+type = "useful"
+blessings = ["Stealth"]
+
+# ---- Awareness
+
+[items.hut-mit-krempe]
+name = "Hut mit breiter Krempe"
+source = "homebrew"
+type = "useful"
+text = "Schirmt die Augen gegen das grelle Sonnenlicht ab."
+blessings = ["Awareness"]
+
+[items.wachtee]
+name = "Wachtee"
+source = "homebrew"
+type = "useful"
+text = "Ein Tee mit einem milden Aufputschmittel, der durch die Nachtwache hilft."
+blessings = ["Awareness"]
+
+[items.hoerrohr]
+name = "Hörrohr"
+source = "homebrew"
+type = "useful"
+blessings = ["Awareness"]
+
+[items.brille]
+name = "Brille"
+source = "homebrew"
+type = "useful"
+blessings = ["Awareness"]
+
+# ---- Insight
+
+[items.spielkarten-oder-wuerfel]
+name = "Spielkarten oder Würfel"
+source = "homebrew"
+type = "useful"
+text = "Beim Spiel lässt sich das Gegenüber aus der Nähe beobachten."
+blessings = ["Insight"]
+
+[items.pfeifenkraut]
+name = "Pfeifenkraut"
+source = "homebrew"
+type = "useful"
+text = "Zum Sammeln der Gedanken, während man jemanden beobachtet."
+blessings = ["Insight"]
+
+[items.tagebuch]
+name = "Tagebuch"
+source = "homebrew"
+type = "useful"
+text = "Zum Nachdenken über das Erlebte."
+blessings = ["Insight"]
+
+# ---- Scan
+
+[items.sturmlaterne]
+name = "Sturmlaterne"
+source = "homebrew"
+type = "useful"
+blessings = ["Scan"]
+
+[items.taschenfernrohr]
+name = "Taschenfernrohr"
+source = "homebrew"
+type = "useful"
+blessings = ["Scan"]
+
+[items.vergroesserungsglas]
+name = "Vergrößerungsglas"
+source = "homebrew"
+type = "useful"
+blessings = ["Scan"]
+
+[items.riechsalz]
+name = "Riechsalz"
+source = "homebrew"
+type = "useful"
+text = "Schärft die Aufmerksamkeit für die Aufgabe, die gerade ansteht."
+blessings = ["Scan"]
+
+# ---- Hunting
+
+[items.doeschen-salz]
+name = "Döschen Salz"
+source = "homebrew"
+type = "useful"
+text = "Zum Kochen der Beute."
+blessings = ["Hunting"]
+
+[items.feine-schlingen]
+name = "Feine Schlingen"
+source = "homebrew"
+type = "useful"
+blessings = ["Hunting"]
+
+[items.jagdhund-oder-beizvogel]
+name = "Jagdhund oder Beizvogel"
+source = "homebrew"
+type = "useful"
+blessings = ["Hunting"]
+
+[items.angelzeug]
+name = "Angelzeug"
+source = "homebrew"
+type = "useful"
+blessings = ["Hunting"]
+
+[items.lockpfeife]
+name = "Lockpfeife"
+source = "homebrew"
+type = "useful"
+text = "Ahmt Vogelrufe nach und taugt auch für Signale."
+blessings = ["Hunting"]
+
+[items.bola]
+name = "Bola"
+source = "homebrew"
+type = "useful"
+text = "Für die Hetzjagd."
+blessings = ["Hunting"]
+
+# ---- Healing
+
+[items.schmerzbalsam]
+name = "Schmerzbalsam"
+source = "homebrew"
+type = "useful"
+blessings = ["Healing"]
+
+[items.wundsalbe]
+name = "Wundsalbe"
+source = "homebrew"
+type = "useful"
+blessings = ["Healing"]
+
+[items.getrocknete-kraeuter]
+name = "Getrocknete Kräuter"
+source = "homebrew"
+type = "useful"
+text = "Lindern Schmerzen."
+blessings = ["Healing"]
+
+[items.altes-hausmittel]
+name = "Altes Hausmittel"
+source = "homebrew"
+type = "useful"
+blessings = ["Healing"]
+
+[items.moerser-und-stoessel]
+name = "Mörser und Stößel"
+source = "homebrew"
+type = "useful"
+text = "Zum Zubereiten von Heilmitteln."
+blessings = ["Healing"]
+
+[items.uebelriechende-salbe]
+name = "Übelriechende Salbe"
+source = "homebrew"
+type = "useful"
+blessings = ["Healing"]
+
+[items.verbandstreifen]
+name = "Verbandstreifen"
+source = "homebrew"
+type = "useful"
+text = "Stoffstreifen zum Abbinden und Verbinden."
+blessings = ["Healing"]
+
+[items.brechmittel]
+name = "Brechmittel"
+source = "homebrew"
+type = "useful"
+text = "Ein Pflanzenauszug, der bei verdorbenem Essen hilft."
+blessings = ["Healing"]
+
+# ---- Explore
+
+[items.genaue-karten]
+name = "Genaue Karten"
+source = "homebrew"
+type = "useful"
+blessings = ["Explore"]
+
+[items.markierkreide]
+name = "Markierkreide"
+source = "homebrew"
+type = "useful"
+text = "Kreide in mehreren Farben, um den Weg zu kennzeichnen."
+blessings = ["Explore"]
+
+[items.zunderbuechse]
+name = "Zunderbüchse"
+source = "homebrew"
+type = "useful"
+blessings = ["Explore"]
+
+# ---- Song
+
+[items.floete]
+name = "Flöte"
+source = "homebrew"
+type = "useful"
+blessings = ["Song"]
+
+[items.trommel]
+name = "Trommel"
+source = "homebrew"
+type = "useful"
+blessings = ["Song"]
+
+[items.laute]
+name = "Laute"
+source = "homebrew"
+type = "useful"
+blessings = ["Song"]
+
+[items.liederbuch]
+name = "Buch mit Gedichten und Liedern"
+source = "homebrew"
+type = "useful"
+blessings = ["Song"]
+
+# ---- Courtesy
+
+[items.feine-weste]
+name = "Feine Weste"
+source = "homebrew"
+type = "useful"
+blessings = ["Courtesy"]
+
+[items.kleine-geschenke]
+name = "Kleine Geschenke"
+source = "homebrew"
+type = "useful"
+blessings = ["Courtesy"]
+
+# ---- Riddle
+
+[items.glatter-stein]
+name = "Glatter Stein"
+source = "homebrew"
+type = "useful"
+text = "Zwischen den Fingern gerieben, beruhigt er die Gedanken."
+blessings = ["Riddle"]
+
+[items.abgerichtetes-tier]
+name = "Abgerichtetes Tier"
+source = "homebrew"
+type = "useful"
+text = "Ein Hund, ein Falke oder gar ein Frettchen, das auf ein verabredetes Zeichen hin für Ablenkung sorgt."
+blessings = ["Riddle"]
+
+[items.raetselbuch]
+name = "Rätselbuch"
+source = "homebrew"
+type = "useful"
+blessings = ["Riddle"]
+
+# ---- Craft
+
+[items.steinmetzwerkzeug]
+name = "Steinmetzwerkzeug"
+source = "homebrew"
+type = "useful"
+blessings = ["Craft"]
+
+[items.feines-holzwerkzeug]
+name = "Feines Holzwerkzeug"
+source = "homebrew"
+type = "useful"
+blessings = ["Craft"]
+
+[items.bewaehrter-hammer]
+name = "Bewährter Hammer"
+source = "homebrew"
+type = "useful"
+blessings = ["Craft"]
+
+[items.gravierwerkzeug]
+name = "Gravierwerkzeug"
+source = "homebrew"
+type = "useful"
+blessings = ["Craft"]
+
+[items.zange]
+name = "Zange"
+source = "homebrew"
+type = "useful"
+blessings = ["Craft"]
+
+[items.bohrer]
+name = "Bohrer"
+source = "homebrew"
+type = "useful"
+blessings = ["Craft"]
+
+[items.messwerkzeug]
+name = "Messwerkzeug"
+source = "homebrew"
+type = "useful"
+blessings = ["Craft"]
+
+# ---- Battle
+
+[items.farbige-pfeilfedern]
+name = "Farbige Pfeilfedern"
+source = "homebrew"
+type = "useful"
+text = "Die Farben zeigen das Gewicht des Pfeils: den richtigen für die Entfernung und für den Wind."
+blessings = ["Battle"]
+
+[items.windfeder]
+name = "Windfeder am Bogen"
+source = "homebrew"
+type = "useful"
+text = "Eine kleine Feder an der Bogenspitze zeigt die Windrichtung über Kopfhöhe."
+blessings = ["Battle"]
+
+[items.figuren-fuer-schlachtplaene]
+name = "Figuren für Schlachtpläne"
+source = "homebrew"
+type = "useful"
+text = "Ein fein gearbeiteter Satz von Zwergenhand."
+blessings = ["Battle"]
+
+[items.schachspiel]
+name = "Schachspiel aus Gold und Silber"
+source = "homebrew"
+type = "useful"
+text = "Aus dem fernen Süden."
+blessings = ["Battle"]
+
+# ---- Lore
+
+[items.seltenes-buch]
+name = "Seltenes Buch"
+source = "homebrew"
+type = "useful"
+blessings = ["Lore"]
+
+[items.tinte-und-feder]
+name = "Tinte und Feder"
+source = "homebrew"
+type = "useful"
+blessings = ["Lore"]
+
+[items.erbstueck]
+name = "Erbstück"
+source = "homebrew"
+type = "useful"
+text = "Hilft, sich an das Gelernte zu erinnern."
+blessings = ["Lore"]

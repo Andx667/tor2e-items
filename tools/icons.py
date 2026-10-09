@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws the source icons of the cards -> assets/icons/ring.png, book.png, lone-lands.png, erebor.png, starter-set.png and over-hill.png (512, red, transparent).
+"""Draws the source icons of the cards -> assets/icons/ring.png, book.png, lone-lands.png, erebor.png, starter-set.png, over-hill.png and homebrew.png (512, red, transparent).
 
 The icon in the corner of a card says where the item comes from; src/rules.toml ([sources]) names
 the icon of each source. assets/icons/finsterwacht.png is the logo of the adventure and is not drawn here.
@@ -137,6 +137,21 @@ def over_hill():
     save(im, "over-hill.png")
 
 
+def homebrew():
+    """A foaming tankard: home-brewed."""
+    im, d = canvas()
+    clear = (0, 0, 0, 0)
+    d.ellipse(box(376, 300, 86, 96), fill=RED)                          # the handle ...
+    d.ellipse(box(372, 300, 50, 60), fill=clear)                        # ... and its opening
+    d.rounded_rectangle([120 * S, 180 * S, 360 * S, 452 * S], radius=26 * S, fill=RED)  # the mug
+    for x in (180, 240, 300):                                           # staves
+        d.rectangle([(x - 7) * S, 236 * S, (x + 7) * S, 410 * S], fill=clear)
+    for cx, cy, r in ((150, 150, 52), (226, 122, 62), (310, 146, 56)):  # the foam
+        d.ellipse(box(cx, cy, r, r), fill=RED)
+    d.rectangle([110 * S, 186 * S, 370 * S, 204 * S], fill=clear)       # a gap between foam and mug
+    save(im, "homebrew.png")
+
+
 if __name__ == "__main__":
     ring()
     book()
@@ -144,3 +159,4 @@ if __name__ == "__main__":
     erebor()
     starter_set()
     over_hill()
+    homebrew()
