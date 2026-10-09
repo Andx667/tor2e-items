@@ -11,7 +11,8 @@ Actions on every commit; tagged commits (`v*`) are published as a release.
 
 | Path | Content |
 | --- | --- |
-| `collection.toml` | Title, language, credit |
+| `collection.toml` | Title, language, credit, notice |
+| `NOTICE.md` | Whose names and material this is, and what the MIT licence covers |
 | `src/cards.toml` | The database: items and hoards |
 | `src/cards/*.toml` | Optional further files, merged into the database |
 | `src/rules.toml` | Item types, categories, weapon groups, craftsmanships and the qualities from the rule book |
@@ -87,7 +88,7 @@ below the base value on the card and in brackets in the overview, not added to i
 
 - which item types, weapon groups (close combat, ranged), Combat Proficiencies or bases may carry it,
 - which craftsmanships may carry it, and what it does for each (`effects`),
-- the German text printed on the card, and the English rule book text for reference.
+- the German text printed on the card. The wording of the rule book is not in this repository: look it up there.
 
 Bonuses that become the bearer's Valour rating against a Bane creature are printed as text on the card; they do
 not change the stats.
@@ -192,6 +193,13 @@ the backs have no cut lines, their colour runs 2 mm over the edge of the card an
 Print at 100 % (actual size), not "fit to page". The dashed line is the cut line: the cell is 63.5 × 88.9 mm
 (2.5 × 3.5 in) and the parchment fills it right up to the line, with the gold frame 1.6 mm inside.
 
-## Licence
+## Licence and rights
 
-MIT, see [LICENSE](LICENSE).
+Schatzkammer is an **unofficial fan work**, not affiliated with or endorsed by Middle-earth Enterprises, the
+Tolkien Estate, Sophisticated Games or Free League Publishing. The names from Tolkien's works and the films, the
+rules terms of *The One Ring™ Roleplaying Game* and the items taken from its books belong to their owners and are
+used without a licence; see [NOTICE.md](NOTICE.md). The same notice is printed on the first page of the PDF
+(`notice` in `collection.toml`).
+
+The code, the layout and the author's own items and texts are under the MIT licence, see [LICENSE](LICENSE). It
+does not cover the third-party names and material.

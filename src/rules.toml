@@ -391,7 +391,6 @@ sort = "blessings"
 # weapon_group  only weapons of this group (see [weapon_groups])       (optional)
 # proficiency   only weapons with one of these Combat Proficiencies    (optional)
 # bases         only items with one of these bases ("Mail-shirt", "Coat of mail") (optional)
-# rule          the rule book text, for reference; nothing reads it    (optional)
 # effects       what the quality does for which craftsmanship, as [[qualities.<name>.effects]]
 #               tables. An item gets every entry whose `crafts` names its craftsmanship (or that
 #               has no `crafts`). With `effects`, `modifies` and `text` are read from the entries
@@ -412,42 +411,36 @@ sort = "blessings"
 basic = true
 text = "Piercing Blow schon bei 9 auf dem Feat die"
 applies_to = ["weapon"]
-rule = "Attack rolls score a Piercing Blow on a 9+."
 
 [qualities.Fell]
 basic = true
 applies_to = ["weapon"]
 modifies = { injury = 2 }
 text = "Injury +2"
-rule = "Raise the Injury rating of a weapon by 2."
 
 [qualities.Grievous]
 basic = true
 applies_to = ["weapon"]
 modifies = { damage = 1 }
 text = "Damage +1"
-rule = "Raise the Damage rating of a weapon by 1."
 
 [qualities.Reinforced]
 basic = true
 applies_to = ["shield"]
 modifies = { parry = 1 }
 text = "Parry +1"
-rule = "Raise a shield’s Parry bonus by +1."
 
 [qualities.Close-fitting]
 basic = true
 applies_to = ["armour", "helm"]
 protection_roll = 2
 text = "+2 auf das Ergebnis deiner Protection-Würfe"
-rule = "Add +2 to the result of your PROTECTION roll."
 
 [qualities."Cunning Make"]
 basic = true
 applies_to = ["armour", "helm", "shield"]
 modifies = { load = -2 }
 text = "Load −2"
-rule = "Reduce your Load rating by 2."
 
 # ---- superior rewards
 
@@ -456,7 +449,6 @@ applies_to = ["weapon"]
 craftsmanship = ["Elven", "Númenórean"]
 excludes = ["Fell"]
 superior = true
-rule = "If the weapon is of Elven Craftsmanship, add 4 to its Injury rating. If the weapon is of Númenórean craftsmanship, add 2 to its Injury rating, or a bonus equal to the bearer’s VALOUR (whichever is higher) if used against a Bane creature."
 
 [[qualities."Superior Fell".effects]]
 crafts = ["Elven"]
@@ -475,7 +467,6 @@ applies_to = ["weapon"]
 craftsmanship = ["Dwarven", "Númenórean"]
 excludes = ["Grievous"]
 superior = true
-rule = "If the weapon is of Dwarven craftsmanship, add 2 to its Damage rating. If the weapon is of Númenórean craftsmanship, add 1 to its Damage rating, or a bonus equal to the bearer’s VALOUR if used against a Bane creature."
 
 [[qualities."Superior Grievous".effects]]
 crafts = ["Dwarven"]
@@ -494,7 +485,6 @@ applies_to = ["weapon"]
 craftsmanship = ["Dwarven", "Elven"]
 excludes = ["Keen"]
 superior = true
-rule = "If the weapon is of Dwarven craftsmanship, it scores a Piercing Blow on a result of 8+. If the weapon is of Elven craftsmanship, it scores a Piercing Blow on a result of 9+, or on a result of 10 minus a value equal to the bearer’s VALOUR if used against a Bane creature."
 
 [[qualities."Superior Keen".effects]]
 crafts = ["Dwarven"]
@@ -512,7 +502,6 @@ text = "Piercing Blow schon bei 9 auf dem Feat die; gegen Bane-Kreaturen bei 10 
 applies_to = ["shield"]
 excludes = ["Reinforced"]
 superior = true
-rule = "This quality adds 2 to a shield’s Parry bonus. If the shield is of Númenórean or Elven craftsmanship, add 1 to its Parry bonus, or a bonus equal to the bearer’s VALOUR when fighting against a Bane creature."
 
 [[qualities."Superior Reinforced".effects]]
 modifies = { parry = 2 }
@@ -531,7 +520,6 @@ text = "dazu Parry +1; gegen Bane-Kreaturen stattdessen die Valour des Trägers,
 applies_to = ["armour", "helm"]
 craftsmanship = ["Elven", "Dwarven"]
 excludes = ["Close-fitting"]
-rule = "When you make a PROTECTION roll while wearing a piece of armour or helm with this quality you add 3 to the result, or a bonus equal to your VALOUR rating, whichever is higher."
 
 [[qualities."Ancient Close-fitting".effects]]
 protection_roll = 3
@@ -542,7 +530,6 @@ text = "+3 auf Protection-Würfe oder die Valour des Trägers, falls höher"
 applies_to = ["armour", "helm", "shield"]
 craftsmanship = ["Elven", "Dwarven"]
 excludes = ["Cunning Make"]
-rule = "This quality lowers the Load rating of an item by 3 points, or by your VALOUR rating, whichever is higher (to a minimum of 0 Load)."
 
 [[qualities."Ancient Cunning Make".effects]]
 modifies = { load = -3 }
@@ -556,59 +543,50 @@ applies_to = ["weapon"]
 weapon_group = "ranged"
 craftsmanship = ["Elven"]
 text = "bei einem Treffer verliert das Ziel zusätzlich 1 Hate oder Resolve, bei Bane-Kreaturen 3"
-rule = "When you hit your target using a weapon with this quality you also inflict a loss of 1 point of Hate or Resolve, or 3 points if it’s a Bane creature."
 
 [qualities.Cleaving]
 applies_to = ["weapon"]
 weapon_group = "close_combat"
 text = "wenn du einen Gegner tötest, darfst du sofort einen zweiten Gegner im Nahkampf angreifen"
-rule = "When you kill a foe with a weapon blessed by this quality, you can immediately attack a second adversary engaged with you."
 
 [qualities."Flame of Hope"]
 applies_to = ["weapon"]
 weapon_group = "close_combat"
 craftsmanship = ["Dwarven"]
 text = "bei einem Treffer erholen alle Gefährten (du eingeschlossen) 1 Endurance, plus 1 für jedes gewürfelte Erfolgssymbol"
-rule = "When you hit your target with a weapon blessed by this quality, all members of the Company (you included) recover 1 point of Endurance, plus 1 for each success symbol rolled."
 
 [qualities."Foe-slaying"]
 applies_to = ["weapon"]
 craftsmanship = ["Elven", "Númenórean"]
 text = "bei einem Piercing Blow gegen eine Bane-Kreatur ist deren Protection-Wurf Ill-favoured; war er das schon, trifft der Piercing Blow stattdessen automatisch eine Wunde"
-rule = "When you score a Piercing Blow on a Bane creature, the PROTECTION roll of the target is Ill-favoured. If the roll was already Ill-favoured for any reason, then the Piercing Blow scores an automatic Wound instead."
 
 [qualities."Gleam of Terror"]
 applies_to = ["weapon"]
 weapon_group = "close_combat"
 craftsmanship = ["Dwarven"]
 text = "bei einem Treffer verliert das Ziel zusätzlich 2 Hate oder Resolve"
-rule = "When you hit your target using a weapon with this quality you also inflict a loss of 2 points of Hate or Resolve."
 
 [qualities.Hammering]
 applies_to = ["weapon"]
 weapon_group = "close_combat"
 text = "verliert ein getroffenes Wesen mindestens doppelt so viel Endurance wie sein Attribute level, wird es zurückgeworfen und muss als nächste Hauptaktion aufstehen"
-rule = "A creature hit by this weapon and suffering an Endurance loss equal or superior to twice its Attribute level is additionally knocked back and must spend its next main action to stand up."
 
 [qualities."Hollow Steel"]
 applies_to = ["weapon"]
 proficiency = ["bows"]
 craftsmanship = ["Númenórean"]
 text = "du darfst immer einen zusätzlichen Opening Volley abgeben, auch wenn sonst keiner erlaubt ist (außer du wirst überrascht)"
-rule = "You are always allowed to make one additional opening volley, even when no opening volleys are allowed (unless you are surprised)."
 
 [qualities.Luminescence]
 applies_to = ["weapon"]
 weapon_group = "close_combat"
 craftsmanship = ["Elven"]
 text = "leuchtet fahl und kalt, wenn Bane-Kreaturen nahe sind; du und die Gefährten entgehen ihren Hinterhalten automatisch"
-rule = "This quality makes the weapon’s blade shine with a pale, cold light when a Bane creature is nearby. You and all members of the Company succeed automatically on all rolls made to avoid being ambushed by such creatures."
 
 [qualities."Mithril Armour"]
 applies_to = ["armour"]
 bases = ["Mail-shirt", "Coat of mail"]
 craftsmanship = ["Dwarven"]
-rule = "A mail shirt and a coat of mail made of Mithril have a Load rating of 3 and 6, respectively."
 
 [[qualities."Mithril Armour".effects]]
 bases = ["Mail-shirt"]
@@ -624,31 +602,26 @@ text = "aus Mithril, Load 6"
 applies_to = ["armour"]
 craftsmanship = ["Dwarven"]
 text = "bei Protection-Tests ignorierst du die Wirkung von Miserable und Weary"
-rule = "When you make a PROTECTION test while wearing a Rune-scored Armour, you ignore the effects of being Miserable or Weary."
 
 [qualities."Rune-scored Helm"]
 applies_to = ["helm"]
 craftsmanship = ["Dwarven"]
 text = "bei Skill-Würfen für Kampfaufgaben (Combat Tasks) ignorierst du die Wirkung von Miserable und Weary"
-rule = "When you make a Skill roll attempting any Combat Task while wearing a Rune-scored Helm, you ignore the effects of being Miserable or Weary."
 
 [qualities."Rune-scored Shield"]
 applies_to = ["shield"]
 craftsmanship = ["Dwarven"]
 text = "Angriffswürfe gegen dich werden gemacht, als wäre der Angreifer Weary"
-rule = "When you are fighting with a Rune-scored Shield, attack rolls targeting you are made as if the adversary was Weary."
 
 [qualities."Rune-scored Weapon"]
 applies_to = ["weapon"]
 craftsmanship = ["Dwarven", "Elven"]
 text = "bei Angriffswürfen ignorierst du die Wirkung von Miserable und Weary"
-rule = "When you make an attack roll using a weapon possessing this quality, you ignore the effects of being Miserable or Weary."
 
 [qualities."Straight Flight"]
 applies_to = ["weapon"]
 weapon_group = "ranged"
 text = "der Schütze hat immer einen freien Schuss, auch bei starkem Wind, Dunkelheit oder anderen Umständen; Modifikatoren durch Komplikationen werden ignoriert"
-rule = "The bearer of such a weapon always enjoys a clean shot, even when they are shooting against a strong wind, or their target is protected by darkness, or other elements that would modify their Attack roll negatively (the attacker ignores any modifiers due to complications)."
 
 # ---------------------------------------------------------------- limits
 # Highest number of extra effects per item type. A missing value means "no limit", 0 forbids.

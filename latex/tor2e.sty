@@ -161,7 +161,7 @@
 % Herkunftszeichen: assets/icons/<Name>.png, klein in der rechten unteren Ecke der Karte
 \newcommand\fw@icon[2]{\includegraphics[height=#1]{assets/icons/#2.png}}
 % \fwlegend{Einträge} mit \fwlegenditem{Zeichen}{Bedeutung} – erklärt die Zeichen unter dem Hinweis
-\newcommand\fwlegend[1]{{\small\color{fwgrey}#1\par}\vspace{1mm}}
+\newcommand\fwlegend[1]{{\small\color{fwgrey}\raggedright #1\par}\vspace{1mm}}
 \newcommand\fwlegenditem[2]{\mbox{\raisebox{-0.7mm}{\fw@icon{3.4mm}{#1}}\,\itshape #2}}
 % \fwcard[Zeichen]{Inhalt oben}{Fußzeile} – nur innerhalb von \fwcardspage; bricht die Reihe selbst um
 % Vorher misst sie den Inhalt ohne feste Höhe: ist er höher als die Karte, steht

@@ -9,6 +9,7 @@
 
 \fwtitle{\advTitle}{\advSubtitle}
 \fwnote{\advStrModifiersNote}
+\ifdefempty{\advNotice}{}{\fwnote{\advNotice}}
 
 % ---- Overview: one table per category, one for the hoards
 \input{build/index.tex}

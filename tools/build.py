@@ -9,7 +9,7 @@ A hoard in a selection brings its own card and one card per copy of every item i
 Without a selection the PDF follows the categories of src/rules.toml; each one starts a new
 page of cards, and one without items yet gets an empty page.
 
-Everything collection-specific lives in collection.toml (title, language, credit), src/cards.toml
+Everything collection-specific lives in collection.toml (title, language, credit, notice), src/cards.toml
 (items and hoards) and src/rules.toml (types, categories, qualities, rules). Steps:
 
   1. check the database (tools/check.py); problems stop the build
@@ -84,6 +84,7 @@ def load_config():
     cfg.setdefault("subtitle", "")
     cfg.setdefault("author", "")
     cfg.setdefault("license", "")
+    cfg.setdefault("notice", "")
     cfg.setdefault("language", "english")
     cfg.setdefault("file_name", re.sub(r"[^A-Za-z0-9]+", "-", cfg["title"]).strip("-") + "-TOR2e")
     cfg["language"] = "ngerman" if cfg["language"].lower() in ("german", "ngerman", "de") else "english"
@@ -122,7 +123,8 @@ def write_meta(cfg):
              r"\def\advTitleShort{%s}" % tex_escape(cfg["short_title"]),
              r"\def\advSubtitle{%s}" % tex_escape(cfg["subtitle"]),
              r"\def\advAuthor{%s}" % tex_escape(cfg["author"]),
-             r"\def\advCredit{%s}" % tex_escape(credit)]
+             r"\def\advCredit{%s}" % tex_escape(credit),
+             r"\def\advNotice{%s}" % tex_escape(cfg["notice"])]
     lines += [r"\def\advStr%s{%s}" % (k, tex_escape(v)) for k, v in s.items()]
     with open(os.path.join(BUILD, "meta.tex"), "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
