@@ -1,11 +1,15 @@
 # Schatzkammer
 
-A database of items for *The One Ring, 2nd Edition*: famous weapons and armour, artefacts and treasure hoards
-(collections of items plus generic wealth). The database is one TOML file; a build turns it into a printable PDF
-with an overview and cards in poker size (63.5 × 88.9 mm, nine per A4 page).
+A database of items for *The One Ring, 2nd Edition*: famous weapons and armour, useful items, marvellous
+artefacts, wondrous items and treasure hoards (collections of items plus generic wealth). The database is a few
+TOML files; a build turns them into two printable PDFs with cards in poker size (63.5 × 88.9 mm, nine per A4
+page): one with an overview for printing on one side, one with card backs for printing on both.
 
-The items are in [src/cards.toml](src/cards.toml) (German, rules terms in English). The PDF is built by GitHub
-Actions on every commit; tagged commits (`v*`) are published as a release.
+The items are in [src/cards.toml](src/cards.toml) and [src/cards/](src/cards/) (German, rules terms in English).
+The PDFs are built by GitHub Actions on every commit; tagged commits (`v*`) are published as a
+[release](https://github.com/Andx667/tor2e-items/releases/latest). New items can be put together with the
+[item wizard](https://andx667.github.io/tor2e-items/). This is an unofficial fan work, see
+[Licence and rights](#licence-and-rights).
 
 ## Contents of the repository
 
@@ -14,20 +18,24 @@ Actions on every commit; tagged commits (`v*`) are published as a release.
 | `collection.toml` | Title, language, credit, notice |
 | `NOTICE.md` | Whose names and material this is, and what the MIT licence covers |
 | `src/cards.toml` | The database: items and hoards |
-| `src/cards/*.toml` | Optional further files, merged into the database |
-| `src/rules.toml` | Item types, categories, weapon groups, craftsmanships and the qualities from the rule book |
+| `src/cards/*.toml` | Further files, merged into the database: the sample treasure indexes, the heroes' gear, … |
+| `src/rules.toml` | Item types, bases, sources, categories, weapon groups, craftsmanships, qualities and limits |
 | `tools/check.py` | Checks the database against the rules |
-| `tools/build.py` | PDF build |
+| `tools/build.py` | Builds the two PDFs |
 | `tools/logo.py` | Draws the logo into `assets/` (needs Pillow) |
 | `tools/icons.py` | Draws the source icons into `assets/icons/` (needs Pillow) |
 | `tools/site.py` | Writes `site/data.js` for the item wizard |
 | `tools/test_site.py` | Checks that the wizard agrees with the checker and the build |
 | `site/` | The item wizard (static website, published on GitHub Pages) |
-| `latex/` | Layout |
+| `latex/` | Layout (`tor2e.sty`) and the two documents |
+| `assets/` | Logo and source icons |
+| `Makefile` | Shortcuts: `make`, `make check`, `make site`, `make test`, `make clean` |
+| `.github/workflows/` | `build.yml` builds and releases the PDFs, `pages.yml` publishes the wizard |
 
 ## Adding an item
 
-Add a table to `src/cards.toml`. The fields are listed at the top of that file.
+Add a table to `src/cards.toml` or to a file in `src/cards/`. The fields are listed at the top of
+`src/cards.toml`.
 
 ```toml
 [items.narcrist]
@@ -37,12 +45,12 @@ proficiency = "swords"             # weapons only: the category in the PDF
 base = "Long sword"                # the Core Rules item; shown on the card as its type
 craftsmanship = "Elven"            # Dwarven, Elven or Númenórean: printed as "elbische Arbeit", and
                                    # what the qualities below depend on; other makes have none
-damage = 4                         # the base stats of a Long sword
-injury = 14
-injury_two_handed = 16
+damage = 5                         # the base stats of a Long sword (checked against src/rules.toml)
+injury = 16
+injury_two_handed = 18
 load = 3
 text = "In Gondolin geschmiedet …" # name and origin only
-qualities = ["Superior Fell"]      # from src/rules.toml, which also holds their rules text
+qualities = ["Superior Fell"]      # from src/rules.toml, which also holds their text for the card
 banes = ["Orks"]
 effects = [["Besonderheit", "Leuchtet schwach bläulich, wenn Orks nahe sind."]]
 ```
@@ -64,16 +72,24 @@ An item may leave out all its stats and its qualities: the card then shows only 
 text. Weapons, armour, helms and shields always need a `base`. Partial stats are an error.
 
 The PDF follows the `[categories]` of `src/rules.toml`: the Combat Proficiencies for weapons, then armour, helms,
-shields, useful items, marvellous artefacts and wondrous items (the last three ordered by their skill). Each category starts a new page of cards; one without
-items yet gets an empty page.
+shields, useful items, marvellous artefacts and wondrous items (the last three ordered by their skill), then the
+hoards. Each category starts a new page of cards; one without items yet gets an empty page.
 
-**Source icons.** `source` says where an item or a hoard comes from: `canon` (Tolkien's works and Peter Jackson's films, a ring), `finsterwacht`
-(the adventure, its logo), `rulebook` (the rule books, a book), `lone-lands` (the publisher's sample Magical
-Treasure Index *Tales from the Lone-lands*, a horse with two riders in the snow) `erebor` (the sample index
-*The Quest for Erebor*, a mountain) `starter-set` (the first Starter Set, a tree) or `over-hill` (the starter set *Over Hill and Under Hill*,
-hills with a round door). The icon is printed in the lower right corner of the
-card and explained on the first page; a made-up item has no `source` and stays plain. The sources are defined in
-`src/rules.toml` (`[sources]`), the icons are in `assets/icons/` (`python3 tools/icons.py` draws all but the adventure's logo).
+**Source icons.** `source` says where an item or a hoard comes from. The icon is printed in the lower right
+corner of the card and explained on the first page; a made-up item has no `source` and stays plain.
+
+| `source` | Where from | Icon |
+| --- | --- | --- |
+| `canon` | Tolkien's works and Peter Jackson's films | a ring |
+| `finsterwacht` | the adventure *Die Finsterwacht* | its logo |
+| `rulebook` | the rule books | a book |
+| `lone-lands` | the sample Magical Treasure Index *Tales from the Lone-lands* | a horse with two riders in the snow |
+| `erebor` | the sample index *The Quest for Erebor* | a mountain |
+| `starter-set` | the first Starter Set | a tree |
+| `over-hill` | the starter set *Over Hill and Under Hill* | hills with a round door |
+
+The sources are defined in `src/rules.toml` (`[sources]`), the icons are in `assets/icons/`
+(`python3 tools/icons.py` draws all but the adventure's logo).
 
 ## Stats and qualities
 
@@ -127,28 +143,30 @@ the cards ordered by the first skill.
 qualities, name), checks the new item against the rules, and ends with the TOML table to paste into
 `src/cards.toml`. Qualities that do not fit the item are greyed out with the reason, and a live card shows the
 result. A curse is free text. The source is one of the existing ones or a new one; for a new one the wizard also
-writes the table for `src/rules.toml` and names the icon file to add. The workflow `.github/workflows/pages.yml` publishes it on GitHub Pages (once: Settings > Pages >
-Source: GitHub Actions); it is then at `https://<user>.github.io/<repository>/`.
+writes the table for `src/rules.toml` and names the icon file to add. The workflow `.github/workflows/pages.yml`
+publishes it on GitHub Pages (once: Settings > Pages > Source: GitHub Actions), at
+<https://andx667.github.io/tor2e-items/>.
 
 To run it locally:
 
 ```sh
-python3 tools/site.py      # writes site/data.js from src/rules.toml and the existing ids
+python3 tools/site.py      # or: make site. Writes site/data.js from src/rules.toml and the existing ids
 # then open site/index.html in a browser
 ```
 
 The page needs no server and no libraries. Its rules come from `src/rules.toml`, so a new quality or base shows
 up without touching the page. The checks are `site/verify.js`, a copy of what `tools/check.py` does;
-`python3 tools/test_site.py` runs both on every item and on hundreds of broken variants and fails if they
-disagree, and the TOML the wizard writes must read back as the same item. It needs Node or `pip install
-quickjs`. A new `@rule` in `tools/check.py` has to be added to `site/verify.js` too, which this test notices.
+`python3 tools/test_site.py` (or `make test`) runs both on every item and on hundreds of broken variants and
+fails if they disagree. The TOML the wizard writes must read back as the same item, and its card preview must
+show what the PDF build prints. It needs Node or `pip install quickjs`; without either it says that it was
+skipped. A new `@rule` in `tools/check.py` has to be added to `site/verify.js` too, which this test notices.
 
 ## The checker
 
 `python3 tools/check.py` prints one line per problem and fails if there is any. The build and the CI run it first.
 
 1. **Schema** (built in): known fields, required fields, whole numbers, the stats each type needs (all or none),
-   a `base` on weapons, armour, helms and shields, known craftsmanships, hoards that only hold
+   a `base` on weapons, armour, helms and shields, known craftsmanships and sources, hoards that only hold
    existing items.
    The rules file is checked too, including a German text on every quality.
 2. **Rules** from `src/rules.toml`: `applies_to`, `weapon_group`, `proficiency`, `bases`, `craftsmanship`,
@@ -163,7 +181,7 @@ quickjs`. A new `@rule` in `tools/check.py` has to be added to `site/verify.js` 
 Needs TeX Live or MiKTeX with LuaLaTeX and `latexmk`, and Python 3.11+.
 
 ```sh
-make            # check, then build/<file_name>.pdf
+make            # check, then build/<file_name>.pdf and build/<file_name>-Duplex.pdf
 make check      # only the checker
 python3 tools/build.py kammer-der-wacht narcrist    # a selection: ids of items and hoards
 python3 tools/build.py source:finsterwacht          # ... or every item of a source
@@ -173,13 +191,14 @@ A card with more text than fits stops the build with the id of the item and by h
 shorten its text.
 
 A hoard in a selection brings its own card and one card per copy of every item it holds, so a selection is the
-set of cards to hand out at the table.
+set of cards to hand out at the table. A selection is written to `build/<file_name>-Auswahl.pdf`, with its own
+duplex PDF.
 
 The version in the footer comes from the latest git tag `v*`, the date from the last commit:
 
 ```sh
-git tag v0.1
-git push --tags      # the CI also publishes a release with the PDF
+git tag v2.2
+git push --tags      # the CI also publishes a release with both PDFs
 ```
 
 ## Printing
