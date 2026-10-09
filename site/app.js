@@ -11,8 +11,9 @@
     armour: ["Armour", "Leather and mail armour."],
     helm: ["Helm", "Headgear."],
     shield: ["Shield", "Shields. An Elven or Númenórean shield can have Banes."],
-    artefact: ["Marvellous artefact", "A special item that is not a weapon or armour. Blesses one skill."],
-    wonder: ["Wondrous item", "A very important item that seems like magic to people. Blesses two skills."],
+    useful: ["Useful item", "A simple item that helps with one skill: 1 extra Success die."],
+    artefact: ["Marvellous artefact", "A special item that blesses one skill: 2 extra Success dice and a Magical success."],
+    wonder: ["Wondrous item", "A very important item that seems like magic to people. Blesses two skills: 2 extra Success dice and a Magical success."],
   };
   const CRAFTS = {
     Dwarven: ["Dwarven", "Dwarves: Superior Grievous and Keen, Flame of Hope, Gleam of Terror, ancient armour."],
@@ -257,7 +258,7 @@
       h += section("Basic rewards", basic) + section("Superior rewards", sup, "The stronger rewards of Elven, Dwarven and Númenórean items.") + section("Ancient and special qualities", rest);
     } else {
       const n = kind().blessings || 0;
-      h += `<p class="rulebook">A ${TYPES[state.type][0].toLowerCase()} blesses <b>${n}</b> skill${n > 1 ? "s" : ""}: a hero using it gets a bonus on rolls of those skills.</p><fieldset><legend>Blessed skills (${state.blessings.length} of ${n})</legend><div class="skills">`;
+      h += `<p class="rulebook">A ${TYPES[state.type][0].toLowerCase()} helps with <b>${n}</b> skill${n > 1 ? "s" : ""}: ${kind().blessing_dice || 1} extra Success di${(kind().blessing_dice || 1) > 1 ? "ce" : "e"} on rolls of ${n > 1 ? "those skills" : "that skill"}${kind().blessing_note ? ", and a Magical success for 1 Hope" : ""}.</p><fieldset><legend>Blessed skills (${state.blessings.length} of ${n})</legend><div class="skills">`;
       for (const s of R.skills) {
         const on = state.blessings.includes(s), full = !on && state.blessings.length >= n;
         h += `<label class="choice"><input type="checkbox" name="skill" value="${s}"${on ? " checked" : ""}${full ? " disabled" : ""}><span class="t">${s}</span></label>`;
@@ -326,7 +327,8 @@
     const li = [];
     for (const q of item.qualities || []) li.push(`<li><b>${esc(q)}:</b> ${esc(V.qualityText(q, item, R))}</li>`);
     if ((item.banes || []).length) li.push(`<li><b>Bane:</b> ${esc(item.banes.join(", "))}</li>`);
-    if ((item.blessings || []).length) li.push(`<li><b>Blessing${item.blessings.length > 1 ? "s" : ""}:</b> ${esc(item.blessings.join(", "))}</li>`);
+    const blessing = V.blessingLine(item, R);
+    if (blessing) li.push(`<li><b>${esc(blessing[0])}:</b> ${esc(blessing[1])}</li>`);
     for (const e of item.effects || []) li.push(`<li><b>${esc(e[0])}:</b> ${esc(e[1])}</li>`);
     if (item.curse) li.push(`<li><b>Curse:</b> ${esc(item.curse)}</li>`);
     if (li.length) h += `<ul>${li.join("")}</ul>`;

@@ -36,7 +36,7 @@ ranged = ["bows"]
 #        kinds to choose from. A type without it, or a craftsmanship not listed, has no Bane. The kinds are
 #        written like on the cards. A Bane comes with the craftsmanship: it needs no particular quality
 # blessings  how many skills an item of this type blesses (exactly); a type without it has no
-#        such rule. A marvellous artefact blesses one skill, a wondrous item two
+#        such rule. A useful item and a marvellous artefact have one skill, a wondrous item two
 # plain_label  kind-line start for an item with nothing but basic rewards (and without blessings
 #        or free effects): such an item is not famous, so it gets this instead of `label`. Every
 #        quality that is not a basic reward makes an item famous. May be empty. Without it the
@@ -80,17 +80,33 @@ from = ["Orks", "Wölfe", "Spinnen"]
 choose = 2
 from = ["Orks", "Trolle", "Wölfe", "Böse Menschen", "Untote"]
 
-# Wondrous items are the very important ones, so powerful that they seem like magic to people.
-# Every other special item is a marvellous artefact.
+# Items that are not weapons or armour help with skills (item field `blessings`), in three steps:
+#   useful    a simple useful item: 1 extra Success die on rolls of one skill
+#   artefact  a marvellous artefact: 2 extra Success dice on one skill, and a Magical success
+#   wonder    a wondrous item, so powerful that it seems like magic to people: the same for two skills
+# blessing_dice   the Success dice the item adds to rolls of its skills; printed as "(2d)"
+# blessing_note   printed after the dice: what else the item does for its skills (optional)
+# blessing_label  the word in front of the skills on the card, instead of Blessing(s) (optional)
+[types.useful]
+label = "Useful Item"
+stats = []
+blessings = 1
+blessing_dice = 1
+blessing_label = "Skill"
+
 [types.artefact]
 label = "Marvellous Artefact"
 stats = []
 blessings = 1
+blessing_dice = 2
+blessing_note = "für 1 Hope ein Magical success"
 
 [types.wonder]
 label = "Wondrous Item"
 stats = []
 blessings = 2
+blessing_dice = 2
+blessing_note = "für 1 Hope ein Magical success"
 
 # ---------------------------------------------------------------- bases
 # The Core Rules items an item is based on (item field `base`) and their base stats. The stats of
@@ -339,7 +355,17 @@ types = ["shield"]
 
 [categories.useful]
 label = "Useful Items"
-types = ["artefact", "wonder"]
+types = ["useful"]
+sort = "blessings"
+
+[categories.artefacts]
+label = "Marvellous Artefacts"
+types = ["artefact"]
+sort = "blessings"
+
+[categories.wonders]
+label = "Wondrous Items"
+types = ["wonder"]
 sort = "blessings"
 
 # ---------------------------------------------------------------- qualities

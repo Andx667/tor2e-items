@@ -4,7 +4,8 @@
 #
 # Item fields:
 #   name        required
-#   type        required: a type from src/rules.toml (weapon, armour, helm, shield, artefact, wonder)
+#   type        required: a type from src/rules.toml (weapon, armour, helm, shield, useful, artefact,
+#               wonder)
 #   proficiency weapons only: the Combat Proficiency, which is also the category in the PDF
 #               (brawling, swords, axes, spears, bows - see [categories] in src/rules.toml)
 #   source      where it comes from, a source from src/rules.toml (canon, finsterwacht, rulebook,
@@ -25,7 +26,8 @@
 #   text        description
 #   qualities   extra effects from src/rules.toml; their rules text is added on the card
 #   banes       creatures the item is a Bane for
-#   blessings   skills the item blesses
+#   blessings   skills the item helps with: one for a useful item (1d) and a marvellous artefact
+#               (2d, Magical success), two for a wondrous item (2d, Magical success)
 #   curse       the curse on the item, free text: curses are made by hand, there is no list
 #               ("Shadow Taint")
 #   effects     free lines: [["Label", "Text"], ...]
@@ -48,7 +50,7 @@ footer = ""
 terms = [
   "Shadow weakness", "Eye Awareness", "Peril rating", "Success die", "Feat die", "Piercing Blow",
   "Core Rules", "Long-hafted axe", "Long sword", "Short sword", "Coat of mail", "Undertaking",
-  "Blessings", "Blessing", "Banes", "Bane", "Damage", "Injury", "Load", "Protection", "Parry",
+  "Magical success", "Blessings", "Blessing", "Banes", "Bane", "Damage", "Injury", "Load", "Protection", "Parry",
   "Treasure", "Hope", "Hate", "Shadow", "Awe", "Battle", "Sword", "Bow", "Shield",
 ]
 

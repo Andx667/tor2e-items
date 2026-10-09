@@ -82,9 +82,9 @@ def mutations(items, rules, count, rng):
     return out
 
 
-# per case: the problems, the TOML and the card (stats, kind line, quality texts; null if it cannot be drawn)
+# per case: the problems, the TOML and the card (stats, kind line, quality texts, skills; null if it cannot be drawn)
 JS_CASE = ("function(c){var r=d.rules,card=null;try{card={s:V.cardStats(c,r),k:V.kindLine(c,r),"
-           "q:(c.qualities||[]).map(function(n){return V.qualityText(n,c,r);})};}catch(e){}"
+           "q:(c.qualities||[]).map(function(n){return V.qualityText(n,c,r);}),b:V.blessingLine(c,r)};}catch(e){}"
            "return {p:V.verify(c,r),t:V.toToml(c,'test-item'),c:card};}")
 JS_NODE = ("const V=require(process.argv[1]);const d=JSON.parse(require('fs').readFileSync(0,'utf8'));"
            "console.log(JSON.stringify(d.cases.map(" + JS_CASE + ")));")
@@ -138,7 +138,8 @@ def main():
                 print(f"case {i} ({item.get('name')!r}): the TOML does not read back as the item\n{got['t']}")
         if not want:  # a valid item: the preview of the wizard shows the card of the PDF
             card = {"s": [list(e) for e in build.stats_entries(item, rules)], "k": build.kind_line(item, rules),
-                    "q": [build.quality_text(q, item, rules) for q in item.get("qualities", [])]}
+                    "q": [build.quality_text(q, item, rules) for q in item.get("qualities", [])],
+                    "b": list(check.blessing_line(item, rules) or []) or None}
             if card != got["c"]:
                 wrong += 1
                 if wrong <= 5:

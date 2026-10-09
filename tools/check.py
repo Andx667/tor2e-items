@@ -62,6 +62,21 @@ def craft_label(item, rules):
     return rules["craft_labels"].get(item.get("craftsmanship"), "")
 
 
+def blessing_line(item, rules):
+    """The skills an item helps with as the card says them, as (label, text): the skills, the Success
+    dice the item's type adds ("(2d)") and what else it does for them. None without skills."""
+    skills = item.get("blessings", [])
+    if not skills:
+        return None
+    kind = rules["types"].get(item.get("type"), {})
+    text = ", ".join(skills)
+    if "blessing_dice" in kind:
+        text += f" ({kind['blessing_dice']}d)"
+    if kind.get("blessing_note"):
+        text += "; " + kind["blessing_note"]
+    return kind.get("blessing_label") or ("Blessings" if len(skills) > 1 else "Blessing"), text
+
+
 def proficiencies_of(quality, rules):
     """The Combat Proficiencies a quality is limited to, or None for any weapon."""
     allowed = None
@@ -120,8 +135,12 @@ def check_rules_file(rules):
         for s in t.get("stats", []):
             if s not in STATS:
                 yield f"rules: types.{name}: unknown stat '{s}'"
-        if "blessings" in t and not is_int(t["blessings"]):
-            yield f"rules: types.{name}: 'blessings' must be a whole number"
+        for key in ("blessings", "blessing_dice"):
+            if key in t and not is_int(t[key]):
+                yield f"rules: types.{name}: '{key}' must be a whole number"
+        for key in ("blessing_note", "blessing_label"):
+            if key in t and not isinstance(t[key], str):
+                yield f"rules: types.{name}: '{key}' must be text"
         banes = t.get("banes", {})
         if not isinstance(banes, dict):
             yield f"rules: types.{name}: banes must be tables: [types.{name}.banes.<craftsmanship>]"

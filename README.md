@@ -63,7 +63,7 @@ An item may leave out all its stats and its qualities: the card then shows only 
 text. Weapons, armour, helms and shields always need a `base`. Partial stats are an error.
 
 The PDF follows the `[categories]` of `src/rules.toml`: the Combat Proficiencies for weapons, then armour, helms,
-shields and useful items (ordered by the skill they bless). Each category starts a new page of cards; one without
+shields, useful items, marvellous artefacts and wondrous items (the last three ordered by their skill). Each category starts a new page of cards; one without
 items yet gets an empty page.
 
 **Source icons.** `source` says where an item or a hoard comes from: `canon` (Tolkien's works and Peter Jackson's films, a ring), `finsterwacht`
@@ -105,11 +105,20 @@ rule for them. The card prints the text, the overview only says that the item is
 
 ## Useful items
 
-Special items that are not weapons or armour are either **wondrous items** or **marvellous artefacts**. Wondrous
-items are the very important ones, so powerful that they seem like magic to people; every other special item is
-a marvellous artefact. A wondrous item blesses two skills (`blessings`), a marvellous artefact one. The skills
-are listed in `src/rules.toml`, the count per type is `blessings` there, and the checker enforces both. The
-cards of this category are ordered by the first skill they bless.
+Items that are not weapons or armour help with skills (`blessings`), in three steps:
+
+| Type | Kind line | Skills | Extra Success dice | Magical success |
+| --- | --- | --- | --- | --- |
+| `useful` | Useful Item | 1 | 1d | no |
+| `artefact` | Marvellous Artefact | 1 | 2d | for 1 Hope |
+| `wonder` | Wondrous Item | 2 | 2d | for 1 Hope |
+
+A useful item is a simple thing that helps; a marvellous artefact is a special item; wondrous items are the very
+important ones, so powerful that they seem like magic to people. The card says it after the skills: "Skill:
+Travel (1d)" or "Blessing: Healing (2d); für 1 Hope ein Magical success". The skills are listed in
+`src/rules.toml`; the number of skills, the dice and the note per type are `blessings`, `blessing_dice` and
+`blessing_note` there, and the checker enforces the number. Each of the three has its own category in the PDF, with
+the cards ordered by the first skill.
 
 ## Item wizard
 

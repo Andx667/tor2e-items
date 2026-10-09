@@ -237,6 +237,17 @@
     return qualityEffects(rules.qualities[name], item).filter((e) => e.text).map((e) => e.text).join("; ");
   }
 
+  // The skills an item helps with as the card says them, as [label, text], or null (as check.py)
+  function blessingLine(item, rules) {
+    const skills = effectList(item, "blessings");
+    if (!skills.length) return null;
+    const kind = rules.types[item.type] || {};
+    let text = skills.join(", ");
+    if (has(kind, "blessing_dice")) text += ` (${kind.blessing_dice}d)`;
+    if (kind.blessing_note) text += "; " + kind.blessing_note;
+    return [kind.blessing_label || (skills.length > 1 ? "Blessings" : "Blessing"), text];
+  }
+
   // The kind line of the card: everything that is not a basic reward (any other quality, a blessing
   // or a free effect) makes an item famous
   function kindLine(item, rules) {
@@ -263,7 +274,7 @@
     return lines.join("\n") + "\n";
   }
 
-  const api = { toToml, verify, groups, checkItem, checkEffects, cardStats, qualityText, qualityEffects, kindLine, proficienciesOf, effectList };
+  const api = { toToml, verify, groups, checkItem, checkEffects, cardStats, qualityText, qualityEffects, kindLine, blessingLine, proficienciesOf, effectList };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.TorVerify = api;
 })(typeof window !== "undefined" ? window : globalThis);

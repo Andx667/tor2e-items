@@ -287,7 +287,7 @@ def cards_tex(db, rules, groups, s):
             if c.get("banes"):
                 lines.append(("Bane", ", ".join(c["banes"])))
             if c.get("blessings"):
-                lines.append(("Blessings" if len(c["blessings"]) > 1 else "Blessing", ", ".join(c["blessings"])))
+                lines.append(check.blessing_line(c, rules))
             lines += [tuple(e) for e in c.get("effects", [])]
             bullets = [r"\item \textbf{" + tex_escape(a) + (":} " + it(b) if b else "}") for a, b in lines]
             if c.get("curse"):  # free text, so no rules terms are set in italics in it
@@ -358,9 +358,18 @@ def index_tex(db, rules, groups, s):
         unique = list(dict.fromkeys(cards))
         keys = [k for table_, k in unique if table_ == "items"]
         useful = keys and all(rules["types"][db["items"][k]["type"]].get("blessings") is not None for k in keys)
-        if useful:  # useful items: their blessings are what counts, there is no kind and no stats
-            rows = [[link(k, db["items"][k]["name"]), tex_escape(", ".join(db["items"][k].get("blessings", []))), page(k)] for k in keys]
-            out.append(table(title, ("0.55", "0.38", "0.07"), (s["Name"], s["Blessings"], s["Page"]), rows, "BPR"))
+        if useful:  # useful items: their skills are what counts, there are no stats
+            mixed = len({db["items"][k]["type"] for k in keys}) > 1  # a selection: say which kind each one is
+            rows = []
+            for k in keys:
+                c = db["items"][k]
+                dice = rules["types"][c["type"]].get("blessing_dice")
+                rows.append([link(k, c["name"]), *([tex_escape(rules["types"][c["type"]]["label"])] if mixed else []),
+                             tex_escape(", ".join(c.get("blessings", [])) + (f" ({dice}d)" if dice else "")), page(k)])
+            if mixed:
+                out.append(table(title, ("0.40", "0.25", "0.28", "0.07"), (s["Name"], s["Kind"], s["Blessings"], s["Page"]), rows))
+            else:
+                out.append(table(title, ("0.55", "0.38", "0.07"), (s["Name"], s["Blessings"], s["Page"]), rows, "BPR"))
         elif keys or not unique:
             rows = []
             for k in keys:
