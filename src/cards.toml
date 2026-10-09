@@ -566,6 +566,9 @@ type = "wonder"
 craftsmanship = "Elven"
 text = "Ein Sehender Stein aus der Zeit vor dem Untergang Númenors, im Turm von Orthanc bewahrt."
 blessings = ["Lore", "Scan"]
+effects = [
+  ["Spezial", "Jede Benutzung erhöht die Eye Awareness um 3, ein Magical success um 6."],
+]
 
 [items.gandalfs-stab]
 name = "Gandalfs Stab"
