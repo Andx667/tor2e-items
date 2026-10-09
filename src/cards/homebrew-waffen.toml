@@ -1,0 +1,353 @@
+# Famous weapons and armour from the "Circleofnoms TOR 2e Homebrew Collection" (pages 32-34, by several
+# authors). Andúril, Glamdring and the Bow of the Galadhrim are left out: the database has them.
+# The collection does not keep to the rule book everywhere, so some items are changed to pass the checker:
+#   - a Bane against "The Enemy" is a Bane against Orcs
+#   - Superior Grievous on Elven and Superior Fell on Dwarven items are the basic Grievous and Fell
+#   - Gurthang's Bane against "all living things" is a free line, not a Bane of the rules
+# Merged into src/cards.toml; the fields are listed at the top of that file.
+
+[items.kriegshelm-des-azaghal]
+name = "Kriegshelm des Azaghâl"
+source = "homebrew"
+type = "helm"
+base = "Helm"
+craftsmanship = "Dwarven"
+protection = 1
+load = 4
+text = "Von Telchar von Nogrod geschmiedet. Der Helm mit Visier zeigt ein scheußliches Antlitz; König Azaghâl trug ihn gegen den Drachen Glaurung."
+qualities = ["Ancient Close-fitting", "Ancient Cunning Make"]
+effects = [
+  ["Spezial", "Bei Intimidate Foe: Zeigt der Feat die die Gandalf-Rune, verliert der Gegner zusätzlich Hate in Höhe deiner halben Valour."],
+]
+
+[items.axt-des-koenigs]
+name = "Axt des Königs"
+source = "homebrew"
+type = "weapon"
+proficiency = "axes"
+base = "Great axe"
+craftsmanship = "Dwarven"
+damage = 7
+injury = 20
+load = 4
+text = "Wohl von Gamil Zirak in Nogrod für den Herrn von Belegost gefertigt."
+qualities = ["Flame of Hope", "Fell", "Superior Keen"]
+
+[items.panzerhemd-der-koenige]
+name = "Panzerhemd der Könige"
+source = "homebrew"
+type = "armour"
+base = "Coat of mail"
+craftsmanship = "Dwarven"
+protection = 4
+load = 12
+text = "Von den Zwergenschmieden von Belegost für König Azaghâl gefertigt."
+qualities = ["Ancient Close-fitting", "Ancient Cunning Make", "Rune-scored Armour"]
+
+[items.schild-von-belegost]
+name = "Schild von Belegost"
+source = "homebrew"
+type = "shield"
+base = "Shield"
+craftsmanship = "Dwarven"
+parry = 2
+load = 4
+text = "Ein Drachenschild aus Belegost, geprägt mit gekreuzten Hacken über einem einzelnen Berg."
+qualities = ["Ancient Cunning Make", "Superior Reinforced"]
+
+[items.andcarch]
+name = "Andcarch, der Langzahn"
+source = "homebrew"
+type = "weapon"
+proficiency = "brawling"
+base = "Dagger"
+craftsmanship = "Elven"
+damage = 2
+injury = 14
+load = 0
+qualities = ["Luminescence", "Superior Keen"]
+banes = ["Orks"]
+
+[items.annungil]
+name = "Annúngil"
+source = "homebrew"
+type = "weapon"
+proficiency = "swords"
+base = "Long sword"
+craftsmanship = "Númenórean"
+damage = 5
+injury = 16
+injury_two_handed = 18
+load = 3
+text = "Glimmt bei Nacht wie ein Stern."
+qualities = ["Superior Grievous", "Foe-slaying", "Cleaving"]
+banes = ["Orks", "Untote"]
+
+[items.caladtegi]
+name = "Caladtegi, der Lichtbringer"
+source = "homebrew"
+type = "weapon"
+proficiency = "swords"
+base = "Long sword"
+craftsmanship = "Elven"
+damage = 5
+injury = 16
+injury_two_handed = 18
+load = 3
+text = "Vor langer Zeit in Gondolin geschmiedet, auf den Schwertelfeldern verloren."
+qualities = ["Luminescence", "Foe-slaying", "Rune-scored Weapon"]
+banes = ["Orks"]
+
+[items.gurthang]
+name = "Gurthang, Eisen des Todes"
+source = "homebrew"
+type = "weapon"
+proficiency = "swords"
+base = "Long sword"
+craftsmanship = "Elven"
+damage = 5
+injury = 16
+injury_two_handed = 18
+load = 3
+text = "Aus Anglachel neu geschmiedet, der schwarzen Klinge des Dunkelelben Eöl."
+qualities = ["Grievous", "Superior Keen", "Foe-slaying"]
+curse = "Darken"
+effects = [
+  ["Bane", "alle Lebewesen"],
+]
+
+[items.ringil]
+name = "Ringil"
+source = "homebrew"
+type = "weapon"
+proficiency = "swords"
+base = "Long sword"
+craftsmanship = "Elven"
+damage = 5
+injury = 16
+injury_two_handed = 18
+load = 3
+text = "Siebenmal verwundete es den Großen Feind."
+qualities = ["Superior Keen", "Luminescence", "Foe-slaying"]
+banes = ["Orks"]
+
+[items.dramborleg]
+name = "Dramborleg"
+source = "homebrew"
+type = "weapon"
+proficiency = "axes"
+base = "Great axe"
+craftsmanship = "Elven"
+damage = 7
+injury = 20
+load = 4
+qualities = ["Hammering", "Cleaving", "Superior Fell"]
+banes = ["Orks"]
+
+[items.durins-axt]
+name = "Durins Axt"
+source = "homebrew"
+type = "weapon"
+proficiency = "axes"
+base = "Long-hafted axe"
+craftsmanship = "Dwarven"
+damage = 6
+injury = 18
+injury_two_handed = 20
+load = 3
+text = "Ein Erbstück der Langbärte, verloren beim Fall von Khazad-dûm."
+qualities = ["Cleaving", "Rune-scored Weapon", "Superior Grievous"]
+
+[items.axt-der-schrecklichen-klaenge]
+name = "Axt der schrecklichen Klänge"
+source = "homebrew"
+type = "weapon"
+proficiency = "axes"
+base = "Great axe"
+craftsmanship = "Dwarven"
+damage = 7
+injury = 20
+load = 4
+text = "Im Schwung dröhnt sie fürchterlich. Zwergenrunen bedecken sie."
+qualities = ["Gleam of Terror", "Rune-scored Weapon", "Fell"]
+
+[items.aeglos]
+name = "Aeglos, die Schneespitze"
+source = "homebrew"
+type = "weapon"
+proficiency = "spears"
+base = "Great spear"
+craftsmanship = "Elven"
+damage = 5
+injury = 16
+load = 4
+text = "Der Speer Gil-galads, dem keiner standhielt."
+qualities = ["Cleaving", "Hammering", "Superior Keen"]
+banes = ["Orks"]
+
+[items.belthronding]
+name = "Belthronding"
+source = "homebrew"
+type = "weapon"
+proficiency = "bows"
+base = "Great bow"
+craftsmanship = "Elven"
+damage = 4
+injury = 16
+load = 4
+qualities = ["Superior Keen", "Grievous", "Straight Flight"]
+banes = ["Orks"]
+effects = [
+  ["Spezial", "Nur mit Valour und Wisdom 3 oder mehr zu spannen."],
+]
+
+[items.minluzir]
+name = "Minluzîr"
+source = "homebrew"
+type = "weapon"
+proficiency = "bows"
+base = "Great bow"
+craftsmanship = "Númenórean"
+damage = 4
+injury = 16
+load = 4
+qualities = ["Superior Fell", "Straight Flight", "Hollow Steel"]
+banes = ["Böse Menschen", "Trolle"]
+
+[items.armidhrist]
+name = "Armidhrist"
+source = "homebrew"
+type = "weapon"
+proficiency = "swords"
+base = "Short sword"
+craftsmanship = "Númenórean"
+damage = 3
+injury = 16
+load = 1
+text = "Glüht rot auf, wenn es auf Metall trifft."
+qualities = ["Cleaving", "Foe-slaying"]
+banes = ["Orks", "Böse Menschen"]
+
+[items.varyar]
+name = "Varyar, der Beschützer"
+source = "homebrew"
+type = "weapon"
+proficiency = "swords"
+base = "Long sword"
+craftsmanship = "Elven"
+damage = 5
+injury = 16
+injury_two_handed = 18
+load = 3
+qualities = ["Superior Keen", "Hammering", "Superior Fell"]
+banes = ["Wölfe"]
+
+[items.helvegil]
+name = "Helvegil, das Eisschwert"
+source = "homebrew"
+type = "weapon"
+proficiency = "swords"
+base = "Long sword"
+craftsmanship = "Elven"
+damage = 5
+injury = 16
+injury_two_handed = 18
+load = 3
+qualities = ["Luminescence", "Grievous"]
+banes = ["Orks"]
+
+[items.thagor]
+name = "Thagor, der Spalter"
+source = "homebrew"
+type = "weapon"
+proficiency = "swords"
+base = "Sword"
+craftsmanship = "Númenórean"
+damage = 4
+injury = 16
+load = 2
+qualities = ["Foe-slaying", "Superior Fell"]
+banes = ["Untote", "Orks"]
+
+[items.dindagnir]
+name = "Dindagnir, der stille Töter"
+source = "homebrew"
+type = "weapon"
+proficiency = "swords"
+base = "Sword"
+craftsmanship = "Elven"
+damage = 4
+injury = 16
+load = 2
+qualities = ["Foe-slaying", "Superior Fell", "Grievous"]
+banes = ["Orks"]
+effects = [
+  ["Spezial", "Die Scheide zählt als Useful Item für Stealth."],
+]
+
+[items.dirdagnir]
+name = "Dirdagnir, der Menschentöter"
+source = "homebrew"
+type = "weapon"
+proficiency = "brawling"
+base = "Dagger"
+craftsmanship = "Númenórean"
+damage = 2
+injury = 14
+load = 0
+qualities = ["Foe-slaying", "Superior Fell", "Superior Grievous"]
+banes = ["Böse Menschen", "Orks"]
+
+[items.angrist]
+name = "Angrist, der Eisenspalter"
+source = "homebrew"
+type = "weapon"
+proficiency = "axes"
+base = "Great axe"
+craftsmanship = "Elven"
+damage = 7
+injury = 20
+load = 4
+qualities = ["Cleaving", "Hammering", "Superior Fell"]
+banes = ["Orks"]
+
+[items.cu-glandirith]
+name = "Cû Glandirith, Bogen der Wächter"
+source = "homebrew"
+type = "weapon"
+proficiency = "bows"
+base = "Bow"
+craftsmanship = "Númenórean"
+damage = 3
+injury = 14
+load = 2
+qualities = ["Superior Grievous", "Straight Flight", "Hollow Steel"]
+banes = ["Orks", "Trolle"]
+
+[items.hurvegil]
+name = "Hurvegil, das Herzschwert"
+source = "homebrew"
+type = "weapon"
+proficiency = "swords"
+base = "Long sword"
+craftsmanship = "Elven"
+damage = 5
+injury = 16
+injury_two_handed = 18
+load = 3
+qualities = ["Superior Fell", "Superior Keen", "Grievous"]
+banes = ["Wölfe"]
+
+[items.gaurdagnir]
+name = "Gaurdagnir, der Werwolftöter"
+source = "homebrew"
+type = "weapon"
+proficiency = "spears"
+base = "Spear"
+craftsmanship = "Elven"
+damage = 4
+injury = 14
+injury_two_handed = 16
+load = 3
+qualities = ["Superior Keen", "Foe-slaying", "Luminescence"]
+banes = ["Wölfe"]
