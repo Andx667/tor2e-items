@@ -1,0 +1,15 @@
+% The cards with their backs, for printing on both sides (flip on the long edge): every page of
+% cards is followed by the page of its backs. No overview, so that fronts and backs stay paired.
+% Called by tools/build.py like latex/tor2e.tex.
+\documentclass[10pt]{article}
+\input{build/meta.tex}
+\usepackage{tor2e}
+\input{build/version.tex}
+
+\begin{document}
+
+\input{build/cards-duplex.tex}
+
+\label{fw-lastnum}
+
+\end{document}

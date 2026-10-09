@@ -188,6 +188,39 @@
   \global\advance\fw@cardn 1
   \ifnum\fw@cardn<\fw@cardcols\relax\else\global\fw@cardn=0 \par\nointerlineskip\fi%
   \ignorespaces}
+% ---------------------------------------------------------------- Rückseiten (beidseitiger Druck)
+% \fwcardback – die Rückseite einer Karte: Pergament, Rahmen, Zeichen und Titel. Die Fläche reicht 2 mm
+% über die Schnittlinie hinaus und der Rahmen sitzt 7 mm innen, damit ein Versatz zwischen Vorder- und
+% Rückseite beim Drucken nicht auffällt. Schnittlinien stehen nur auf der Vorderseite.
+\newcommand\fw@cardnext{\global\advance\fw@cardn 1
+  \ifnum\fw@cardn<\fw@cardcols\relax\else\global\fw@cardn=0 \par\nointerlineskip\fi}
+\newcommand\fwcardback{%
+  \ifnum\fw@cardn=0 \noindent\fi%
+  \begin{tikzpicture}
+    \useasboundingbox (0,0) rectangle (\fw@cw,\fw@ch);
+    \fill[fwparchdark] (-2mm,-2mm) rectangle (\fw@cw+2mm,\fw@ch+2mm);
+    \draw[fwgold, line width=0.9pt, rounded corners=2mm] (7mm,7mm) rectangle (\fw@cw-7mm,\fw@ch-7mm);
+    \node[inner sep=0pt] at (0.5*\fw@cw,0.56*\fw@ch) {\includegraphics[width=24mm]{assets/logo-print.png}};
+    \node[inner sep=0pt] at (0.5*\fw@cw,0.31*\fw@ch)
+      {\fontsize{11}{13}\selectfont\scshape\addfontfeature{LetterSpace=6}\color{fwred}\advTitleShort};
+  \end{tikzpicture}%
+  \fw@cardnext\ignorespaces}
+% \fwcardblank – ein leerer Platz in der Reihe: hinter ihm liegt keine Karte
+\newcommand\fwcardblank{%
+  \ifnum\fw@cardn=0 \noindent\fi%
+  \hbox to\fw@cw{\vrule width 0pt height \fw@ch\hss}%
+  \fw@cardnext\ignorespaces}
+% \fwbackspage{Kategorie}{Hinweis}{Rückseiten} – die Rückseite einer Kartenseite. Kopfzeile wie vorn,
+% aber unsichtbar, damit die Karten auf derselben Höhe stehen; tools/build.py spiegelt die Reihen.
+\newcommand\fwbackspage[3]{%
+  \clearpage
+  \global\fw@cardn=0
+  \sbox\fw@cardsbox{\begin{minipage}[b]{\dimexpr\fw@cw*\fw@cardcols+0.1mm\relax}%
+    \setlength\parskip{0pt}#3\par\end{minipage}}%
+  \global\fw@cardn=0
+  \fw@cardhint{\phantom{#1}}{\phantom{#2}}\vspace{2mm}\nointerlineskip
+  \hbox to\linewidth{\hss\usebox\fw@cardsbox\hss}}
+
 % Kopfzeile der Kartenseite: links die Kategorie, rechts der Hinweis
 \newcommand\fw@cardhint[2]{{\fontsize{8.5}{11}\selectfont
   \ifblank{#1}{}{{\bfseries\color{fwred}#1}\hfill}{\itshape\color{fwgrey}#2}\par}}

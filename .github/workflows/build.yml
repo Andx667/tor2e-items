@@ -53,6 +53,13 @@ jobs:
           archive: false
           if-no-files-found: error
 
+      - name: Upload the PDF for duplex printing (cards with their backs)
+        uses: actions/upload-artifact@v7
+        with:
+          path: ${{ steps.build.outputs.pdf_duplex }}
+          archive: false
+          if-no-files-found: error
+
       - name: Upload the build log on failure
         if: failure()
         uses: actions/upload-artifact@v4
@@ -64,4 +71,6 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ steps.build.outputs.pdf }}
+          files: |
+            ${{ steps.build.outputs.pdf }}
+            ${{ steps.build.outputs.pdf_duplex }}

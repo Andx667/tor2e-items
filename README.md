@@ -183,6 +183,12 @@ git push --tags      # the CI also publishes a release with the PDF
 
 ## Printing
 
+The build writes two PDFs. `<file_name>.pdf` has the overview and the cards, for printing on one side.
+`<file_name>-Duplex.pdf` has only the cards, and after every page of cards a page with their backs: print it on
+both sides, flipped on the **long edge**, and every card gets a back. The rows of the back pages are mirrored so
+that a half-full page lines up too. Printers shift the two sides against each other by a millimetre or two, so
+the backs have no cut lines, their colour runs 2 mm over the edge of the card and their frame sits well inside.
+
 Print at 100 % (actual size), not "fit to page". The dashed line is the cut line: the cell is 63.5 × 88.9 mm
 (2.5 × 3.5 in) and the parchment fills it right up to the line, with the gold frame 1.6 mm inside.
 

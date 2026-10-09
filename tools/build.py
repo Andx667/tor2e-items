@@ -17,7 +17,8 @@ Everything collection-specific lives in collection.toml (title, language, credit
   3. collection.toml                                          -> build/meta.tex
   4. src/cards.toml -> build/index.tex (overview) and build/cards.tex (nine cards per A4 page)
   5. LuaLaTeX (latexmk) -> build/<file_name>.pdf; a card with more text than fits stops the build
-  6. copy with the exact version in the name (published by CI)
+  6. the same cards again with a page of backs after every page -> build/<file_name>-Duplex.pdf
+  7. copies with the exact version in the name (published by CI)
 
 Needs: LuaLaTeX with latexmk (TeX Live or MiKTeX), Python 3.11+.
 Without luaotfload XeLaTeX is used instead (FW_ENGINE=... forces an engine).
@@ -260,7 +261,17 @@ def hoard_parts(hoard, lines):
     return parts
 
 
-def cards_tex(db, rules, groups, s):
+def backs(count):
+    """The backs behind `count` cards of a page, row by row. The sheet is turned over its long
+    edge, so every row is mirrored: the back of the left card is on the right."""
+    rows = []
+    for i in range(0, count, 3):
+        there = [i + col < count for col in range(3)]
+        rows += [r"\fwcardback" if x else r"\fwcardblank" for x in reversed(there)]
+    return "\n".join(rows)
+
+
+def cards_tex(db, rules, groups, s, duplex=False):
     terms = set(db["terms"]) | set(rules["qualities"]) | set(rules["skills"]) | {t["label"] for t in rules["types"].values()}
     terms = sorted(terms, key=len, reverse=True)
     term_re = re.compile(r"(?<![\w])(" + "|".join(re.escape(t) for t in terms) + r")(?![\w])") if terms else None
@@ -319,14 +330,19 @@ def cards_tex(db, rules, groups, s):
                 + r"\fwcard" + icon + "{" + "\n".join(up) + "}{" + tex_escape(db["footer"]) + "}")
 
     # nine cards per page; \fwcard breaks the rows itself (3 x 3). Every group starts a new
-    # page, and an empty group still gets one.
+    # page, and an empty group still gets one. With `duplex` every page of cards is followed by
+    # the page of their backs, and a group without cards is left out.
     out = []
     for title, cards in groups:
         made = [x for c in cards for x in card(*c)]
-        for i in range(0, max(len(made), 1), PER_PAGE):
+        for i in range(0, max(len(made), 0 if duplex else 1), PER_PAGE):
             bookmark = "[%s]" % tex_escape(title or s["Cards"]) if i == 0 else ""
+            page = made[i:i + PER_PAGE]
             out.append(r"\fwcardspage%s{%s}{%s}{%%" % (bookmark, tex_escape(title), tex_escape(db["hint"])) + "\n"
-                       + "\n".join(made[i:i + PER_PAGE]) + "}")
+                       + "\n".join(page) + "}")
+            if duplex:
+                out.append(r"\fwbackspage{%s}{%s}{%%" % (tex_escape(title), tex_escape(db["hint"])) + "\n"
+                           + backs(len(page)) + "}")
     return "\n\n".join(out) + "\n"
 
 
@@ -429,6 +445,8 @@ def main():
         f.write(index_tex(db, rules, groups, s))
     with open(os.path.join(BUILD, "cards.tex"), "w", encoding="utf-8") as f:
         f.write(cards_tex(db, rules, groups, s))
+    with open(os.path.join(BUILD, "cards-duplex.tex"), "w", encoding="utf-8") as f:
+        f.write(cards_tex(db, rules, groups, s, duplex=True))
 
     env = dict(os.environ)
     env["TEXINPUTS"] = os.path.join(ROOT, "latex") + "//" + os.pathsep + env.get("TEXINPUTS", "")
@@ -438,21 +456,26 @@ def main():
         else "xelatex")
     print("TeX engine:", engine)
     job = cfg["file_name"] + ("-" + s["Selection"] if wanted else "")
-    if shutil.which("latexmk"):
-        run(["latexmk", "-" + engine, "-outdir=build", "-jobname=" + job, *tex, "latex/tor2e.tex"], env=env)
-    else:  # without latexmk three runs settle page references and bookmarks
-        for _ in range(3):
-            run([engine, *tex, "-output-directory=build", "-jobname=" + job, "latex/tor2e.tex"], env=env)
-    full = overflowing(os.path.join(BUILD, job + ".log"))
-    if full:
-        sys.exit("\n".join("error: the card of " + c + " is too full" for c in full)
-                 + "\nShorten the texts of these cards - no PDF published.")
-    pdf = os.path.join("build", f"{job}-{slug}.pdf")
-    shutil.copyfile(os.path.join(BUILD, job + ".pdf"), os.path.join(ROOT, pdf))
+    # two documents: the one to read and cut, and the cards alone with their backs for duplex printing
+    outputs = {}
+    for name, jobname, source in (("pdf", job, "latex/tor2e.tex"), ("pdf_duplex", job + "-Duplex", "latex/tor2e-duplex.tex")):
+        if shutil.which("latexmk"):
+            run(["latexmk", "-" + engine, "-outdir=build", "-jobname=" + jobname, *tex, source], env=env)
+        else:  # without latexmk three runs settle page references and bookmarks
+            for _ in range(3):
+                run([engine, *tex, "-output-directory=build", "-jobname=" + jobname, source], env=env)
+        full = overflowing(os.path.join(BUILD, jobname + ".log"))
+        if full:
+            sys.exit("\n".join("error: the card of " + c + " is too full" for c in full)
+                     + "\nShorten the texts of these cards - no PDF published.")
+        outputs[name] = os.path.join("build", f"{jobname}-{slug}.pdf")
+        shutil.copyfile(os.path.join(BUILD, jobname + ".pdf"), os.path.join(ROOT, outputs[name]))
     if os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-            f.write("pdf=" + pdf.replace(os.sep, "/") + "\n")
-    print("done:", pdf)
+            for name, pdf in outputs.items():
+                f.write(name + "=" + pdf.replace(os.sep, "/") + "\n")
+    for pdf in outputs.values():
+        print("done:", pdf)
 
 
 if __name__ == "__main__":
