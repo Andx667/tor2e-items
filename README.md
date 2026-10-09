@@ -69,8 +69,8 @@ items yet gets an empty page.
 **Source icons.** `source` says where an item or a hoard comes from: `canon` (Tolkien's works and Peter Jackson's films, a ring), `finsterwacht`
 (the adventure, its logo), `rulebook` (the rule books, a book), `lone-lands` (the publisher's sample Magical
 Treasure Index *Tales from the Lone-lands*, a horse with two riders in the snow) `erebor` (the sample index
-*The Quest for Erebor*, a mountain) `starter-set` (the first Starter Set, a tree) or `over-hill` (the starter set *Over Hill and Under Hill*, a
-hill with a round door). The icon is printed in the lower right corner of the
+*The Quest for Erebor*, a mountain) `starter-set` (the first Starter Set, a tree) or `over-hill` (the starter set *Over Hill and Under Hill*,
+hills with a round door). The icon is printed in the lower right corner of the
 card and explained on the first page; a made-up item has no `source` and stays plain. The sources are defined in
 `src/rules.toml` (`[sources]`), the icons are in `assets/icons/` (`python3 tools/icons.py` draws all but the adventure's logo).
 

@@ -124,13 +124,16 @@ def starter_set():
 
 
 def over_hill():
-    """A hill with a round door in it: Over Hill and Under Hill."""
+    """Rolling hills, one in front of the other, and a round door in one of them: Over Hill and Under Hill."""
     im, d = canvas()
-    d.pieslice(box(256, 420, 240, 320), 180, 360, fill=RED)          # the hill
-    d.rectangle([4 * S, 404 * S, 508 * S, 436 * S], fill=RED)          # the ground
-    d.ellipse(box(256, 318, 92, 92), fill=(0, 0, 0, 0))                # the door ...
-    d.ellipse(box(256, 318, 66, 66), fill=RED)                         # ... in its frame
-    d.ellipse(box(256, 318, 14, 14), fill=(0, 0, 0, 0))                # the knob in the middle
+    clear = (0, 0, 0, 0)
+    d.pieslice(box(200, 430, 190, 270), 180, 360, fill=RED)           # the far hill
+    for cx, rx, ry in ((356, 150, 180), (104, 98, 96)):               # two nearer ones, a gap around each
+        d.pieslice(box(cx, 430, rx + 22, ry + 22), 180, 360, fill=clear)
+        d.pieslice(box(cx, 430, rx, ry), 180, 360, fill=RED)
+    d.rectangle([4 * S, 408 * S, 508 * S, 438 * S], fill=RED)         # the ground
+    d.ellipse(box(356, 340, 38, 38), fill=clear)                      # the door ...
+    d.ellipse(box(356, 340, 23, 23), fill=RED)                        # ... in its frame
     save(im, "over-hill.png")
 
 
