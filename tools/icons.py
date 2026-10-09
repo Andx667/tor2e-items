@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws the source icons of the cards -> assets/icons/ring.png, book.png, lone-lands.png, erebor.png and over-hill.png (512, red, transparent).
+"""Draws the source icons of the cards -> assets/icons/ring.png, book.png, lone-lands.png, erebor.png, starter-set.png and over-hill.png (512, red, transparent).
 
 The icon in the corner of a card says where the item comes from; src/rules.toml ([sources]) names
 the icon of each source. assets/icons/finsterwacht.png is the logo of the adventure and is not drawn here.
@@ -113,6 +113,16 @@ def erebor():
     save(im, "erebor.png")
 
 
+def starter_set():
+    """A broad tree on a rise: the Party Tree of the Shire, for the first Starter Set."""
+    im, d = canvas()
+    for cx, cy, rx, ry in ((256, 190, 150, 120), (150, 230, 110, 90), (362, 230, 110, 90)):  # the crown
+        d.ellipse(box(cx, cy, rx, ry), fill=RED)
+    d.polygon([(x * S, y * S) for x, y in ((226, 280), (286, 280), (300, 430), (212, 430))], fill=RED)  # the trunk
+    d.pieslice(box(256, 470, 230, 60), 180, 360, fill=RED)                                         # the rise
+    save(im, "starter-set.png")
+
+
 def over_hill():
     """A hill with a round door in it: Over Hill and Under Hill."""
     im, d = canvas()
@@ -129,4 +139,5 @@ if __name__ == "__main__":
     book()
     lone_lands()
     erebor()
+    starter_set()
     over_hill()

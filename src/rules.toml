@@ -302,6 +302,10 @@ icon = "lone-lands"
 label = "aus dem Beispiel-Index „The Quest for Erebor“"
 icon = "erebor"
 
+[sources.starter-set]
+label = "aus dem Starterset"
+icon = "starter-set"
+
 [sources.over-hill]
 label = "aus dem Starterset „Over Hill and Under Hill“"
 icon = "over-hill"

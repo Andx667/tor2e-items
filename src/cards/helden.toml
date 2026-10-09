@@ -1,0 +1,146 @@
+# The useful items of the pre-generated Player-heroes of the two starter sets (their travelling
+# gear), and Bilbo's ring from the same sheets. The sheets only give names and skills; the texts
+# are made up.
+# Merged into src/cards.toml; the fields are listed at the top of that file.
+
+# ================================================================ The One Ring Starter Set
+
+[items.feiner-umhang-und-hut]
+name = "Feiner Umhang und Hut"
+source = "starter-set"
+type = "useful"
+text = "Guter Stoff aus dem Auenland, sauber gebürstet. Wer so gekleidet ist, wird ernst genommen."
+blessings = ["Awe"]
+
+[items.tukscher-wanderstab]
+name = "Tukscher Wanderstab"
+source = "starter-set"
+type = "useful"
+text = "Ein leichter, zäher Stab, wie ihn die wanderlustigen Tuks seit jeher schneiden."
+blessings = ["Travel"]
+
+[items.erlesener-regenschirm]
+name = "Erlesener Regenschirm"
+source = "starter-set"
+type = "useful"
+text = "Ein Schirm mit Rüschen und gedrechseltem Griff, der jedem Argument Nachdruck verleiht."
+blessings = ["Persuade"]
+
+[items.tuksches-wanderbuendel]
+name = "Tuksches Wanderbündel"
+source = "starter-set"
+type = "useful"
+text = "Ein Bündel am Stock mit allem, was man abseits der Wege braucht."
+blessings = ["Explore"]
+
+[items.feine-kleider]
+name = "Feine Kleider"
+source = "starter-set"
+type = "useful"
+text = "Sonntagsstaat mit Spitze und Bändern, für Besuche bei besseren Leuten."
+blessings = ["Courtesy"]
+
+[items.kaninchenmesser]
+name = "Kaninchenmesser"
+source = "starter-set"
+type = "useful"
+text = "Ein kurzes, scharfes Messer zum Abziehen von Kaninchen."
+blessings = ["Hunting"]
+
+[items.zwergenfiedel]
+name = "Zwergenfiedel"
+source = "starter-set"
+type = "useful"
+craftsmanship = "Dwarven"
+text = "Eine Fiedel von Zwergenhand, mit tiefem, warmem Klang."
+blessings = ["Song"]
+
+[items.fein-gearbeitete-pfeife]
+name = "Fein gearbeitete Pfeife"
+source = "starter-set"
+type = "useful"
+text = "Eine langstielige Pfeife mit verziertem Kopf. Bei einer Pfeife lässt sich gut zuhören und nachdenken."
+blessings = ["Insight"]
+
+[items.bilbos-zauberring]
+name = "Bilbos Zauberring"
+source = "starter-set"
+type = "wonder"
+text = "Ein schlichter goldener Ring, gefunden in den Tiefen des Nebelgebirges."
+blessings = ["Stealth", "Riddle"]
+effects = [
+  ["Spezial", "Für 1 Hope wird der Träger unsichtbar."],
+]
+
+# ================================================================ Over Hill and Under Hill
+
+[items.zwergenmesser]
+name = "Zwergenmesser"
+source = "over-hill"
+type = "useful"
+craftsmanship = "Dwarven"
+text = "Ein breites Messer aus gutem Zwergenstahl, das seine Schärfe lange hält."
+blessings = ["Hunting"]
+
+[items.pelzumhang]
+name = "Pelzumhang"
+source = "over-hill"
+type = "useful"
+text = "Ein schwerer Umhang aus dichtem Fell, der Wind und Kälte abhält."
+blessings = ["Travel"]
+
+[items.goldene-brosche]
+name = "Goldene Brosche"
+source = "over-hill"
+type = "useful"
+text = "Eine Gewandspange aus Gold, die Stand und Herkunft zeigt."
+blessings = ["Courtesy"]
+
+[items.verzierte-schulterstuecke]
+name = "Verzierte Schulterstücke"
+source = "over-hill"
+type = "useful"
+text = "Schulterplatten mit eingeschnittenen Mustern, das Zeichen eines erfahrenen Kämpfers."
+blessings = ["Battle"]
+
+[items.gepolsterte-stiefel]
+name = "Gepolsterte Stiefel"
+source = "over-hill"
+type = "useful"
+text = "Stiefel mit weichen, dicken Sohlen, die jeden Schritt dämpfen."
+blessings = ["Stealth"]
+
+[items.ranzen-des-wanderers]
+name = "Ranzen des Wanderers"
+source = "over-hill"
+type = "useful"
+text = "Ein abgewetzter Ranzen mit vielen Taschen, in dem alles seinen Platz hat."
+blessings = ["Explore"]
+
+[items.harfe]
+name = "Harfe"
+source = "over-hill"
+type = "useful"
+text = "Eine kleine Reiseharfe."
+blessings = ["Song"]
+
+[items.dauerfackel]
+name = "Dauerfackel"
+source = "over-hill"
+type = "useful"
+text = "Eine Fackel mit eisernem Kopf, die sich immer wieder neu tränken und entzünden lässt."
+blessings = ["Scan"]
+
+[items.seil]
+name = "Seil"
+source = "over-hill"
+type = "useful"
+text = "Ein gutes Stück Hanfseil."
+blessings = ["Athletics"]
+
+[items.handbeil]
+name = "Handbeil"
+source = "over-hill"
+type = "useful"
+text = "Ein kleines Beil für Holz und Lagerarbeit."
+blessings = ["Craft"]
