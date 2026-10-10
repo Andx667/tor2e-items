@@ -40,11 +40,15 @@
   const fresh = () => ({
     step: 0, reached: 0, type: "", base: "", other: { name: "", proficiency: "swords", damage: "", injury: "", injury_two_handed: "", protection: "", parry: "", load: "" },
     craft: "", banes: [], qualities: [], blessings: [], effectLabel: "", effectText: "",
-    curse: "", name: "", id: "", idTouched: false, text: "", source: "", sourceLabel: "",
+    curseChoice: "", curseText: "", name: "", id: "", idTouched: false, text: "", source: "", sourceLabel: "",
   });
   let state = fresh();
   const KEY = "tor-item-wizard-v1";
   try { const saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && saved.other) state = Object.assign(fresh(), saved); } catch (e) { /* no storage */ }
+  // a curse from the list, or the own text (an older save had only `curse`, or a curse that is no longer in the list)
+  if (state.curse) { state.curseChoice = state.curse; state.curseText = state.curse; }
+  delete state.curse;
+  if (state.curseChoice && state.curseChoice !== "__own" && !R.curses[state.curseChoice]) state.curseChoice = "__own";
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* no storage */ } };
 
   const $ = (s) => document.querySelector(s);
@@ -94,7 +98,8 @@
     if (state.qualities.length) it.qualities = [...state.qualities];
     if (state.banes.length) it.banes = [...state.banes];
     if (state.blessings.length) it.blessings = [...state.blessings];
-    if (state.curse.trim()) it.curse = state.curse.trim();
+    const curse = state.curseChoice === "__own" ? state.curseText.trim() : state.curseChoice;
+    if (curse) it.curse = curse;
     if (state.effectLabel.trim() && state.effectText.trim()) it.effects = [[state.effectLabel.trim(), state.effectText.trim()]];
     return it;
   }
@@ -242,6 +247,20 @@
       + (av.ok ? "" : `<span class="r">${esc(av.reason)}</span>`) + `</label>`;
   }
 
+  function curseChoices() {
+    const radio = (value, title, desc) => `<label class="choice"><input type="radio" name="curse" value="${esc(value)}"${state.curseChoice === value ? " checked" : ""}><span class="t">${esc(title)}</span>${desc ? `<span class="d">${esc(desc)}</span>` : ""}</label>`;
+    const groups = [];
+    for (const [name, c] of Object.entries(R.curses)) {
+      let g = groups.find((x) => x[0] === c.group);
+      if (!g) groups.push((g = [c.group, []]));
+      g[1].push(radio(name, name, c.text));
+    }
+    let h = `<fieldset><legend class="sr-only">Curse</legend><div class="choices">${radio("", "No curse", "")}${radio("__own", "Own curse…", "Free text, for a curse of your own.")}</div>`;
+    if (state.curseChoice === "__own") h += `<div class="field"><label for="curseText">Curse</label><input id="curseText" type="text" value="${esc(state.curseText)}" placeholder="Shadow Taint"><span class="help">Free text, printed on the card as “Curse: …”.</span></div>`;
+    for (const [title, list] of groups) h += `<h4 class="prof">${esc(title || "Curses")}</h4><div class="choices">${list.join("")}</div>`;
+    return h + `</fieldset>`;
+  }
+
   function stepQualities() {
     let h = "";
     if (isGear()) {
@@ -266,7 +285,7 @@
       h += `</div></fieldset>`;
     }
     h += `<h3>Special effect <span class="chip plain">optional</span></h3><p class="rulebook">A free effect that is not a rule-book quality, like “Ruf der Wacht”.</p><div class="grid2"><div class="field"><label for="effectLabel">Label</label><input id="effectLabel" type="text" value="${esc(state.effectLabel)}"></div></div><div class="field"><label for="effectText">Text (German)</label><input id="effectText" type="text" value="${esc(state.effectText)}"></div>`;
-    h += `<h3>Curse <span class="chip plain">optional</span></h3><p class="rulebook">Curses have no fixed rules: the Loremaster invents the curse of an item.</p><div class="field"><label for="curse">Curse</label><input id="curse" type="text" value="${esc(state.curse)}" placeholder="Shadow Taint"><span class="help">Free text, printed on the card as “Curse: …”.</span></div>`;
+    h += `<h3>Curse <span class="chip plain">optional</span></h3><p class="rulebook">Pick a curse from the Homebrew Collection, or write your own. The curse is only named on the card.</p>${curseChoices()}`;
     return h;
   }
 
@@ -389,6 +408,7 @@
     }
     else if (n === "bane") toggle(state.banes, t.value, t.checked);
     else if (n === "quality") { toggle(state.qualities, t.value, t.checked); prune(); }
+    else if (n === "curse") state.curseChoice = t.value;
     else if (n === "skill") toggle(state.blessings, t.value, t.checked);
     else if (t.id === "source") { /* draw the step again: the field for a new source comes or goes */ }
     else if (t.dataset.other === "proficiency") { state.other.proficiency = t.value; prune(); return refreshLight(); }
@@ -401,7 +421,7 @@
     if (t.dataset.other) { state.other[t.dataset.other] = t.value; return refreshLight(); }
     const f = { effectLabel: () => (state.effectLabel = t.value), effectText: () => (state.effectText = t.value),
       name: () => { state.name = t.value; if (!state.idTouched) { state.id = slug(state.name); const idEl = $("#id"); if (idEl) idEl.value = state.id; } },
-      id: () => { state.id = t.value; state.idTouched = true; }, text: () => (state.text = t.value), curse: () => (state.curse = t.value),
+      id: () => { state.id = t.value; state.idTouched = true; }, text: () => (state.text = t.value), curseText: () => (state.curseText = t.value),
       source: () => (state.source = t.value), sourceLabel: () => (state.sourceLabel = t.value) }[t.id];
     if (f) { f(); refreshLight(); }
   });

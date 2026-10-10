@@ -627,6 +627,77 @@ applies_to = ["weapon"]
 weapon_group = "ranged"
 text = "der Schütze hat immer einen freien Schuss, auch bei starkem Wind, Dunkelheit oder anderen Umständen; Modifikatoren durch Komplikationen werden ignoriert"
 
+# ---------------------------------------------------------------- curses
+# Curses an item can have (item field `curse`). The item wizard offers them as a list next to free text;
+# the checker does not limit `curse` to this list, and no item uses one yet.
+# From the Circleofnoms TOR 2e Homebrew Collection, "Curses" (pp. 167-168).
+# group  the heading the wizard puts the curse under
+# text   what the curse does, as short as possible (English); the full text is in the collection
+
+[curses."The Mark of Evil"]
+group = "New curses (glorelendil)"
+text = "Council Time Limit -1, or +1 with servants of the Enemy."
+
+[curses."The Song of Readiness"]
+group = "New curses (glorelendil)"
+text = "The blade hums: the wielder can't ambush."
+
+[curses."The Longing"]
+group = "New curses (glorelendil)"
+text = "Wielder gets the trait “Lecher”; an Eye in a social roll near a desired partner means a slap, a fight or a new fling."
+
+[curses."The Goblining Blade"]
+group = "New curses (glorelendil)"
+text = "While carried, the bearer looks like an orc or goblin to anyone who wasn't there when it was picked up."
+
+[curses."Visions of Terror"]
+group = "New curses (glorelendil)"
+text = "Eye on the daily Journey roll: +1 Fatigue. Eye at the start of combat: no Opening Volley or first round. Eye failures can be narrated as visions."
+
+[curses."Wraith Form"]
+group = "New curses (glorelendil)"
+text = "Partly in the wraith world: sees and fights ghosts and wraiths, who can hurt the spirit. If the hero dies, they return as a Fell Wraith who can't rest."
+
+[curses."Limitation"]
+group = "Homebrew curses"
+text = "Limits how the hero can use a skill (the blessed one, or one the LM picks)."
+
+[curses."Curse of Weakness"]
+group = "Curses from 1e"
+text = "The bearer shows the worst Flaw of their Shadow Weakness; the LM can invoke it."
+
+[curses."Darken"]
+group = "Curses from 1e"
+text = "Light fades when the item is revealed: rolls relying on light lose (-1d)."
+
+[curses."Hunted"]
+group = "Curses from 1e"
+text = "An Eye from the wielder adds +1 more to the Eye Score; one type of enemy is drawn to hunt them."
+
+[curses."Ill-Luck"]
+group = "Curses from 1e"
+text = "An Eye on the Feat die is an automatic failure, even if not Miserable."
+
+[curses."Ill-Omen"]
+group = "Curses from 1e"
+text = "Council Time Limit -1; an Eye in a Council is an automatic failure and Resistance +1."
+
+[curses."Malice"]
+group = "Curses from 1e"
+text = "No Hope can be spent on rolls that involve the item."
+
+[curses."Owned"]
+group = "Curses from 1e"
+text = "The item belongs to another (LM's choice): useless near its owner, who hunts the bearer."
+
+[curses."Shadow Taint"]
+group = "Curses from 1e"
+text = "Shadow Scars equal to its Blessings or Magical Qualities, until the curse is lifted."
+
+[curses."Crippling"]
+group = "Curses from 1e"
+text = "Strength, Heart or Wits (LM's choice): TN +2."
+
 # ---------------------------------------------------------------- limits
 # Highest number of extra effects per item type. A missing value means "no limit", 0 forbids.
 #   qualities, banes, blessings   each list on its own

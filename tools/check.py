@@ -43,6 +43,7 @@ def load_rules():
     rules.setdefault("craftsmanships", [])
     rules.setdefault("skills", [])
     rules.setdefault("bases", {})
+    rules.setdefault("curses", {})
     return rules
 
 

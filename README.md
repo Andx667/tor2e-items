@@ -118,8 +118,9 @@ in `src/rules.toml`), or none, are just well made and get no such label. A *Bane
 number of rewards. A famous weapon or piece of armour has at most three qualities, like the three lines of the
 Magical Treasure Index (`[limits]` in `src/rules.toml`).
 
-**Curses.** `curse` is the curse on an item, as free text: curses are made by hand, so there is no list and no
-rule for them. The card prints the text, the overview only says that the item is cursed.
+**Curses.** `curse` is the curse on an item, as free text, so there are no rules for it. The card prints the
+text, the overview only says that the item is cursed. `src/rules.toml` lists the curses of the Circleofnoms
+Homebrew Collection (`[curses.<name>]`, with a one-line `text`) for the item wizard to offer; no item uses one yet.
 
 ## Useful items
 
@@ -143,7 +144,7 @@ the cards ordered by the first skill.
 `site/` is a small website that walks through the steps of the rule book (item type, craftsmanship, Banes,
 qualities, name), checks the new item against the rules, and ends with the TOML table to paste into
 `src/cards.toml`. Qualities that do not fit the item are greyed out with the reason, and a live card shows the
-result. A curse is free text. The source is one of the existing ones or a new one; for a new one the wizard also
+result. A curse is one from the list of `src/rules.toml` (with a short explanation each) or free text. The source is one of the existing ones or a new one; for a new one the wizard also
 writes the table for `src/rules.toml` and names the icon file to add. The workflow `.github/workflows/pages.yml`
 publishes it on GitHub Pages (once: Settings > Pages > Source: GitHub Actions), at
 <https://andx667.github.io/tor2e-items/>.
