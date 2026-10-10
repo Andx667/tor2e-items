@@ -152,6 +152,7 @@ textarea { min-height: 6rem; resize: vertical; }
 .dice li { display: flex; align-items: baseline; gap: .5rem; }
 .dice .die { min-width: 2.6rem; text-align: center; padding: 0 .4rem; border: 1px solid var(--gold); border-radius: 6px; font-size: .8rem; color: var(--muted); }
 .dice .what { color: var(--ink-strong); }
+.dice + .actions { margin-bottom: 1.4rem; }
 
 /* buttons */
 .actions { display: flex; justify-content: space-between; gap: .6rem; flex-wrap: wrap; margin-top: 1.4rem; }
