@@ -40,7 +40,7 @@
   const fresh = () => ({
     step: 0, reached: 0, type: "", base: "", other: { name: "", proficiency: "swords", damage: "", injury: "", injury_two_handed: "", protection: "", parry: "", load: "" },
     craft: "", banes: [], qualities: [], blessings: [], effectLabel: "", effectText: "",
-    curseChoice: "", curseText: "", name: "", id: "", idTouched: false, text: "", source: "", sourceLabel: "",
+    curseChoice: "", curseText: "", rolls: null, name: "", id: "", idTouched: false, text: "", source: "", sourceLabel: "",
   });
   let state = fresh();
   const KEY = "tor-item-wizard-v1";
@@ -171,7 +171,8 @@
 
   // ---------------------------------------------------------------- screens
   function stepType() {
-    let h = `<fieldset><legend class="sr-only">Item type</legend><div class="choices">`;
+    let h = `<div class="rollbox"><button class="btn" type="button" data-act="roll">🎲 Roll a random famous item</button><span class="help">No time? The dice choose everything, within the rules. You can change it afterwards.</span></div>`;
+    h += `<fieldset><legend class="sr-only">Item type</legend><div class="choices">`;
     for (const t of Object.keys(R.types)) {
       h += `<label class="choice"><input type="radio" name="type" value="${t}"${state.type === t ? " checked" : ""}><span class="t">${TYPES[t][0]}</span><span class="d">${TYPES[t][1]}</span></label>`;
     }
@@ -312,9 +313,15 @@
     return { item, groups, ok: groups.every((g) => !g.problems.length) };
   }
 
+  function rollLog() {
+    return `<h3>The dice</h3><ol class="dice">${state.rolls.map((r) => `<li><span class="die">${esc(r.die)}</span> <b>${r.roll}</b> <span class="what">${esc(r.text)}</span></li>`).join("")}</ol>`
+      + `<div class="actions"><button class="btn" type="button" data-act="roll">🎲 Roll again</button></div>`;
+  }
+
   function stepCheck() {
     const v = verification();
-    let h = `<p class="status ${v.ok ? "ok" : "bad"}" role="status">${v.ok ? "✓ The item follows all the rules." : "✗ The item breaks some rules. Go back and fix them."}</p>`;
+    let h = state.rolls ? rollLog() : "";
+    h += `<p class="status ${v.ok ? "ok" : "bad"}" role="status">${v.ok ? "✓ The item follows all the rules." : "✗ The item breaks some rules. Go back and fix them."}</p>`;
     h += `<ul class="report">` + v.groups.map((g) => `<li class="${g.problems.length ? "fail" : "pass"}"><span class="mark" aria-hidden="true">${g.problems.length ? "✗" : "✓"}</span><span>${esc(g.label)}</span>${g.problems.map((p) => `<span class="msg">${esc(p)}</span>`).join("")}</li>`).join("") + `</ul>`;
     const summary = [
       ["Type", TYPES[state.type] ? TYPES[state.type][0] + (v.item.base ? " · " + v.item.base : "") : "–", 0],
@@ -391,6 +398,22 @@
     const w = $("#why"); if (w) w.textContent = why && state.step < STEPS.length - 1 ? why : "";
   }
 
+  // ---------------------------------------------------------------- random item
+  function rollItem() {
+    const taken = (name) => window.TOR_DATA.existing.some((e) => e.id === slug(name));
+    const rng = () => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; };
+    const r = window.TorRoll.roll(R, V, rng, taken);
+    if (!r) return;
+    const it = r.item;
+    state = Object.assign(fresh(), {
+      type: it.type, base: it.base || "", craft: it.craftsmanship || "none", banes: it.banes || [], qualities: it.qualities || [],
+      blessings: it.blessings || [], name: it.name, id: slug(it.name), text: it.text || "", rolls: r.log,
+    });
+    prune();
+    state.step = STEPS.length - 1; state.reached = state.step;
+    render(true); window.scrollTo({ top: 0 });
+  }
+
   // ---------------------------------------------------------------- navigation
   function go(n) { state.step = Math.max(0, Math.min(STEPS.length - 1, n)); state.reached = Math.max(state.reached, state.step); render(true); window.scrollTo({ top: 0 }); }
   function next() { if (!gate(state.step)) go(state.step + 1); }
@@ -400,6 +423,7 @@
   document.addEventListener("change", (e) => {
     const t = e.target, n = t.name;
     if (!t.closest("#wizard")) return;
+    state.rolls = null; // the dice no longer explain the item
     if (n === "type") { state.type = t.value; state.base = ""; state.reached = state.step; prune(); }
     else if (n === "base") { state.base = t.value; prune(); }
     else if (n === "craft") {
@@ -418,6 +442,7 @@
   document.addEventListener("input", (e) => {
     const t = e.target;
     if (!t.closest("#wizard")) return;
+    state.rolls = null;
     if (t.dataset.other) { state.other[t.dataset.other] = t.value; return refreshLight(); }
     const f = { effectLabel: () => (state.effectLabel = t.value), effectText: () => (state.effectText = t.value),
       name: () => { state.name = t.value; if (!state.idTouched) { state.id = slug(state.name); const idEl = $("#id"); if (idEl) idEl.value = state.id; } },
@@ -432,6 +457,7 @@
     const act = b.dataset.act;
     if (act === "next") next();
     else if (act === "back") go(state.step - 1);
+    else if (act === "roll") rollItem();
     else if (act === "reset") { state = fresh(); render(true); }
     else if (act === "copy" || act === "download") {
       const v = verification(); if (!v.ok) return;

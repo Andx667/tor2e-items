@@ -23,6 +23,7 @@ import check
 
 ROOT = check.ROOT
 VERIFY = os.path.join(ROOT, "site", "verify.js")
+ROLL = os.path.join(ROOT, "site", "roll.js")
 
 
 def python_problems(item, db, rules):
@@ -109,6 +110,59 @@ def run_js(payload):
                                "(JSON.parse(" + json.dumps(payload) + ")))"))
 
 
+# the random item of the wizard: n seeds, each gives an item and the dice that made it
+ROLL_BODY = ("function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);"
+             "t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}"
+             "var out=[];for(var i=0;i<N;i++){out.push(R.roll(d.rules,V,mulberry(i+1),function(){return false;}));}")
+
+
+def run_roll(rules, count):
+    """Items from the random item of the wizard for `count` seeds, or None if there is no JavaScript runtime."""
+    payload = json.dumps({"rules": rules}, ensure_ascii=False)
+    node = shutil.which("node")
+    if node:
+        script = ("const V=require(process.argv[1]),R=require(process.argv[2]);const d=JSON.parse(require('fs').readFileSync(0,'utf8'));"
+                  f"const N={count};{ROLL_BODY}console.log(JSON.stringify(out));")
+        r = subprocess.run([node, "-e", script, VERIFY, ROLL], input=payload, capture_output=True, text=True, encoding="utf-8")
+        if r.returncode:
+            sys.exit("node failed:\n" + r.stderr)
+        return json.loads(r.stdout)
+    try:
+        import quickjs
+    except ImportError:
+        return None
+    ctx = quickjs.Context()
+    for path in (VERIFY, ROLL):
+        with open(path, encoding="utf-8") as f:
+            ctx.eval(f.read())
+    return json.loads(ctx.eval("JSON.stringify((function(d){var V=TorVerify,R=TorRoll,N=" + str(count) + ";" + ROLL_BODY
+                               + "return out;})(JSON.parse(" + json.dumps(payload) + ")))"))
+
+
+def check_rolls(db, rules):
+    """Every random item must be free of problems for the Python checker; returns the number of failures."""
+    rolled = run_roll(rules, 400)
+    if rolled is None:
+        return 0
+    wrong = 0
+    kinds = {}
+    for i, r in enumerate(rolled):
+        if r is None:
+            wrong += 1
+            print(f"roll {i}: no item")
+            continue
+        item = r["item"]
+        kinds[item["type"]] = kinds.get(item["type"], 0) + 1
+        found = python_problems(item, db, rules)
+        famous = any(not rules["qualities"][q].get("basic") for q in item.get("qualities", [])) or item.get("blessings")
+        if found or not famous or not r["log"]:
+            wrong += 1
+            if wrong <= 5:
+                print(f"roll {i} ({item.get('name')!r}): famous={bool(famous)} problems={found}")
+    print(f"{len(rolled)} random items ({', '.join(f'{k} {v}' for k, v in sorted(kinds.items()))}): {wrong} problems")
+    return wrong
+
+
 def main():
     rules = check.load_rules()
     db, _ = check.load_db()
@@ -146,6 +200,7 @@ def main():
                     print(f"case {i} ({item.get('name')!r}): the cards differ\n  build.py : {card}\n  verify.js: {got['c']}")
     clean = sum(1 for item in cases if not python_problems(item, db, rules))
     print(f"{len(cases)} items ({len(items)} real, {clean} without problems): {wrong} differences in the checks, the TOML or the cards")
+    wrong += check_rolls(db, rules)
     return 1 if wrong else 0
 
 

@@ -149,6 +149,12 @@ writes the table for `src/rules.toml` and names the icon file to add. The workfl
 publishes it on GitHub Pages (once: Settings > Pages > Source: GitHub Actions), at
 <https://andx667.github.io/tor2e-items/>.
 
+**Random item.** The button *Roll a random famous item* on the first step lets the dice choose everything: the type
+(d12, only famous kinds), the base, the craftsmanship (d6), Banes, one to three qualities (the first is never a basic
+reward) or the skills, and a German name and origin. `site/roll.js` keeps only what `site/verify.js` allows, so the item
+follows the rules. The wizard jumps to the check, lists the dice and offers *Roll again*; every step can still be edited.
+`tools/test_site.py` rolls 400 seeds and has `tools/check.py` check each item.
+
 To run it locally:
 
 ```sh
