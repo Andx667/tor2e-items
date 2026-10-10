@@ -325,7 +325,7 @@ icon = "homebrew"
 #              it the items are ordered by name                       (optional)
 
 [categories.brawling]
-label = "Brawling (inkl. Dolche)"
+label = "Brawling & Daggers"
 types = ["weapon"]
 proficiency = "brawling"
 
