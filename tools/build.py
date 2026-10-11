@@ -18,7 +18,8 @@ Everything collection-specific lives in collection.toml (title, language, credit
   4. src/cards.toml -> build/index.tex (overview) and build/cards.tex (nine cards per A4 page)
   5. LuaLaTeX (latexmk) -> build/<file_name>.pdf; a card with more text than fits stops the build
   6. the same cards again with a page of backs after every page -> build/<file_name>-Duplex.pdf
-  7. copies with the exact version in the name (published by CI)
+  7. the same again in white instead of parchment, to save ink -> build/<file_name>-Duplex-Print.pdf
+  8. copies with the exact version in the name (published by CI)
 
 Needs: LuaLaTeX with latexmk (TeX Live or MiKTeX), Python 3.11+.
 Without luaotfload XeLaTeX is used instead (FW_ENGINE=... forces an engine).
@@ -328,7 +329,7 @@ def cards_tex(db, rules, groups, s, duplex=False):
             up += [r"\begin{fwcardeffects}", *bullets, r"\end{fwcardeffects}"]
         icon = "[%s]" % rules["sources"][c["source"]]["icon"] if "source" in c else ""  # where it comes from
         where = key + (f" ({n}/{of})" if of > 1 else "")  # named in the log if the card is too full
-        return (r"\def\fwcardid{%s}" % tex_escape(where) + "\n"
+        return (r"\def\fwcardid{%s}%%" % tex_escape(where) + "\n"
                 + r"\fwcard" + icon + "{" + "\n".join(up) + "}{" + tex_escape(db["footer"]) + "}")
 
     # nine cards per page; \fwcard breaks the rows itself (3 x 3). Every group starts a new
@@ -341,11 +342,18 @@ def cards_tex(db, rules, groups, s, duplex=False):
             bookmark = "[%s]" % tex_escape(title or s["Cards"]) if i == 0 else ""
             page = made[i:i + PER_PAGE]
             out.append(r"\fwcardspage%s{%s}{%s}{%%" % (bookmark, tex_escape(title), tex_escape(db["hint"])) + "\n"
-                       + "\n".join(page) + "}")
+                       + "\n".join(cut_edges(j, len(page)) + card for j, card in enumerate(page)) + "}")
             if duplex:
                 out.append(r"\fwbackspage{%s}{%s}{%%" % (tex_escape(title), tex_escape(db["hint"])) + "\n"
                            + backs(len(page)) + "}")
     return "\n\n".join(out) + "\n"
+
+
+def cut_edges(j, n, cols=PER_PAGE // 3):
+    """The cut lines of card j of n on a page, as \\def\\fwedges (l, t, r, b). Cards that touch share one
+    line: a card draws its left and top edge, and the right and bottom one only where no card is next to it."""
+    edges = "lt" + ("r" if j % cols == cols - 1 or j == n - 1 else "") + ("b" if j + cols >= n else "")
+    return r"\def\fwedges{%s}%%" % edges + "\n"
 
 
 def index_tex(db, rules, groups, s):
@@ -458,9 +466,12 @@ def main():
         else "xelatex")
     print("TeX engine:", engine)
     job = cfg["file_name"] + ("-" + s["Selection"] if wanted else "")
-    # two documents: the one to read and cut, and the cards alone with their backs for duplex printing
+    # three documents: the one to read and cut, the cards alone with their backs for duplex printing,
+    # and that again printer-friendly (white instead of parchment)
     outputs = {}
-    for name, jobname, source in (("pdf", job, "latex/tor2e.tex"), ("pdf_duplex", job + "-Duplex", "latex/tor2e-duplex.tex")):
+    for name, jobname, source in (("pdf", job, "latex/tor2e.tex"),
+                                  ("pdf_duplex", job + "-Duplex", "latex/tor2e-duplex.tex"),
+                                  ("pdf_duplex_print", job + "-Duplex-Print", "latex/tor2e-duplex-print.tex")):
         if shutil.which("latexmk"):
             run(["latexmk", "-" + engine, "-outdir=build", "-jobname=" + jobname, *tex, source], env=env)
         else:  # without latexmk three runs settle page references and bookmarks

@@ -189,7 +189,7 @@ skipped. A new `@rule` in `tools/check.py` has to be added to `site/verify.js` t
 Needs TeX Live or MiKTeX with LuaLaTeX and `latexmk`, and Python 3.11+.
 
 ```sh
-make            # check, then build/<file_name>.pdf and build/<file_name>-Duplex.pdf
+make            # check, then build/<file_name>.pdf, -Duplex.pdf and -Duplex-Print.pdf
 make check      # only the checker
 python3 tools/build.py kammer-der-wacht narcrist    # a selection: ids of items and hoards
 python3 tools/build.py source:finsterwacht          # ... or every item of a source
@@ -200,22 +200,26 @@ shorten its text.
 
 A hoard in a selection brings its own card and one card per copy of every item it holds, so a selection is the
 set of cards to hand out at the table. A selection is written to `build/<file_name>-Auswahl.pdf`, with its own
-duplex PDF.
+duplex PDFs.
 
 The version in the footer comes from the latest git tag `v*`, the date from the last commit:
 
 ```sh
 git tag v2.2
-git push --tags      # the CI also publishes a release with both PDFs
+git push --tags      # the CI also publishes a release with the PDFs
 ```
 
 ## Printing
 
-The build writes two PDFs. `<file_name>.pdf` has the overview and the cards, for printing on one side.
+The build writes three PDFs. `<file_name>.pdf` has the overview and the cards, for printing on one side.
 `<file_name>-Duplex.pdf` has only the cards, and after every page of cards a page with their backs: print it on
 both sides, flipped on the **long edge**, and every card gets a back. The rows of the back pages are mirrored so
 that a half-full page lines up too. Printers shift the two sides against each other by a millimetre or two, so
 the backs have no cut lines, their colour runs 2 mm over the edge of the card and their frame sits well inside.
+
+`<file_name>-Duplex-Print.pdf` is the same duplex PDF without the parchment, to save ink: white cards and backs,
+the stats box only outlined, the frames and the logo as before. Pages and positions are identical, so it prints
+and cuts exactly like the other one.
 
 Print at 100 % (actual size), not "fit to page". The dashed line is the cut line: the cell is 63.5 × 88.9 mm
 (2.5 × 3.5 in) and the parchment fills it right up to the line, with the gold frame 1.6 mm inside.

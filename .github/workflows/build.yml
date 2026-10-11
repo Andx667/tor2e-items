@@ -60,6 +60,13 @@ jobs:
           archive: false
           if-no-files-found: error
 
+      - name: Upload the printer-friendly PDF (duplex, white instead of parchment)
+        uses: actions/upload-artifact@v7
+        with:
+          path: ${{ steps.build.outputs.pdf_duplex_print }}
+          archive: false
+          if-no-files-found: error
+
       - name: Upload the build log on failure
         if: failure()
         uses: actions/upload-artifact@v4
@@ -74,3 +81,4 @@ jobs:
           files: |
             ${{ steps.build.outputs.pdf }}
             ${{ steps.build.outputs.pdf_duplex }}
+            ${{ steps.build.outputs.pdf_duplex_print }}

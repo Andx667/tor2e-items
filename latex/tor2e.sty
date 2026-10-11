@@ -40,6 +40,12 @@
 \definecolor{fwhline}{HTML}{D6C3BC}
 \definecolor{fwrowline}{HTML}{DDD4CB}
 \definecolor{fwcardline}{HTML}{D8CBB2}
+% Printer-friendly edition: \def\fwprinter before \usepackage{tor2e} (latex/tor2e-duplex-print.tex) leaves out
+% the parchment: white cards and backs, the stats box only outlined. Layout and positions stay the same.
+\ifdefined\fwprinter
+  \definecolor{fwparch}{HTML}{FFFFFF}
+  \definecolor{fwparchdark}{HTML}{FFFFFF}
+\fi
 
 % ---------------------------------------------------------------- Schriften
 \setmainfont{texgyrepagella}[Extension=.otf, UprightFont=*-regular, BoldFont=*-bold,
@@ -127,6 +133,7 @@
     left=2mm, right=2mm, top=0.8mm, bottom=0.8mm, boxsep=0pt, before skip=0pt, after skip=1.8mm,
     fontupper=\bfseries\fontsize{8.8}{11}\selectfont\fw@ragged},
 }
+\ifdefined\fwprinter\tcbset{fw stats/.append style={colframe=fwcardline, boxrule=0.5pt}}\fi
 \newsavebox\fw@cardbox
 % \fwcardanchor{label}{Lesezeichen} – Ziel für die Übersicht, am Anfang der Karte
 \newcommand\fwcardanchor[2]{\phantomsection\pdfbookmark[1]{#2}{bm-#1}\label{#1}}
@@ -167,6 +174,9 @@
 % Vorher misst sie den Inhalt ohne feste Höhe: ist er höher als die Karte, steht
 % "FWOVERFLOW<\fwcardid><Überstand>" im Log, und tools/build.py bricht ab.
 \newsavebox\fw@measbox
+% The cut lines a card draws, set before every card by tools/build.py (left, top, right, bottom)
+\providecommand\fwedges{ltrb}
+\newcommand\fw@edge[2]{\edef\fw@tmp{\noexpand\in@{#1}{\fwedges}}\fw@tmp\ifin@ #2\fi}
 \providecommand\fwcardid{?}
 \NewDocumentCommand\fwcard{O{}mm}{%
   \begingroup\let\fwcardanchor\@gobbletwo
@@ -182,7 +192,12 @@
   \begin{tikzpicture}
     \useasboundingbox (0,0) rectangle (\fw@cw,\fw@ch);
     \fill[fwparch] (0,0) rectangle (\fw@cw,\fw@ch);
-    \draw[fwline, line width=0.6pt, dash pattern=on 1.4pt off 1.4pt] (0,0) rectangle (\fw@cw,\fw@ch);
+    % cut lines: only the edges in \fwedges (l, t, r, b), so that cards that touch share one line
+    \def\fw@cut{\draw[fwline, line width=0.6pt, dash pattern=on 1.4pt off 1.4pt]}
+    \fw@edge{l}{\fw@cut (0,0) -- (0,\fw@ch);}
+    \fw@edge{t}{\fw@cut (0,\fw@ch) -- (\fw@cw,\fw@ch);}
+    \fw@edge{r}{\fw@cut (\fw@cw,0) -- (\fw@cw,\fw@ch);}
+    \fw@edge{b}{\fw@cut (0,0) -- (\fw@cw,0);}
     \node[inner sep=0pt] at (0.5*\fw@cw,0.5*\fw@ch) {\usebox\fw@cardbox};
   \end{tikzpicture}%
   \global\advance\fw@cardn 1
