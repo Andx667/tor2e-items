@@ -37,6 +37,7 @@ import check
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BUILD = os.path.join(ROOT, "build")
 PER_PAGE = 9
+GEAR_TYPES = ("weapon", "armour", "helm", "shield")  # what is equipped; the backs of these carry the name
 
 STRINGS = {
     "english": {"Contents": "Contents", "Version": "Version", "Date": "Date", "Cards": "Cards",
@@ -264,13 +265,15 @@ def hoard_parts(hoard, lines):
     return parts
 
 
-def backs(count):
-    """The backs behind `count` cards of a page, row by row. The sheet is turned over its long
-    edge, so every row is mirrored: the back of the left card is on the right."""
+def backs(names):
+    """The backs behind the cards of a page, row by row: `names` has the name each back carries (empty
+    for none). The sheet is turned over its long edge, so every row is mirrored: the back of the left
+    card is on the right."""
     rows = []
-    for i in range(0, count, 3):
-        there = [i + col < count for col in range(3)]
-        rows += [r"\fwcardback" if x else r"\fwcardblank" for x in reversed(there)]
+    for i in range(0, len(names), 3):
+        row = names[i:i + 3]
+        cells = [r"\fwcardback{%s}" % name for name in row] + [r"\fwcardblank"] * (3 - len(row))
+        rows += reversed(cells)
     return "\n".join(rows)
 
 
@@ -329,8 +332,17 @@ def cards_tex(db, rules, groups, s, duplex=False):
             up += [r"\begin{fwcardeffects}", *bullets, r"\end{fwcardeffects}"]
         icon = "[%s]" % rules["sources"][c["source"]]["icon"] if "source" in c else ""  # where it comes from
         where = key + (f" ({n}/{of})" if of > 1 else "")  # named in the log if the card is too full
-        return (r"\def\fwcardid{%s}%%" % tex_escape(where) + "\n"
-                + r"\fwcard" + icon + "{" + "\n".join(up) + "}{" + tex_escape(db["footer"]) + "}")
+        front = (r"\def\fwcardid{%s}%%" % tex_escape(where) + "\n"
+                 + r"\fwcard" + icon + "{" + "\n".join(up) + "}{" + tex_escape(db["footer"]) + "}")
+        # Gear is turned over when it is not equipped, so its back has its name; every other card only
+        # says what kind it is
+        if table == "hoards":
+            back = tex_escape(s["Hoard"])
+        elif c["type"] in GEAR_TYPES:
+            back = name
+        else:
+            back = tex_escape(rules["types"][c["type"]]["label"])
+        return front, back
 
     # nine cards per page; \fwcard breaks the rows itself (3 x 3). Every group starts a new
     # page, and an empty group still gets one. With `duplex` every page of cards is followed by
@@ -342,10 +354,10 @@ def cards_tex(db, rules, groups, s, duplex=False):
             bookmark = "[%s]" % tex_escape(title or s["Cards"]) if i == 0 else ""
             page = made[i:i + PER_PAGE]
             out.append(r"\fwcardspage%s{%s}{%s}{%%" % (bookmark, tex_escape(title), tex_escape(db["hint"])) + "\n"
-                       + "\n".join(cut_edges(j, len(page)) + card for j, card in enumerate(page)) + "}")
+                       + "\n".join(cut_edges(j, len(page)) + front for j, (front, _) in enumerate(page)) + "}")
             if duplex:
                 out.append(r"\fwbackspage{%s}{%s}{%%" % (tex_escape(title), tex_escape(db["hint"])) + "\n"
-                           + backs(len(page)) + "}")
+                           + backs([name for _, name in page]) + "}")
     return "\n\n".join(out) + "\n"
 
 

@@ -204,20 +204,28 @@
   \ifnum\fw@cardn<\fw@cardcols\relax\else\global\fw@cardn=0 \par\nointerlineskip\fi%
   \ignorespaces}
 % ---------------------------------------------------------------- Rückseiten (beidseitiger Druck)
-% \fwcardback – die Rückseite einer Karte: Pergament, Rahmen, Zeichen und Titel. Die Fläche reicht 2 mm
+% \fwcardback{Name} – die Rückseite einer Karte: Pergament, Rahmen, Zeichen und Titel. Mit Name (Waffen und
+% Rüstung: umgedreht ist der Gegenstand nicht angelegt) steht er unter dem Zeichen. Die Fläche reicht 2 mm
 % über die Schnittlinie hinaus und der Rahmen sitzt 7 mm innen, damit ein Versatz zwischen Vorder- und
 % Rückseite beim Drucken nicht auffällt. Schnittlinien stehen nur auf der Vorderseite.
 \newcommand\fw@cardnext{\global\advance\fw@cardn 1
   \ifnum\fw@cardn<\fw@cardcols\relax\else\global\fw@cardn=0 \par\nointerlineskip\fi}
-\newcommand\fwcardback{%
+\newcommand\fwcardback[1]{%
   \ifnum\fw@cardn=0 \noindent\fi%
   \begin{tikzpicture}
     \useasboundingbox (0,0) rectangle (\fw@cw,\fw@ch);
     \fill[fwparchdark] (-2mm,-2mm) rectangle (\fw@cw+2mm,\fw@ch+2mm);
     \draw[fwgold, line width=0.9pt, rounded corners=2mm] (7mm,7mm) rectangle (\fw@cw-7mm,\fw@ch-7mm);
-    \node[inner sep=0pt] at (0.5*\fw@cw,0.56*\fw@ch) {\includegraphics[width=24mm]{assets/logo-print.png}};
-    \node[inner sep=0pt] at (0.5*\fw@cw,0.31*\fw@ch)
-      {\fontsize{11}{13}\selectfont\scshape\addfontfeature{LetterSpace=6}\color{fwred}\advTitleShort};
+    \ifblank{#1}{%
+      \node[inner sep=0pt] at (0.5*\fw@cw,0.56*\fw@ch) {\includegraphics[width=24mm]{assets/logo-print.png}};
+      \node[inner sep=0pt] at (0.5*\fw@cw,0.31*\fw@ch)
+        {\fontsize{11}{13}\selectfont\scshape\addfontfeature{LetterSpace=6}\color{fwred}\advTitleShort};}{%
+      \node[inner sep=0pt] at (0.5*\fw@cw,0.66*\fw@ch) {\includegraphics[width=24mm]{assets/logo-print.png}};
+      \node[inner sep=0pt, text width=\dimexpr\fw@cw-20mm\relax, align=center, anchor=north]
+        at (0.5*\fw@cw,0.47*\fw@ch)
+        {\hyphenpenalty=10000 \exhyphenpenalty=10000 \fontsize{13}{15}\selectfont\bfseries\color{fwred}#1\par};
+      \node[inner sep=0pt] at (0.5*\fw@cw,0.15*\fw@ch)
+        {\fontsize{8}{10}\selectfont\scshape\addfontfeature{LetterSpace=6}\color{fwgrey}\advTitleShort};}%
   \end{tikzpicture}%
   \fw@cardnext\ignorespaces}
 % \fwcardblank – ein leerer Platz in der Reihe: hinter ihm liegt keine Karte

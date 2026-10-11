@@ -217,6 +217,10 @@ both sides, flipped on the **long edge**, and every card gets a back. The rows o
 that a half-full page lines up too. Printers shift the two sides against each other by a millimetre or two, so
 the backs have no cut lines, their colour runs 2 mm over the edge of the card and their frame sits well inside.
 
+The back of a weapon, armour, helm or shield carries the item's name under the logo (`GEAR_TYPES` in
+`tools/build.py`): turn the card over when the item is not equipped, and you still see what it is. Every other
+card says only its kind in the same place (Useful Item, Marvellous Artefact, Wondrous Item, Hort).
+
 `<file_name>-Duplex-Print.pdf` is the same duplex PDF without the parchment, to save ink: white cards and backs,
 the stats box only outlined, the frames and the logo as before. Pages and positions are identical, so it prints
 and cuts exactly like the other one.
