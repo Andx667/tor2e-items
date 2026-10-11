@@ -24,11 +24,12 @@ The PDFs are built by GitHub Actions on every commit; tagged commits (`v*`) are 
 | `tools/build.py` | Builds the two PDFs |
 | `tools/logo.py` | Draws the logo into `assets/` (needs Pillow) |
 | `tools/icons.py` | Draws the source icons into `assets/icons/` (needs Pillow) |
+| `tools/social.py` | Draws the GitHub social preview `assets/social-preview.png` (needs Pillow and the TeX Gyre fonts) |
 | `tools/site.py` | Writes `site/data.js` for the item wizard |
 | `tools/test_site.py` | Checks that the wizard agrees with the checker and the build |
 | `site/` | The item wizard (static website, published on GitHub Pages) |
 | `latex/` | Layout (`tor2e.sty`) and the two documents |
-| `assets/` | Logo and source icons |
+| `assets/` | Logo, source icons and the social preview |
 | `Makefile` | Shortcuts: `make`, `make check`, `make site`, `make test`, `make clean` |
 | `.github/workflows/` | `build.yml` builds and releases the PDFs, `pages.yml` publishes the wizard |
 
