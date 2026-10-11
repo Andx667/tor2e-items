@@ -1,0 +1,238 @@
+# The war gear of the Core Rules, as plain cards: the name of the base, its base stats and nothing else.
+# No origin, no qualities, no rewards. Merged into src/cards.toml; the fields are listed at the top of
+# that file. The stats and notes are those of [bases] in src/rules.toml.
+
+# ---------------------------------------------------------------- weapon
+
+[items.grundspiel-dagger]
+name = "Dagger"
+source = "rulebook"
+type = "weapon"
+proficiency = "brawling"
+base = "Dagger"
+damage = 2
+injury = 14
+load = 0
+stats_note = "Can trigger Pierce as if it was a Sword"
+
+[items.grundspiel-cudgel]
+name = "Cudgel"
+source = "rulebook"
+type = "weapon"
+proficiency = "brawling"
+base = "Cudgel"
+damage = 3
+injury = 12
+load = 0
+
+[items.grundspiel-club]
+name = "Club"
+source = "rulebook"
+type = "weapon"
+proficiency = "brawling"
+base = "Club"
+damage = 4
+injury = 14
+load = 1
+
+[items.grundspiel-short-sword]
+name = "Short sword"
+source = "rulebook"
+type = "weapon"
+proficiency = "swords"
+base = "Short sword"
+damage = 3
+injury = 16
+load = 1
+
+[items.grundspiel-sword]
+name = "Sword"
+source = "rulebook"
+type = "weapon"
+proficiency = "swords"
+base = "Sword"
+damage = 4
+injury = 16
+load = 2
+
+[items.grundspiel-long-sword]
+name = "Long sword"
+source = "rulebook"
+type = "weapon"
+proficiency = "swords"
+base = "Long sword"
+damage = 5
+injury = 16
+injury_two_handed = 18
+load = 3
+stats_note = "Can be used 1 or 2-handed"
+
+[items.grundspiel-short-spear]
+name = "Short spear"
+source = "rulebook"
+type = "weapon"
+proficiency = "spears"
+base = "Short spear"
+damage = 3
+injury = 14
+load = 2
+stats_note = "Can be thrown"
+
+[items.grundspiel-spear]
+name = "Spear"
+source = "rulebook"
+type = "weapon"
+proficiency = "spears"
+base = "Spear"
+damage = 4
+injury = 14
+injury_two_handed = 16
+load = 3
+stats_note = "Can be used 1 or 2-handed. Can be thrown"
+
+[items.grundspiel-great-spear]
+name = "Great spear"
+source = "rulebook"
+type = "weapon"
+proficiency = "spears"
+base = "Great spear"
+damage = 5
+injury = 16
+load = 4
+stats_note = "2-handed"
+
+[items.grundspiel-axe]
+name = "Axe"
+source = "rulebook"
+type = "weapon"
+proficiency = "axes"
+base = "Axe"
+damage = 5
+injury = 18
+load = 2
+
+[items.grundspiel-long-hafted-axe]
+name = "Long-hafted axe"
+source = "rulebook"
+type = "weapon"
+proficiency = "axes"
+base = "Long-hafted axe"
+damage = 6
+injury = 18
+injury_two_handed = 20
+load = 3
+stats_note = "Can be used 1 or 2-handed"
+
+[items.grundspiel-great-axe]
+name = "Great axe"
+source = "rulebook"
+type = "weapon"
+proficiency = "axes"
+base = "Great axe"
+damage = 7
+injury = 20
+load = 4
+stats_note = "2-handed"
+
+[items.grundspiel-mattock]
+name = "Mattock"
+source = "rulebook"
+type = "weapon"
+proficiency = "axes"
+base = "Mattock"
+damage = 7
+injury = 18
+load = 3
+stats_note = "2-handed"
+
+[items.grundspiel-bow]
+name = "Bow"
+source = "rulebook"
+type = "weapon"
+proficiency = "bows"
+base = "Bow"
+damage = 3
+injury = 14
+load = 2
+stats_note = "Ranged weapon. 2-handed"
+
+[items.grundspiel-great-bow]
+name = "Great bow"
+source = "rulebook"
+type = "weapon"
+proficiency = "bows"
+base = "Great bow"
+damage = 4
+injury = 16
+load = 4
+stats_note = "Ranged weapon. 2-handed"
+
+# ---------------------------------------------------------------- armour
+
+[items.grundspiel-leather-shirt]
+name = "Leather shirt"
+source = "rulebook"
+type = "armour"
+base = "Leather shirt"
+protection = 1
+load = 3
+
+[items.grundspiel-leather-corslet]
+name = "Leather corslet"
+source = "rulebook"
+type = "armour"
+base = "Leather corslet"
+protection = 2
+load = 6
+
+[items.grundspiel-mail-shirt]
+name = "Mail-shirt"
+source = "rulebook"
+type = "armour"
+base = "Mail-shirt"
+protection = 3
+load = 9
+
+[items.grundspiel-coat-of-mail]
+name = "Coat of mail"
+source = "rulebook"
+type = "armour"
+base = "Coat of mail"
+protection = 4
+load = 12
+
+# ---------------------------------------------------------------- helm
+
+[items.grundspiel-helm]
+name = "Helm"
+source = "rulebook"
+type = "helm"
+base = "Helm"
+protection = 1
+load = 4
+
+# ---------------------------------------------------------------- shield
+
+[items.grundspiel-buckler]
+name = "Buckler"
+source = "rulebook"
+type = "shield"
+base = "Buckler"
+parry = 1
+load = 2
+
+[items.grundspiel-shield]
+name = "Shield"
+source = "rulebook"
+type = "shield"
+base = "Shield"
+parry = 2
+load = 4
+
+[items.grundspiel-great-shield]
+name = "Great shield"
+source = "rulebook"
+type = "shield"
+base = "Great shield"
+parry = 3
+load = 6
