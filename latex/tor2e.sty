@@ -93,7 +93,8 @@
 \gdef\fw@footl{26}
 \gdef\fw@footr{196}
 \newcommand\fw@footerfont{\fontsize{8}{10}\selectfont\color{fwgrey}}
-\newcommand\fw@pageno{\thepage\ / \pageref*{fw-lastnum}}
+% the total comes from the previous run; until it exists (first run) a "?" instead of a warning on every page
+\newcommand\fw@pageno{\thepage\ / \ifcsname r@fw-lastnum\endcsname\getpagerefnumber{fw-lastnum}\else ?\fi}
 \AddToShipoutPictureBG{%
   \setlength\unitlength{1mm}%
   \put(\fw@footl,7){\makebox(0,0)[lb]{\fw@footerfont\advTitleShort{} · TOR 2e}}%
