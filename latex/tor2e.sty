@@ -140,6 +140,8 @@
 \newcommand\fwcardname[1]{{\fontsize{12}{13.8}\selectfont\bfseries\color{fwred}#1\par}}
 % \fwblankname – a line to write the name on, for the blank cards
 \newcommand\fwblankname{\rule{0pt}{8mm}\hrulefill}
+% \fwblankskill – a short line to write a skill on, for the blank cards
+\newcommand\fwblankskill{\rule[-0.5pt]{14mm}{0.4pt}}
 \newcommand\fwcardkind[1]{\vspace{0.6mm}{\itshape\color{fwgrey}#1\par}\vspace{1.4mm}{\color{fwcardline}\hrule height 0.5pt}\vspace{1.8mm}}
 \newcommand\fw@cardnote[1]{\ifblank{#1}{}{\par\vspace{1.2mm}{\mdseries\itshape\fontsize{7.2}{9}\selectfont\color{fwgrey}(#1)}}}
 \newcommand\fwstathead[1]{{\fontsize{6.2}{7.3}\selectfont\color{fwgrey}#1}}

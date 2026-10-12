@@ -75,8 +75,12 @@ text. Weapons, armour, helms and shields always need a `base`. Partial stats are
 The PDF follows the `[categories]` of `src/rules.toml`: the Combat Proficiencies for weapons, then armour, helms,
 shields, useful items, marvellous artefacts and wondrous items (the last three ordered by their skill), then the
 hoards. Each category starts a new page of cards; one without items yet gets an empty page. Every category of war gear ends with three blank cards for each base in it (Short sword, Sword,
-Long sword, …): the base and its stats are printed, the name is left to be written in. They are made by the
-build and are not part of the database.
+Long sword, …): the base and its stats are printed, the name is left to be written in. The free places on the
+last page of the category are filled with more blank cards, shared out by how often each base appears among its
+items (a category of 13 Long swords and 7 Swords gets more blank Long swords). The three categories of useful items,
+marvellous artefacts and wondrous items have no blanks of their own: only their free places are filled, with blank
+cards with a line for each skill, left to write in (the players choose). How many there are of each kind follows
+how often each skill appears. They are made by the build and are not part of the database.
 
 **Source icons.** `source` says where an item or a hoard comes from. The icon is printed in the lower right
 corner of the card and explained on the first page; a made-up item has no `source` and stays plain.

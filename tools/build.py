@@ -133,23 +133,56 @@ def write_meta(cfg):
 
 
 # ------------------------------------------------------------------ 4. overview and cards
-BLANKS = 3  # blank cards per base at the end of a category
+BLANKS = 3  # blank cards per base at the end of a category of war gear
+BLANK_SKILL = "\x00"  # a skill to be written in on a blank card; printed as a line
 
 
-def blank_cards(db, rules, category):
-    """The blank cards that close a category: BLANKS for every base of it (Short sword, Sword, Long
-    sword, ...), with the base stats and an empty line for the name, to be filled in by hand. They are
-    made here and not part of the database; returns their (table, id)."""
+def shares(free, count):
+    """`free` places shared out by the counts of `count` (largest remainder: the whole parts first, the
+    rest to the biggest fractions, on a tie to the bigger count); all 0 if nothing was counted."""
+    total = sum(count.values())
+    if not total:
+        return dict.fromkeys(count, 0)
+    share = {k: free * n / total for k, n in count.items()}
+    out = {k: int(x) for k, x in share.items()}
+    for k in sorted(count, key=lambda k: (int(share[k]) - share[k], -count[k]))[:free - sum(out.values())]:
+        out[k] += 1
+    return out
+
+
+def blank_cards(db, rules, category, keys):
+    """The blank cards that close a category, with an empty line for the name, to be filled in by
+    hand. War gear gets BLANKS for every base of the category (Short sword, Sword, Long sword, ...),
+    with the base stats. The free places on the last page are filled with more of them, shared out by
+    how often each base appears among the items `keys` of the category; for items with skills by how
+    often each skill appears; the blank cards only take the number of cards from it, the skills are
+    all left to write in. They are made here and not part of the database; returns their (table, id)."""
+    types = category.get("types", [])
+    bases = {base: b for base, b in rules["bases"].items()
+             if b["type"] in types and category.get("proficiency") in (None, b.get("proficiency"))}
     made = []
-    for base, b in rules["bases"].items():
-        if b["type"] not in category.get("types", []) or category.get("proficiency") not in (None, b.get("proficiency")):
-            continue
-        for n in range(1, BLANKS + 1):
-            key = f"blank-{re.sub('[^a-z]+', '-', base.lower())}-{n}"
+
+    def add(name, n, item):
+        key = f"blank-{re.sub('[^a-z]+', '-', name.lower())}-{n}"
+        db["items"][key] = {**item, "name": "", "blank": True}
+        made.append(("items", key))
+
+    if bases:
+        count = {base: sum(db["items"][k].get("base") == base for k in keys) for base in bases}
+        extra = shares(-(len(keys) + BLANKS * len(bases)) % PER_PAGE, count)
+        for base, b in bases.items():
             stats = {k: v for k, v in b.items() if k not in ("note", "proficiency")}
-            db["items"][key] = {**stats, "name": "", "base": base, "blank": True, "stats_note": b.get("note", ""),
-                                **({"proficiency": b["proficiency"]} if "proficiency" in b else {})}
-            made.append(("items", key))
+            for n in range(1, BLANKS + extra[base] + 1):
+                add(base, n, {**stats, "base": base, "stats_note": b.get("note", ""),
+                              **({"proficiency": b["proficiency"]} if "proficiency" in b else {})})
+    blessed = [t for t in types if rules["types"][t].get("blessings")]
+    if blessed:  # the type of the blank cards: the first of the category that blesses skills
+        kind = blessed[0]
+        count = {skill: sum(db["items"][k].get("blessings", []).count(skill) for k in keys) for skill in rules["skills"]}
+        extra = shares(-len(keys) % PER_PAGE, count)
+        for skill in rules["skills"]:
+            for n in range(1, extra[skill] + 1):
+                add(f"{kind}-{skill}", n, {"type": kind, "blessings": [BLANK_SKILL] * rules["types"][kind]["blessings"]})
     return made
 
 
@@ -167,7 +200,7 @@ def select(db, rules, wanted, s):
                 skill = (item.get("blessings") or ["\uffff"])[0] if c.get("sort") == "blessings" else ""
                 return skill, item["name"]
             keys = sorted((k for k, item in db["items"].items() if check.category_of(item, rules) == cat), key=order)
-            groups.append((c["label"], [("items", k) for k in keys] + blank_cards(db, rules, c)))
+            groups.append((c["label"], [("items", k) for k in keys] + blank_cards(db, rules, c, keys)))
         if db["hoards"]:
             groups.append((s["Hoards"], [("hoards", k) for k in db["hoards"]]))
         return groups
@@ -326,7 +359,8 @@ def cards_tex(db, rules, groups, s, duplex=False):
             if c.get("blessings"):
                 lines.append(check.blessing_line(c, rules))
             lines += [tuple(e) for e in c.get("effects", [])]
-            bullets = [r"\item \textbf{" + tex_escape(a) + (":} " + it(b) if b else "}") for a, b in lines]
+            bullets = [r"\item \textbf{" + tex_escape(a) + (":} " + it(b).replace(BLANK_SKILL, r"\fwblankskill") if b else "}")
+                       for a, b in lines]
             if c.get("curse"):  # free text, so no rules terms are set in italics in it
                 bullets.append(r"\item \textbf{Curse:} " + tex_escape(c["curse"]))
         else:
