@@ -233,7 +233,7 @@ the stats box only outlined, the frames and the logo as before. Pages and positi
 and cuts exactly like the other one.
 
 Print at 100 % (actual size), not "fit to page". The dashed line is the cut line: the cell is 63.5 × 88.9 mm
-(2.5 × 3.5 in) and the parchment fills it right up to the line, with the gold frame 1.6 mm inside.
+(2.5 × 3.5 in) and the parchment fills it right up to the line, with no visible frame: the text keeps 1.6 mm plus its margin from the line.
 
 ## Licence and rights
 

@@ -116,13 +116,13 @@
 
 % ---------------------------------------------------------------- Gegenstandskarten (63,5 × 88,9 mm)
 % Zelle = Schnittgröße (Poker, 2,5 × 3,5 in); das Pergament füllt sie bis zur Schnittlinie,
-% der Rahmen sitzt 1,6 mm weiter innen.
+% der Rahmen (unsichtbar, in Pergamentfarbe) sitzt 1,6 mm weiter innen und gibt dem Text seinen Platz.
 \newlength\fw@cw \setlength\fw@cw{63.5mm}
 \newlength\fw@ch \setlength\fw@ch{88.9mm}
 \newlength\fw@bw \setlength\fw@bw{\dimexpr\fw@cw-3.2mm\relax}
 \newlength\fw@bh \setlength\fw@bh{\dimexpr\fw@ch-3.2mm\relax}
 \tcbset{
-  fw card/.style={enhanced, width=\fw@bw, height=\fw@bh, colback=fwparch, colframe=fwgold,
+  fw card/.style={enhanced, width=\fw@bw, height=\fw@bh, colback=fwparch, colframe=fwparch,
     boxrule=0.9pt, arc=2mm, left=2.8mm, right=2.8mm, top=2.6mm, bottom=1.8mm, boxsep=0pt,
     space to upper, middle=1.2mm, lower separated=true,
     segmentation style={draw=fwcardline, line width=0.5pt, solid},
