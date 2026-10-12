@@ -7,7 +7,7 @@
 name = "Lesser Ring of Strength"
 type = "wonder"
 craftsmanship = "Elven"
-text = "Ein runder, schmuckloser Reif aus rotem Gold, immer warm wie Eisen am Rand der Glut. Elbische Schmiede fertigten ihn in den Tagen von Eregion; er schenkt dem Träger die Kraft, Fels zu spalten und Hallen aus dem Stein zu heben, und weckt zugleich die Gier nach allem, was schön und kostbar ist."
+text = "Ein runder, schmuckloser Goldreif, so schlicht, dass man ihn leicht übersieht. Elbische Schmiede fertigten ihn in den Tagen von Eregion; er schenkt dem Träger die Kraft, Fels zu spalten und Hallen aus dem Stein zu heben, und weckt zugleich die Gier nach allem, was schön und kostbar ist."
 blessings = ["Craft", "Awe"]
 curse = "Goldgier: Findet der Träger Treasure, erhält er 1 Shadow point (Greed), es sei denn, er verzichtet auf seinen Anteil."
 effects = [
@@ -15,10 +15,10 @@ effects = [
 ]
 
 [items.lesser-ring-heart]
-name = "Lesser Ring of Hearth"
+name = "Lesser Ring of Heart"
 type = "wonder"
 craftsmanship = "Elven"
-text = "Ein runder, schmuckloser Reif aus mattem Silber, ohne Stein und ohne Rune. Er spendet den Verwundeten und Verzagten Trost, wo andere längst aufgegeben haben – doch der Trost ist nicht ohne Preis."
+text = "Ein runder, schmuckloser Goldreif, so schlicht, dass man ihn leicht übersieht. Er spendet den Verwundeten und Verzagten Trost, wo andere längst aufgegeben haben – doch der Trost ist nicht ohne Preis."
 blessings = ["Healing", "Enhearten"]
 curse = "Shadow Taint"
 effects = [
