@@ -138,6 +138,8 @@
 % \fwcardanchor{label}{Lesezeichen} – Ziel für die Übersicht, am Anfang der Karte
 \newcommand\fwcardanchor[2]{\phantomsection\pdfbookmark[1]{#2}{bm-#1}\label{#1}}
 \newcommand\fwcardname[1]{{\fontsize{12}{13.8}\selectfont\bfseries\color{fwred}#1\par}}
+% \fwblankname – a line to write the name on, for the blank cards
+\newcommand\fwblankname{\rule{0pt}{8mm}\hrulefill}
 \newcommand\fwcardkind[1]{\vspace{0.6mm}{\itshape\color{fwgrey}#1\par}\vspace{1.4mm}{\color{fwcardline}\hrule height 0.5pt}\vspace{1.8mm}}
 \newcommand\fw@cardnote[1]{\ifblank{#1}{}{\par\vspace{1.2mm}{\mdseries\itshape\fontsize{7.2}{9}\selectfont\color{fwgrey}(#1)}}}
 \newcommand\fwstathead[1]{{\fontsize{6.2}{7.3}\selectfont\color{fwgrey}#1}}
@@ -247,6 +249,10 @@
 % Kopfzeile der Kartenseite: links die Kategorie, rechts der Hinweis
 \newcommand\fw@cardhint[2]{{\fontsize{8.5}{11}\selectfont
   \ifblank{#1}{}{{\bfseries\color{fwred}#1}\hfill}{\itshape\color{fwgrey}#2}\par}}
+% \fwpages{Marke} – die Seiten einer Kategorie: "5" oder "5–8" (Marken Marke-first und Marke-last)
+\newcommand\fwpages[1]{%
+  \edef\fw@pa{\getpagerefnumber{#1-first}}\edef\fw@pb{\getpagerefnumber{#1-last}}%
+  \ifx\fw@pa\fw@pb\fw@pa\else\fw@pa--\fw@pb\fi}
 % \fwcardspage[Lesezeichen]{Kategorie}{Hinweis}{Karten} – eine Seite mit bis zu neun Karten;
 % ohne Karten bleibt die Seite bis auf die Kopfzeile leer
 \NewDocumentCommand\fwcardspage{O{}mmm}{%

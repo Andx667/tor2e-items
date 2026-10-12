@@ -44,16 +44,16 @@ STRINGS = {
                 "Hoards": "Hoards", "Hoard": "Hoard", "Name": "Name", "Kind": "Kind",
                 "Stats": "Stats", "Blessings": "Blessings", "Holds": "Holds", "Page": "Page",
                 "Selection": "Selection", "NoItems": "No items yet",
-                "ModifiersNote": "All stats in the overview and on the cards are the base values. The "
+                "ModifiersNote": "All stats on the cards are the base values. The "
                                  "bonuses of the listed qualities are not included; they stand below "
-                                 "the values (in brackets in the overview)."},
+                                 "the values."},
     "ngerman": {"Contents": "Inhalt", "Version": "Version", "Date": "Stand", "Cards": "Karten",
                 "Hoards": "Horte", "Hoard": "Hort", "Name": "Name", "Kind": "Art",
                 "Stats": "Werte", "Blessings": "Blessings", "Holds": "Inhalt", "Page": "Seite",
                 "Selection": "Auswahl", "NoItems": "Noch keine Gegenstände",
-                "ModifiersNote": "Alle Werte in der Übersicht und auf den Karten sind Grundwerte. Die "
+                "ModifiersNote": "Alle Werte auf den Karten sind Grundwerte. Die "
                                  "Boni der aufgeführten Eigenschaften sind nicht eingerechnet; sie stehen "
-                                 "unter den Werten (in der Übersicht in Klammern)."},
+                                 "unter den Werten."},
 }
 
 
@@ -133,6 +133,26 @@ def write_meta(cfg):
 
 
 # ------------------------------------------------------------------ 4. overview and cards
+BLANKS = 3  # blank cards per base at the end of a category
+
+
+def blank_cards(db, rules, category):
+    """The blank cards that close a category: BLANKS for every base of it (Short sword, Sword, Long
+    sword, ...), with the base stats and an empty line for the name, to be filled in by hand. They are
+    made here and not part of the database; returns their (table, id)."""
+    made = []
+    for base, b in rules["bases"].items():
+        if b["type"] not in category.get("types", []) or category.get("proficiency") not in (None, b.get("proficiency")):
+            continue
+        for n in range(1, BLANKS + 1):
+            key = f"blank-{re.sub('[^a-z]+', '-', base.lower())}-{n}"
+            stats = {k: v for k, v in b.items() if k not in ("note", "proficiency")}
+            db["items"][key] = {**stats, "name": "", "base": base, "blank": True, "stats_note": b.get("note", ""),
+                                **({"proficiency": b["proficiency"]} if "proficiency" in b else {})}
+            made.append(("items", key))
+    return made
+
+
 def select(db, rules, wanted, s):
     """The cards to print, in order, as groups: (heading, [(table, id), ...]).
 
@@ -147,7 +167,7 @@ def select(db, rules, wanted, s):
                 skill = (item.get("blessings") or ["\uffff"])[0] if c.get("sort") == "blessings" else ""
                 return skill, item["name"]
             keys = sorted((k for k, item in db["items"].items() if check.category_of(item, rules) == cat), key=order)
-            groups.append((c["label"], [("items", k) for k in keys]))
+            groups.append((c["label"], [("items", k) for k in keys] + blank_cards(db, rules, c)))
         if db["hoards"]:
             groups.append((s["Hoards"], [("hoards", k) for k in db["hoards"]]))
         return groups
@@ -297,7 +317,7 @@ def cards_tex(db, rules, groups, s, duplex=False):
 
     def one(table, key, part=(), n=1, of=1):
         c = db[table][key]
-        name = tex_escape(c["name"]) + (f" ({n}/{of})" if of > 1 else "")
+        name = (r"\fwblankname" if c.get("blank") else tex_escape(c["name"])) + (f" ({n}/{of})" if of > 1 else "")
         if table == "items":
             kind, stats, note = kind_line(c, rules), stats_entries(c, rules), c.get("stats_note", "")
             lines = [(q, quality_text(q, c, rules)) for q in c.get("qualities", [])]
@@ -314,7 +334,7 @@ def cards_tex(db, rules, groups, s, duplex=False):
             stats, note = (wealth_line(c), c.get("wealth_note", "")) if n == 1 else ("", "")
             bullets = [r"\item[\fwfound] " + tex_escape(line) for line in part]  # a box to tick when found
         up = []
-        if (table, key) not in labelled:  # the overview points at the first copy
+        if (table, key) not in labelled and not c.get("blank"):  # the overview points at the first copy
             labelled.add((table, key))
             up.append(r"\fwcardanchor{card-%s}{%s}" % (key, tex_escape(c["name"])))
         up += [r"\fwcardname{" + name + "}", r"\fwcardkind{" + it(kind) + "}"]
@@ -339,7 +359,7 @@ def cards_tex(db, rules, groups, s, duplex=False):
         if table == "hoards":
             back = tex_escape(s["Hoard"])
         elif c["type"] in GEAR_TYPES:
-            back = name
+            back = tex_escape(c["base"]) if c.get("blank") else name
         else:
             back = tex_escape(rules["types"][c["type"]]["label"])
         return front, back
@@ -348,12 +368,17 @@ def cards_tex(db, rules, groups, s, duplex=False):
     # page, and an empty group still gets one. With `duplex` every page of cards is followed by
     # the page of their backs, and a group without cards is left out.
     out = []
-    for title, cards in groups:
+    for g, (title, cards) in enumerate(groups):
         made = [x for c in cards for x in card(*c)]
-        for i in range(0, max(len(made), 0 if duplex else 1), PER_PAGE):
+        starts = range(0, max(len(made), 0 if duplex else 1), PER_PAGE)
+        for i in starts:
             bookmark = "[%s]" % tex_escape(title or s["Cards"]) if i == 0 else ""
             page = made[i:i + PER_PAGE]
+            # the first and the last page of the group: where the overview points and which pages it names
+            marks = (r"\phantomsection\label{grp-%d-first}" % g if i == 0 else "") \
+                + (r"\label{grp-%d-last}" % g if i == starts[-1] else "")
             out.append(r"\fwcardspage%s{%s}{%s}{%%" % (bookmark, tex_escape(title), tex_escape(db["hint"])) + "\n"
+                       + (marks + "%\n" if marks else "")
                        + "\n".join(cut_edges(j, len(page)) + front for j, (front, _) in enumerate(page)) + "}")
             if duplex:
                 out.append(r"\fwbackspage{%s}{%s}{%%" % (tex_escape(title), tex_escape(db["hint"])) + "\n"
@@ -369,63 +394,18 @@ def cut_edges(j, n, cols=PER_PAGE // 3):
 
 
 def index_tex(db, rules, groups, s):
-    """The overview on the first pages: one table per group of cards."""
-    def table(title, widths, heads, rows, kinds="BPPR"):
-        if not rows:
-            return r"\subsection{%s}" % tex_escape(title) + "\n" + r"\fwnone{%s}" % tex_escape(s["NoItems"]) + "\n"
-        cols = "".join("%s{%s}" % wc for wc in zip(kinds, widths))
-        head = " & ".join(r"\fwth{%s}" % tex_escape(h) for h in heads)
-        body = "".join(" & ".join(r) + "\\\\\\fwrowrule\n" for r in rows)
-        return (r"\subsection{%s}" % tex_escape(title or s["Selection"]) + "\n" + r"\begin{fwtable}{small}" + "\n"
-                + r"\begin{longtable}{@{}%s@{}}" % cols + "\n" + head + "\\\\\\fwheadrule\\endhead\n" + body
-                + r"\end{longtable}" + "\n" + r"\end{fwtable}" + "\n")
-
-    def link(key, name):
-        return r"\hyperref[card-%s]{%s}" % (key, tex_escape(name))
-
-    def page(key):
-        return r"\textcolor{fwred}{\pageref*{card-%s}}" % key
-
+    """The overview on the first page: one line per group of cards, with the pages of its cards."""
     out = []
     used = {db[table][key].get("source") for _, cards in groups for table, key in cards}
     legend = [r"\fwlegenditem{%s}{%s}" % (src["icon"], tex_escape(src["label"]))
               for name, src in rules["sources"].items() if name in used]
     if legend:  # what the icons in the corners of the cards mean
         out.append(r"\fwlegend{" + r"\quad ".join(legend) + "}")
-    for title, cards in groups:
-        unique = list(dict.fromkeys(cards))
-        keys = [k for table_, k in unique if table_ == "items"]
-        useful = keys and all(rules["types"][db["items"][k]["type"]].get("blessings") is not None for k in keys)
-        if useful:  # useful items: their skills are what counts, there are no stats
-            mixed = len({db["items"][k]["type"] for k in keys}) > 1  # a selection: say which kind each one is
-            rows = []
-            for k in keys:
-                c = db["items"][k]
-                dice = rules["types"][c["type"]].get("blessing_dice")
-                rows.append([link(k, c["name"]), *([tex_escape(rules["types"][c["type"]]["label"])] if mixed else []),
-                             tex_escape(", ".join(c.get("blessings", [])) + (f" ({dice}d)" if dice else "")), page(k)])
-            if mixed:
-                out.append(table(title, ("0.40", "0.25", "0.28", "0.07"), (s["Name"], s["Kind"], s["Blessings"], s["Page"]), rows))
-            else:
-                out.append(table(title, ("0.55", "0.38", "0.07"), (s["Name"], s["Blessings"], s["Page"]), rows, "BPR"))
-        elif keys or not unique:
-            rows = []
-            for k in keys:
-                c = db["items"][k]
-                extras = (c.get("qualities", []) + [f"Bane: {b}" for b in c.get("banes", [])] + c.get("blessings", [])
-                          + (["Curse"] if c.get("curse") else []))
-                rows.append([link(k, c["name"]), tex_escape(" · ".join(x for x in (c.get("base"), check.craft_label(c, rules)) if x)),
-                             tex_escape(" · ".join(x for x in (stats_line(c, rules), ", ".join(extras)) if x)), page(k)])
-            out.append(table(title, ("0.30", "0.27", "0.36", "0.07"),
-                             (s["Name"], s["Kind"], s["Stats"], s["Page"]), rows))
-        keys = [k for table_, k in unique if table_ == "hoards"]
-        if keys:
-            rows = []
-            for k in keys:
-                c = db["hoards"][k]
-                rows.append([link(k, c["name"]), str(c.get("wealth", "")), tex_escape(", ".join(holds(c, db))), page(k)])
-            out.append(table(s["Hoards"], ("0.30", "0.14", "0.49", "0.07"),
-                             (s["Name"], "Treasure", s["Holds"], s["Page"]), rows))
+    rows = "".join(r"\hyperref[grp-%d-first]{%s} & \textcolor{fwred}{\fwpages{grp-%d}}" % (g, tex_escape(title or s["Selection"]), g)
+                   + "\\\\\\fwrowrule\n" for g, (title, _) in enumerate(groups))
+    out.append(r"\begin{fwtable}{normal}" + "\n" + r"\begin{longtable}{@{}B{0.8}R{0.2}@{}}" + "\n"
+               + r"\fwth{%s} & \fwth{%s}" % (tex_escape(s["Kind"]), tex_escape(s["Page"])) + "\\\\\\fwheadrule\\endhead\n"
+               + rows + r"\end{longtable}" + "\n" + r"\end{fwtable}" + "\n")
     return "\n".join(out)
 
 

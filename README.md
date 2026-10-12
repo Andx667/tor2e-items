@@ -74,7 +74,9 @@ text. Weapons, armour, helms and shields always need a `base`. Partial stats are
 
 The PDF follows the `[categories]` of `src/rules.toml`: the Combat Proficiencies for weapons, then armour, helms,
 shields, useful items, marvellous artefacts and wondrous items (the last three ordered by their skill), then the
-hoards. Each category starts a new page of cards; one without items yet gets an empty page.
+hoards. Each category starts a new page of cards; one without items yet gets an empty page. Every category of war gear ends with three blank cards for each base in it (Short sword, Sword,
+Long sword, …): the base and its stats are printed, the name is left to be written in. They are made by the
+build and are not part of the database.
 
 **Source icons.** `source` says where an item or a hoard comes from. The icon is printed in the lower right
 corner of the card and explained on the first page; a made-up item has no `source` and stays plain.
@@ -95,10 +97,10 @@ The sources are defined in `src/rules.toml` (`[sources]`), the icons are in `ass
 
 ## Stats and qualities
 
-The stats are the base values of the item's `base`, and that is what the cards and the overview show, like the
+The stats are the base values of the item's `base`, and that is what the cards show, like the
 war gear cards of the game. A quality changes them where the rule book says so (*Fell* +2 Injury, *Superior
 Grievous* of Dwarven craftsmanship +2 Damage, *Mithril Armour* sets the Load, …); that bonus is printed small
-below the base value on the card and in brackets in the overview, not added to it. A Load never goes below 0.
+below the base value on the card, not added to it. A Load never goes below 0.
 
 `src/rules.toml` holds the qualities as the rule book gives them: the basic rewards (*Keen*, *Fell*, *Grievous*,
 *Close-fitting*, *Cunning Make*, *Reinforced*), the superior and ancient ones, and the weapon qualities
@@ -120,7 +122,7 @@ number of rewards. A famous weapon or piece of armour has at most three qualitie
 Magical Treasure Index (`[limits]` in `src/rules.toml`).
 
 **Curses.** `curse` is the curse on an item, as free text, so there are no rules for it. The card prints the
-text, the overview only says that the item is cursed. `src/rules.toml` lists the curses of the Circleofnoms
+text. `src/rules.toml` lists the curses of the Circleofnoms
 Homebrew Collection (`[curses.<name>]`, with a one-line `text`) for the item wizard to offer; no item uses one yet.
 
 ## Useful items
