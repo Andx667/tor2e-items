@@ -1,0 +1,37 @@
+# Three lesser Rings of Power, one for each attribute: each lowers the TN of all rolls of its attribute
+# by 2, blesses two skills of that attribute and carries a curse. Made up, so no `source`.
+# All lesser rings were made by Elven smiths, and they are plain: round and unadorned.
+# Merged into src/cards.toml; the fields are listed at the top of that file.
+
+[items.lesser-ring-strength]
+name = "Lesser Ring of Strength"
+type = "wonder"
+craftsmanship = "Elven"
+text = "Ein runder, schmuckloser Reif aus rotem Gold, immer warm wie Eisen am Rand der Glut. Elbische Schmiede fertigten ihn in den Tagen von Eregion; er schenkt dem Träger die Kraft, Fels zu spalten und Hallen aus dem Stein zu heben, und weckt zugleich die Gier nach allem, was schön und kostbar ist."
+blessings = ["Craft", "Awe"]
+curse = "Goldgier: Findet der Träger Treasure, erhält er 1 Shadow point (Greed), es sei denn, er verzichtet auf seinen Anteil."
+effects = [
+  ["Spezial", "Der TN aller Strength-Würfe des Trägers sinkt um 2."],
+]
+
+[items.lesser-ring-heart]
+name = "Lesser Ring of Hearth"
+type = "wonder"
+craftsmanship = "Elven"
+text = "Ein runder, schmuckloser Reif aus mattem Silber, ohne Stein und ohne Rune. Er spendet den Verwundeten und Verzagten Trost, wo andere längst aufgegeben haben – doch der Trost ist nicht ohne Preis."
+blessings = ["Healing", "Enhearten"]
+curse = "Shadow Taint"
+effects = [
+  ["Spezial", "Der TN aller Heart-Würfe des Trägers sinkt um 2."],
+]
+
+[items.lesser-ring-wits]
+name = "Lesser Ring of Wits"
+type = "wonder"
+craftsmanship = "Elven"
+text = "Ein runder, schmuckloser Goldreif, so schlicht, dass man ihn leicht übersieht. Ein Fremder mit schönem Antlitz, soll ihn einst verschenkt haben – als Zeichen seiner Freundschaft."
+blessings = ["Persuade", "Lore"]
+curse = "Owned"
+effects = [
+  ["Spezial", "Der TN aller Wits-Würfe des Trägers sinkt um 2."],
+]
