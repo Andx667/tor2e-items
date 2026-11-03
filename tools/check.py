@@ -26,7 +26,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATS = ("damage", "injury", "protection", "parry", "load")
 VALOUR_STATS = (*STATS, "piercing_blow")  # what a `valour_bonus` may name
 ITEM_KEYS = {"name", "source", "type", "proficiency", "base", "craftsmanship", "text", "stats_note", "qualities",
-             "banes", "blessings", "curse", "effects", "injury_two_handed", *STATS}
+             "banes", "blessings", "curse", "effects", "injury_two_handed", "copies", *STATS}
 HOARD_KEYS = {"name", "source", "text", "campaign", "items", "wealth", "wealth_note"}
 EFFECT_LISTS = ("qualities", "banes", "blessings")
 
@@ -260,6 +260,8 @@ def check_item(item, rules):
             yield f"'{key}' must be text"
     if isinstance(item.get("craftsmanship"), str) and item["craftsmanship"] not in rules["craftsmanships"]:
         yield f"unknown craftsmanship '{item['craftsmanship']}' (known: {', '.join(rules['craftsmanships'])})"
+    if "copies" in item and (not isinstance(item["copies"], int) or isinstance(item["copies"], bool) or item["copies"] < 1):
+        yield "'copies' must be a whole number of at least 1"
     for key in EFFECT_LISTS:
         if key in item and not is_strings(item[key]):
             yield f"'{key}' must be a list of texts"

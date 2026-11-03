@@ -23,6 +23,7 @@
 #               small bonus below. Leave them
 #               all out for a card with only a name and a story (no stats box is printed)
 #   stats_note  small note behind the stats
+#   copies      how many cards of the item are printed (default 1), for things you have several of
 #   text        description
 #   qualities   extra effects from src/rules.toml; their rules text is added on the card
 #   banes       creatures the item is a Bane for

@@ -133,6 +133,14 @@ damage = 3
 injury = 12
 load = 0
 
+[bases."Throwing stones"]
+type = "weapon"
+proficiency = "brawling"
+damage = 3
+injury = 12
+load = 0
+note = "Ranged weapon"
+
 [bases.Club]
 type = "weapon"
 proficiency = "brawling"

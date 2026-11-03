@@ -346,7 +346,7 @@ def cards_tex(db, rules, groups, s, duplex=False):
         if table == "hoards":
             parts = hoard_parts(c, holds(c, db))
             return [one(table, key, part, n, len(parts)) for n, part in enumerate(parts, 1)]
-        return [one(table, key)]
+        return [one(table, key)] * c.get("copies", 1)  # an item with `copies` is printed that often
 
     def one(table, key, part=(), n=1, of=1):
         c = db[table][key]

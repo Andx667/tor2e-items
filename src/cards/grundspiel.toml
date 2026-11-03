@@ -25,6 +25,18 @@ damage = 3
 injury = 12
 load = 0
 
+[items.grundspiel-throwing-stones]
+name = "Throwing stones"
+source = "rulebook"
+type = "weapon"
+proficiency = "brawling"
+base = "Throwing stones"
+damage = 3
+injury = 12
+load = 0
+stats_note = "Ranged weapon"
+copies = 4
+
 [items.grundspiel-club]
 name = "Club"
 source = "rulebook"

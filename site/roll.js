@@ -11,7 +11,7 @@
 
   // German nouns for the Core Rules bases, and for the items that are not gear
   const BASE_NOUN = {
-    Dagger: "Dolch", Cudgel: "Knüppel", Club: "Keule", "Short sword": "Kurzschwert", Sword: "Schwert", "Long sword": "Langschwert",
+    Dagger: "Dolch", Cudgel: "Knüppel", "Throwing stones": "Wurfsteine",Club: "Keule", "Short sword": "Kurzschwert", Sword: "Schwert", "Long sword": "Langschwert",
     "Short spear": "Kurzspeer", Spear: "Speer", "Great spear": "Langspeer", Axe: "Axt", "Long-hafted axe": "Langstielaxt",
     "Great axe": "Streitaxt", Mattock: "Hacke", Bow: "Bogen", "Great bow": "Langbogen", "Leather shirt": "Lederhemd",
     "Leather corslet": "Lederkoller", "Mail-shirt": "Kettenhemd", "Coat of mail": "Panzerhemd", Helm: "Helm", Buckler: "Faustschild",

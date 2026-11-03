@@ -6,7 +6,7 @@
 
   const STATS = ["damage", "injury", "protection", "parry", "load"];
   const ITEM_KEYS = new Set(["name", "source", "type", "proficiency", "base", "craftsmanship", "text", "stats_note",
-    "qualities", "banes", "blessings", "curse", "effects", "injury_two_handed", ...STATS]);
+    "qualities", "banes", "blessings", "curse", "effects", "injury_two_handed", "copies", ...STATS]);
   const EFFECT_LISTS = ["qualities", "banes", "blessings"];
 
   const isInt = (v) => Number.isInteger(v);
@@ -51,6 +51,7 @@
     for (const key of ["proficiency", "base", "craftsmanship", "text", "stats_note", "curse"]) {
       if (has(item, key) && typeof item[key] !== "string") out.push(`'${key}' must be text`);
     }
+    if (has(item, "copies") && (!isInt(item.copies) || item.copies < 1)) out.push("'copies' must be a whole number of at least 1");
     if (typeof item.craftsmanship === "string" && !rules.craftsmanships.includes(item.craftsmanship)) {
       out.push(`unknown craftsmanship '${item.craftsmanship}' (known: ${rules.craftsmanships.join(", ")})`);
     }
