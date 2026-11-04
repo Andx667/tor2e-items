@@ -34,7 +34,7 @@ base = "Throwing stones"
 damage = 3
 injury = 12
 load = 0
-stats_note = "Ranged weapon"
+stats_note = "Ranged weapon. Cannot cause a Piercing Blow"
 copies = 4
 
 [items.grundspiel-club]

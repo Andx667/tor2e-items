@@ -533,6 +533,29 @@ source = "homebrew"
 type = "useful"
 blessings = ["Craft"]
 
+# The frying pan is both: a useful item for Craft, and a brawling weapon (the card under
+# Brawling & Daggers, on the Cudgel base).
+[items.bratpfanne]
+name = "Bratpfanne"
+source = "homebrew"
+type = "useful"
+text = "Eine schwere eiserne Pfanne. Zur Not taugt sie auch als Knüppel."
+blessings = ["Craft"]
+
+[items.bratpfanne-waffe]
+name = "Bratpfanne"
+source = "homebrew"
+type = "weapon"
+proficiency = "brawling"
+base = "Cudgel"
+damage = 3
+injury = 12
+load = 0
+stats_note = "Cannot cause a Piercing Blow"
+effects = [
+  ["Spezial", "Zählt als Useful Item für Craft."],
+]
+
 # ---- Battle
 
 [items.farbige-pfeilfedern]
