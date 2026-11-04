@@ -15,6 +15,10 @@ skills = [
   "Persuade", "Stealth", "Scan", "Explore", "Riddle", "Lore",
 ]
 
+# Labels of free effects (item field `effects`) that are only a note on an ordinary item, so they do
+# not make it famous ("Hinweis": the frying pan counts as a useful item). Any other label does.
+plain_effects = ["Hinweis"]
+
 # What the card says for each craftsmanship, in its kind line ("Famous Weapon · Sword · elbische Arbeit").
 [craft_labels]
 Dwarven = "Zwergenarbeit"
@@ -38,9 +42,9 @@ ranged = ["bows"]
 # blessings  how many skills an item of this type blesses (exactly); a type without it has no
 #        such rule. A useful item and a marvellous artefact have one skill, a wondrous item two
 # plain_label  kind-line start for an item with nothing but basic rewards (and without blessings
-#        or free effects): such an item is not famous, so it gets this instead of `label`. Every
-#        quality that is not a basic reward makes an item famous. May be empty. Without it the
-#        item always gets `label`                                              (optional)
+#        or free effects other than `plain_effects`): such an item is not famous, so it gets this
+#        instead of `label`. Every quality that is not a basic reward makes an item famous. May be
+#        empty. Without it the item always gets `label`                        (optional)
 
 [types.weapon]
 label = "Famous Weapon"

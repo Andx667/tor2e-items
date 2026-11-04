@@ -127,6 +127,8 @@ def is_strings(v):
 
 # ------------------------------------------------------------------ 1. schema
 def check_rules_file(rules):
+    if not is_strings(rules.get("plain_effects", [])):
+        yield "rules: plain_effects must be a list of texts"
     for c in rules["craftsmanships"]:
         if not isinstance(rules["craft_labels"].get(c), str) or not rules["craft_labels"][c].strip():
             yield f"rules: craft_labels: the line for '{c}' is missing"

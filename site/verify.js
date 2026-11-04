@@ -255,7 +255,8 @@
     const kind = rules.types[item.type];
     if (!kind) return "";
     const famous = effectList(item, "qualities").some((q) => rules.qualities[q] && !rules.qualities[q].basic)
-      || effectList(item, "blessings").length || (item.effects || []).length;
+      || effectList(item, "blessings").length
+      || (item.effects || []).some((e) => !(rules.plain_effects || []).includes(Array.isArray(e) ? e[0] : e));
     const label = !famous && has(kind, "plain_label") ? kind.plain_label : kind.label;
     return [label, item.base, (rules.craft_labels || {})[item.craftsmanship]].filter(Boolean).join(" · ");
   }

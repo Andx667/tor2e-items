@@ -553,7 +553,7 @@ injury = 12
 load = 0
 stats_note = "Cannot cause a Piercing Blow"
 effects = [
-  ["Spezial", "Zählt als Useful Item für Craft."],
+  ["Hinweis", "Zählt als Useful Item für Craft."],
 ]
 
 # ---- Battle

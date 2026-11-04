@@ -224,11 +224,13 @@ def select(db, rules, wanted, s):
 
 def kind_line(item, rules):
     """The kind line of a card. Everything that is not a basic reward makes an item famous: any
-    other quality, a blessing or a free effect. An item with nothing but basic rewards is not,
-    and gets the type's `plain_label` (if it has one) instead of its `label`."""
+    other quality, a blessing or a free effect (unless its label is in `plain_effects`). An item
+    with nothing but basic rewards is not, and gets the type's `plain_label` (if it has one)
+    instead of its `label`."""
     kind = rules["types"][item["type"]]
     famous = (any(not rules["qualities"][q].get("basic") for q in item.get("qualities", []))
-              or item.get("blessings") or item.get("effects"))
+              or item.get("blessings")
+              or any(e[0] not in rules.get("plain_effects", []) for e in item.get("effects", [])))
     label = kind["plain_label"] if not famous and "plain_label" in kind else kind["label"]
     return " · ".join(x for x in (label, item.get("base"), check.craft_label(item, rules)) if x)
 
