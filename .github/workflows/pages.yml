@@ -14,6 +14,8 @@ on:
       - "tools/site.py"
       - "tools/test_site.py"
       - "assets/logo-print.png"
+      - "assets/icons/**"
+      - "assets/fonts/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 

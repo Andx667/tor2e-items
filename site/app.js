@@ -55,6 +55,8 @@
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const kind = () => R.types[state.type];
   const isGear = () => !!(kind() && kind().stats && kind().stats.length);
+  // useful items, artefacts and wondrous items: a craftsmanship only adds its line to the card (no qualities, no Banes)
+  const craftOptional = () => !!(kind() && !isGear());
   const craftValue = () => (state.craft && state.craft !== "none" ? state.craft : undefined);
   const baneRule = () => (kind() && kind().banes && craftValue() ? kind().banes[craftValue()] || null : null);
   // a source that src/rules.toml does not have yet: it is added together with the item
@@ -146,7 +148,7 @@
         }
       }
     }
-    if (id === "craft" && !state.craft) return "Choose a craftsmanship, or none.";
+    if (id === "craft" && !state.craft && !craftOptional()) return "Choose a craftsmanship, or none.";
     if (id === "banes") {
       const rule = baneRule();
       if (rule && state.banes.length && state.banes.length !== rule.choose) return `Choose ${rule.choose} kind${rule.choose > 1 ? "s" : ""} of creature, or none at all.`;
@@ -208,13 +210,16 @@
   }
 
   function stepCraft() {
-    let h = `<fieldset><legend class="sr-only">Craftsmanship</legend><div class="choices one">`;
+    let h = craftOptional()
+      ? `<div class="note">Optional: a ${esc(TYPES[state.type][0].toLowerCase())} has no qualities or Banes, so the craftsmanship only adds its line to the card. Leave it at “Ordinary or other” and continue, or choose one.</div>`
+      : "";
+    h += `<fieldset><legend class="sr-only">Craftsmanship</legend><div class="choices one">`;
     for (const c of R.craftsmanships) {
       h += `<label class="choice"><input type="radio" name="craft" value="${c}"${state.craft === c ? " checked" : ""}><span class="t">${CRAFTS[c][0]}</span><span class="d">${CRAFTS[c][1]}</span></label>`;
     }
     h += `<label class="choice"><input type="radio" name="craft" value="none"${state.craft === "none" ? " checked" : ""}><span class="t">Ordinary or other</span><span class="d">No special craftsmanship: no superior or ancient qualities, no Banes.</span></label></div></fieldset>`;
     const line = (R.craft_labels || {})[craftValue()];
-    h += `<p class="help">${line ? `The card says “${esc(line)}” after the base.` : "The rule book knows these three; an item of any other make has no craftsmanship and no such line on its card."}</p>`;
+    h += `<p class="help">${line ? `The card says “${esc(line)}” ${isGear() ? "after the base" : "in its kind line"}.` : "The rule book knows these three; an item of any other make has no craftsmanship and no such line on its card."}</p>`;
     return h;
   }
 
@@ -334,7 +339,7 @@
     if (v.ok) {
       const toml = toToml(v.item, state.id);
       h += `<h3>TOML for <code>src/cards.toml</code></h3><pre class="toml" id="toml" tabindex="0">${esc(toml)}</pre>`
-        + `<div class="actions" style="margin-top:.4rem"><div class="right"><button class="btn primary" data-act="copy">Copy TOML</button><button class="btn" data-act="download">Download</button></div></div>`
+        + `<div class="actions" style="margin-top:.4rem"><div class="right"><button class="btn primary" data-act="copy">Copy TOML</button><button class="btn" data-act="download">Download</button><button class="btn" data-act="png">Save card as PNG</button></div></div>`
         + `<p class="help" id="copied" role="status"></p>`
         + (newSource() ? `<h3>New source for <code>src/rules.toml</code></h3><pre class="toml" tabindex="0">${esc(`[sources.${newSource()}]\nlabel = ${JSON.stringify(state.sourceLabel.trim())}\nicon = "${newSource()}"\n`)}</pre><p class="help">Add this table to the sources in <code>src/rules.toml</code> and put the icon at <code>assets/icons/${esc(newSource())}.png</code>.</p>` : "")
         + `<h3>Add it to the project</h3><ol><li>Paste the table into <code>src/cards.toml</code>, for example under the weapons.</li><li>If the item belongs to a hoard, add it to <code>items</code> of that <code>[hoards.…]</code> table.</li><li>Run <code>python3 tools/check.py</code>: it must report no problems.</li></ol>`;
@@ -343,31 +348,30 @@
   }
 
   // ---------------------------------------------------------------- preview
+  // the card as the PDFs print it, drawn by site/card.js
   function preview() {
-    const item = buildItem();
     if (!state.type) return `<div class="card"><p class="empty">Choose an item type to see the card.</p></div>`;
-    const stats = V.cardStats(item, R);
-    let h = `<div class="card"><div class="name">${esc(item.name || "Unnamed item")}</div><div class="kind">${esc(V.kindLine(item, R))}</div>`;
-    if (stats.length) h += `<div class="stats">${stats.map(([k, v, b]) => `<div><small>${k}</small><b>${esc(v)}</b>${stats.some((s) => s[2]) ? `<i>${esc(b) || "&nbsp;"}</i>` : ""}</div>`).join("")}</div>`;
-    if (item.text) h += `<p>${esc(item.text)}</p>`;
-    const li = [];
-    for (const q of item.qualities || []) li.push(`<li><b>${esc(q)}:</b> ${esc(V.qualityText(q, item, R))}</li>`);
-    if ((item.banes || []).length) li.push(`<li><b>Bane:</b> ${esc(item.banes.join(", "))}</li>`);
-    const blessing = V.blessingLine(item, R);
-    if (blessing) li.push(`<li><b>${esc(blessing[0])}:</b> ${esc(blessing[1])}</li>`);
-    for (const e of item.effects || []) li.push(`<li><b>${esc(e[0])}:</b> ${esc(e[1])}</li>`);
-    if (item.curse) li.push(`<li><b>Curse:</b> ${esc(item.curse)}</li>`);
-    if (li.length) h += `<ul>${li.join("")}</ul>`;
-    else if (!stats.length && !item.text) h += `<p class="empty">Nothing special yet.</p>`;
-    return h + `</div>`;
+    const item = buildItem();
+    return `<canvas class="card-img" id="card-img" role="img" aria-label="${esc(`Card: ${item.name || "Unnamed item"}, ${V.kindLine(item, R)}`)}"></canvas>`
+      + `<p class="why" id="card-overflow"></p>`
+      + `<div class="actions" style="margin-top:.5rem"><div class="right"><button class="btn" type="button" data-act="png">Save card as PNG</button></div></div>`
+      + `<p class="help">63.5 × 88.9 mm at 300 dpi, as on the PDF pages.</p>`;
+  }
+  function drawCard() {
+    const canvas = $("#card-img");
+    if (!canvas || !window.TorCard) return;
+    const r = window.TorCard.draw(canvas, buildItem(), R, V, { terms: window.TOR_DATA.terms, icons: window.TOR_DATA.icons, onload: drawCard });
+    const o = $("#card-overflow");
+    if (o) o.textContent = r.overflow ? "Too much text for one card: the PDF build would stop. Shorten the text." : "";
   }
 
   // ---------------------------------------------------------------- rendering
-  const naSteps = () => ({ 2: state.type && state.craft && !banesApply() });
+  const naSteps = () => ({ 2: state.type && (state.craft || craftOptional()) && !banesApply() });
+  const optSteps = () => ({ 1: craftOptional() });
   function renderSteps() {
     $("#steps").innerHTML = STEPS.map(([id, title], i) => {
       const cls = [i === state.step ? "current" : "", i < state.step ? "done" : "", naSteps()[i] ? "skipped" : ""].join(" ").trim();
-      return `<li class="${cls}"><button type="button" data-goto="${i}"${i > state.reached ? " disabled" : ""}${i === state.step ? ' aria-current="step"' : ""}><span class="n">${i + 1}</span>${title}${naSteps()[i] ? " (n/a)" : ""}</button></li>`;
+      return `<li class="${cls}"><button type="button" data-goto="${i}"${i > state.reached ? " disabled" : ""}${i === state.step ? ' aria-current="step"' : ""}><span class="n">${i + 1}</span>${title}${naSteps()[i] ? " (n/a)" : optSteps()[i] ? " (optional)" : ""}</button></li>`;
     }).join("");
   }
   function renderStep(focusTitle) {
@@ -381,7 +385,12 @@
       + `</div></div>` + (why && !last ? `<p class="why" id="why">${esc(why)}</p>` : `<p class="why" id="why"></p>`);
     if (focusTitle) $("#step-title").focus({ preventScroll: false });
   }
-  function renderPreview() { $("#preview").innerHTML = preview(); }
+  function renderPreview() {
+    // keep the canvas while it stays, so the picture does not flicker while typing
+    const box = $("#preview"), html = preview();
+    if (box.dataset.html !== html) { box.innerHTML = html; box.dataset.html = html; }
+    drawCard();
+  }
   function render(focusTitle) {
     // keep the focus on the same control when the step is drawn again
     const a = document.activeElement;
@@ -424,7 +433,11 @@
     const t = e.target, n = t.name;
     if (!t.closest("#wizard")) return;
     state.rolls = null; // the dice no longer explain the item
-    if (n === "type") { state.type = t.value; state.base = ""; state.reached = state.step; prune(); }
+    if (n === "type") {
+      state.type = t.value; state.base = ""; state.reached = state.step;
+      if (craftOptional() && !state.craft) state.craft = "none"; // preselected: the step is optional
+      prune();
+    }
     else if (n === "base") { state.base = t.value; prune(); }
     else if (n === "craft") {
       state.craft = t.value;
@@ -459,6 +472,11 @@
     else if (act === "back") go(state.step - 1);
     else if (act === "roll") rollItem();
     else if (act === "reset") { state = fresh(); render(true); }
+    else if (act === "png") {
+      drawCard();
+      const canvas = $("#card-img");
+      if (canvas) window.TorCard.save(canvas, (state.id || slug(state.name) || "card") + ".png");
+    }
     else if (act === "copy" || act === "download") {
       const v = verification(); if (!v.ok) return;
       const toml = toToml(v.item, state.id);
@@ -479,6 +497,7 @@
   if (state.step > state.reached) state.reached = state.step;
   prune();
   render(false);
+  if (window.TorCard) window.TorCard.loadFonts().then(() => renderPreview()); // the font of the PDFs, once it is there
   // for tests: set the state and show a step
   window.__wizard = { reset() { state = fresh(); render(true); }, set(o) { Object.assign(state, o); prune(); render(false); }, go, state: () => state, item: buildItem, verification, toToml };
 })();

@@ -8,3 +8,4 @@ __pycache__/
 # written by tools/site.py
 site/data.js
 site/logo.png
+site/fonts/

@@ -26,4 +26,10 @@ the layout, the logo and the icons drawn by `tools/icons.py`, and the items, nam
 (cards without a source icon, and the German wording of the cards). It does not cover the names and material
 listed above.
 
+## The font
+
+`assets/fonts/` holds TeX Gyre Pagella (regular, bold, italic) by GUST e-foundry, unchanged, for the card image of
+the item wizard. It is distributed under the GUST Font License (`assets/fonts/GUST-FONT-LICENSE.txt`), not the MIT
+licence.
+
 If you are a rights holder and want something changed or removed, please open an issue.

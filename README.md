@@ -29,7 +29,7 @@ The PDFs are built by GitHub Actions on every commit; tagged commits (`v*`) are 
 | `tools/test_site.py` | Checks that the wizard agrees with the checker and the build |
 | `site/` | The item wizard (static website, published on GitHub Pages) |
 | `latex/` | Layout (`tor2e.sty`) and the two documents |
-| `assets/` | Logo, source icons and the social preview |
+| `assets/` | Logo, source icons, the social preview and the font of the card image (TeX Gyre Pagella) |
 | `Makefile` | Shortcuts: `make`, `make check`, `make site`, `make test`, `make clean` |
 | `.github/workflows/` | `build.yml` builds and releases the PDFs, `pages.yml` publishes the wizard |
 
@@ -151,7 +151,9 @@ the cards ordered by the first skill.
 `site/` is a small website that walks through the steps of the rule book (item type, craftsmanship, Banes,
 qualities, name), checks the new item against the rules, and ends with the TOML table to paste into
 `src/cards.toml`. Qualities that do not fit the item are greyed out with the reason, and a live card shows the
-result. A curse is one from the list of `src/rules.toml` (with a short explanation each) or free text. The source is one of the existing ones or a new one; for a new one the wizard also
+result. `site/card.js` draws that card as the PDFs print it (63.5 × 88.9 mm, the font TeX Gyre Pagella, the
+source icon), and *Save card as PNG* saves it at 300 dpi. The text is the same as on the PDF card; only the line
+breaks can differ, as the browser does not hyphenate. A curse is one from the list of `src/rules.toml` (with a short explanation each) or free text. The source is one of the existing ones or a new one; for a new one the wizard also
 writes the table for `src/rules.toml` and names the icon file to add. The workflow `.github/workflows/pages.yml`
 publishes it on GitHub Pages (once: Settings > Pages > Source: GitHub Actions), at
 <https://andx667.github.io/tor2e-items/>.
@@ -169,7 +171,8 @@ python3 tools/site.py      # or: make site. Writes site/data.js from src/rules.t
 # then open site/index.html in a browser
 ```
 
-The page needs no server and no libraries. Its rules come from `src/rules.toml`, so a new quality or base shows
+The page needs no server and no libraries. Opened as a file, the browser may refuse the font of the PDFs
+(`site/fonts/`, copied from `assets/fonts/` by `tools/site.py`); the card image then uses a Palatino-like font. Its rules come from `src/rules.toml`, so a new quality or base shows
 up without touching the page. The checks are `site/verify.js`, a copy of what `tools/check.py` does;
 `python3 tools/test_site.py` (or `make test`) runs both on every item and on hundreds of broken variants and
 fails if they disagree. The TOML the wizard writes must read back as the same item, and its card preview must
